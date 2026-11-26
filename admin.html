@@ -1,1 +1,255 @@
 
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WORLD AT ARMS | Admin</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101820;color:#eee;font-family:Tahoma,Arial,sans-serif}
+header{background:#1b2b25;padding:22px;border-bottom:1px solid #536044}
+header h2{color:#d7bd75;margin:0}
+header p{color:#9ba99e;font-size:12px}
+.container{display:flex;min-height:90vh}
+nav{width:220px;background:#17251f;padding:12px}
+nav button{display:block;width:100%;padding:13px;margin:4px 0;background:transparent;color:#ddd;border:0;text-align:right;border-radius:8px;cursor:pointer}
+nav button:hover,nav button.active{background:#40553c;color:#f0d998}
+main{flex:1;padding:22px;min-width:0}
+.page{display:none}
+.page.active{display:block}
+h2{color:#e0ce9b}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card,.panel{background:#1d2c28;border:1px solid #405344;border-radius:12px;padding:17px;margin-bottom:15px}
+.card p{color:#b4c0b4;font-size:12px}
+.card strong{font-size:24px;color:#d9c17b}
+button.action{background:#9a8046;color:white;border:0;padding:12px;border-radius:8px;margin:5px;cursor:pointer}
+input,select,textarea{width:100%;padding:12px;margin:8px 0;background:#101b19;color:white;border:1px solid #53634f;border-radius:8px}
+label{font-size:12px;color:#c6cbbd}
+table{width:100%;border-collapse:collapse;font-size:12px}
+td,th{padding:12px 5px;text-align:right;border-bottom:1px solid #405344}
+th{color:#d7bd75}
+.note{color:#9eae9f;font-size:12px;line-height:2}
+@media(max-width:650px){
+.container{display:block}
+nav{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
+nav button{text-align:center;font-size:11px;padding:10px 3px}
+main{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<header>
+<h2>🌍 WORLD AT ARMS</h2>
+<p>ADMIN CONTROL CENTER | پنل مدیریت مرکزی</p>
+</header>
+
+<div class="container">
+
+<nav>
+<button class="active" onclick="showPage('dashboard',this)">📊 داشبورد</button>
+<button onclick="showPage('users',this)">👥 کاربران</button>
+<button onclick="showPage('admins',this)">🛡️ ادمین‌ها</button>
+<button onclick="showPage('countries',this)">🌐 کشورها</button>
+<button onclick="showPage('alliances',this)">🤝 اتحادها</button>
+<button onclick="showPage('resolutions',this)">📜 قطعنامه‌ها</button>
+<button onclick="showPage('wars',this)">⚔️ جنگ‌ها</button>
+<button onclick="showPage('announcements',this)">📢 اطلاعیه‌ها</button>
+<button onclick="showPage('seasons',this)">📅 فصل‌ها</button>
+<button onclick="showPage('support',this)">💬 پشتیبانی</button>
+<button onclick="showPage('logs',this)">📋 گزارش‌ها</button>
+<button onclick="showPage('settings',this)">⚙️ تنظیمات</button>
+</nav>
+
+<main>
+
+<section class="page active" id="dashboard">
+<h2>داشبورد فرماندهی</h2>
+<p class="note">نمای کلی مدیریت WORLD AT ARMS</p>
+<div class="cards">
+<div class="card">👥 کاربران<strong>—</strong><p>آمار کاربران</p></div>
+<div class="card">🌐 کشورها<strong>—</strong><p>کشورهای ثبت‌شده</p></div>
+<div class="card">🛡️ مدیران<strong>—</strong><p>تعداد ادمین‌ها</p></div>
+<div class="card">📅 فصل<strong>—</strong><p>فصل جاری</p></div>
+</div>
+<div class="panel">
+<h3>وضعیت سامانه</h3>
+<p class="note">پنل طراحی شده اما هنوز به ربات و پایگاه داده متصل نیست.</p>
+</div>
+</section>
+
+<section class="page" id="users">
+<h2>مدیریت کاربران</h2>
+<div class="panel">
+<input placeholder="جست‌وجو با آیدی یا نام تلگرام">
+<button class="action" onclick="alert('جست‌وجو پس از اتصال سرور فعال می‌شود')">جست‌وجو</button>
+<p class="note">مشاهده پروفایل، وضعیت حساب، مسدودسازی و رفع مسدودی کاربران در نسخه متصل قابل انجام خواهد بود.</p>
+</div>
+</section>
+
+<section class="page" id="admins">
+<h2>مدیریت ادمین‌ها</h2>
+<div class="panel">
+<h3>افزودن مدیر جدید</h3>
+<label>آیدی عددی تلگرام</label>
+<input id="adminId" type="number" placeholder="مثلاً 123456789">
+<label>سطح دسترسی</label>
+<select id="adminRole">
+<option>مدیر کل</option>
+<option>مدیر کاربران</option>
+<option>مدیر محتوا</option>
+<option>ناظر</option>
+</select>
+<button class="action" onclick="addAdmin()">افزودن نمایشی</button>
+<p class="note">این فهرست فعلاً آزمایشی است و مدیر واقعی به سرور اضافه نمی‌کند.</p>
+</div>
+<div class="panel">
+<h3>فهرست ادمین‌ها</h3>
+<table>
+<thead><tr><th>آیدی</th><th>نقش</th><th>عملیات</th></tr></thead>
+<tbody id="adminList">
+<tr><td colspan="3">ادمینی ثبت نشده است.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="page" id="countries">
+<h2>مدیریت کشورها</h2>
+<div class="panel">
+<label>نام کشور</label>
+<input placeholder="نام کشور">
+<label>نام فرمانده</label>
+<input placeholder="نام فرمانده">
+<button class="action" onclick="alert('ثبت کشور پس از اتصال سرور فعال می‌شود')">ثبت کشور</button>
+<p class="note">امکان ساخت، ویرایش و حذف کشورها در نسخه نهایی.</p>
+</div>
+</section>
+
+<section class="page" id="alliances">
+<h2>مدیریت اتحادها</h2>
+<div class="panel">
+<label>نام اتحاد</label>
+<input placeholder="نام اتحاد">
+<label>اعضای اتحاد</label>
+<textarea placeholder="نام کشورهای عضو"></textarea>
+<button class="action" onclick="alert('ثبت اتحاد پس از اتصال سرور فعال می‌شود')">ثبت اتحاد</button>
+</div>
+</section>
+
+<section class="page" id="resolutions">
+<h2>مدیریت قطعنامه‌ها</h2>
+<div class="panel">
+<label>عنوان قطعنامه</label>
+<input placeholder="عنوان">
+<label>متن قطعنامه</label>
+<textarea rows="6" placeholder="متن قطعنامه را وارد کنید"></textarea>
+<button class="action" onclick="alert('انتشار پس از اتصال سرور فعال می‌شود')">انتشار قطعنامه</button>
+</div>
+</section>
+
+<section class="page" id="wars">
+<h2>مدیریت جنگ‌ها</h2>
+<div class="panel">
+<label>کشور اول</label>
+<input placeholder="نام کشور">
+<label>کشور دوم</label>
+<input placeholder="نام کشور">
+<label>وضعیت جنگ</label>
+<select><option>در حال بررسی</option><option>فعال</option><option>پایان‌یافته</option></select>
+<button class="action" onclick="alert('ثبت جنگ پس از اتصال سرور فعال می‌شود')">ثبت وضعیت</button>
+</div>
+</section>
+
+<section class="page" id="announcements">
+<h2>اطلاعیه‌ها</h2>
+<div class="panel">
+<label>عنوان</label>
+<input placeholder="عنوان اطلاعیه">
+<label>متن پیام</label>
+<textarea rows="5" placeholder="متن اطلاعیه"></textarea>
+<button class="action" onclick="alert('ارسال پیام پس از اتصال ربات فعال می‌شود')">ارسال اطلاعیه</button>
+</div>
+</section>
+
+<section class="page" id="seasons">
+<h2>مدیریت فصل‌ها</h2>
+<div class="panel">
+<label>نام فصل</label>
+<input placeholder="مثلاً فصل اول">
+<label>تاریخ شروع</label>
+<input type="date">
+<label>تاریخ پایان</label>
+<input type="date">
+<button class="action" onclick="alert('ساخت فصل پس از اتصال سرور فعال می‌شود')">ساخت فصل</button>
+</div>
+</section>
+
+<section class="page" id="support">
+<h2>مرکز پشتیبانی</h2>
+<div class="panel">
+<p class="note">در این بخش درخواست‌ها و پیام‌های کاربران نمایش داده خواهند شد.</p>
+</div>
+</section>
+
+<section class="page" id="logs">
+<h2>گزارش فعالیت مدیران</h2>
+<div class="panel">
+<p class="note">تاریخچه ورود مدیران و تغییرات پس از اتصال سرور ثبت خواهد شد.</p>
+</div>
+</section>
+
+<section class="page" id="settings">
+<h2>تنظیمات سامانه</h2>
+<div class="panel">
+<label>نام سامانه</label>
+<input value="WORLD AT ARMS">
+<label>وضعیت ربات</label>
+<input value="متصل نشده" disabled>
+<p class="note">توکن ربات و اطلاعات محرمانه باید فقط در سرور ذخیره شوند، نه در GitHub.</p>
+</div>
+</section>
+
+</main>
+</div>
+
+<script>
+function showPage(id,btn){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+btn.classList.add('active');
+}
+
+function addAdmin(){
+const id=document.getElementById('adminId').value.trim();
+const role=document.getElementById('adminRole').value;
+if(!id || !/^\d+$/.test(id)){
+alert('آیدی عددی معتبر وارد کنید');
+return;
+}
+const list=document.getElementById('adminList');
+if(list.querySelector('.empty-row')) list.innerHTML='';
+if(list.textContent.includes('ادمینی ثبت نشده')) list.innerHTML='';
+const row=document.createElement('tr');
+const idCell=document.createElement('td');
+const roleCell=document.createElement('td');
+const actionCell=document.createElement('td');
+idCell.textContent=id;
+roleCell.textContent=role;
+const remove=document.createElement('button');
+remove.textContent='حذف';
+remove.className='action';
+remove.onclick=()=>row.remove();
+actionCell.appendChild(remove);
+row.append(idCell,roleCell,actionCell);
+list.appendChild(row);
+document.getElementById('adminId').value='';
+alert('به فهرست آزمایشی اضافه شد؛ هنوز دسترسی واقعی ندارد.');
+}
+</script>
+
+</body>
+  </html>
+
