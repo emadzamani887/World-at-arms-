@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -7,207 +6,171 @@
 <title>WORLD AT ARMS | Admin</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#101820;color:#eee;font-family:Tahoma,Arial,sans-serif}
-header{background:#1b2b25;padding:22px;border-bottom:1px solid #536044}
-header h2{color:#d7bd75;margin:0}
-header p{color:#9ba99e;font-size:12px}
-.container{display:flex;min-height:90vh}
-nav{width:220px;background:#17251f;padding:12px}
-nav button{display:block;width:100%;padding:13px;margin:4px 0;background:transparent;color:#ddd;border:0;text-align:right;border-radius:8px;cursor:pointer}
-nav button:hover,nav button.active{background:#40553c;color:#f0d998}
-main{flex:1;padding:22px;min-width:0}
+body{margin:0;background:#101713;color:#e8eee9;font-family:Tahoma,Arial,sans-serif}
+header{background:#1b2b21;padding:20px;border-bottom:1px solid #536a4e}
+header h1{margin:0;color:#d7bd75;font-size:23px}
+header p{margin:8px 0 0;color:#aab8a9;font-size:12px}
+.layout{display:flex;min-height:calc(100vh - 80px)}
+aside{width:230px;background:#17231b;padding:15px;flex-shrink:0}
+aside button{display:block;width:100%;text-align:right;background:transparent;color:#dce5dc;border:0;padding:14px;border-radius:8px;margin-bottom:5px;font-size:14px;cursor:pointer}
+aside button.active,aside button:hover{background:#344a36;color:#f0d58b}
+main{padding:22px;width:100%;max-width:1100px;margin:auto}
 .page{display:none}
 .page.active{display:block}
-h2{color:#e0ce9b}
-.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.card,.panel{background:#1d2c28;border:1px solid #405344;border-radius:12px;padding:17px;margin-bottom:15px}
-.card p{color:#b4c0b4;font-size:12px}
-.card strong{font-size:24px;color:#d9c17b}
-button.action{background:#9a8046;color:white;border:0;padding:12px;border-radius:8px;margin:5px;cursor:pointer}
-input,select,textarea{width:100%;padding:12px;margin:8px 0;background:#101b19;color:white;border:1px solid #53634f;border-radius:8px}
-label{font-size:12px;color:#c6cbbd}
-table{width:100%;border-collapse:collapse;font-size:12px}
-td,th{padding:12px 5px;text-align:right;border-bottom:1px solid #405344}
-th{color:#d7bd75}
-.note{color:#9eae9f;font-size:12px;line-height:2}
+h2{color:#e4ca82;margin-top:0}
+.panel{background:#1b2920;border:1px solid #354638;border-radius:12px;padding:18px;margin:15px 0}
+input,select,textarea{width:100%;padding:12px;background:#101a14;color:white;border:1px solid #52634f;border-radius:7px;margin:7px 0 14px;font-family:inherit}
+textarea{min-height:100px;resize:vertical}
+label{font-size:13px;color:#c5d2c4}
+button.action{background:#b49a55;color:#171b13;border:0;border-radius:7px;padding:11px 17px;font-weight:bold;cursor:pointer;font-family:inherit}
+button.danger{background:#a4433e;color:white}
+button.secondary{background:#405b43;color:white}
+button:disabled{opacity:.5}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:12px 8px;text-align:right;border-bottom:1px solid #354638}
+th{color:#dfc67e}
+.small{font-size:12px;color:#a9b8aa}
+.result{padding:12px;background:#263a2b;border-radius:8px;margin-top:12px;line-height:2}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.card{background:#25372a;padding:17px;border-radius:10px}
+.card strong{display:block;color:#e4c978;font-size:20px;margin-top:8px}
+.hidden{display:none}
 @media(max-width:650px){
-.container{display:block}
-nav{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
-nav button{text-align:center;font-size:11px;padding:10px 3px}
-main{padding:14px}
+.layout{display:block}
+aside{width:100%;display:grid;grid-template-columns:repeat(2,1fr);gap:5px}
+aside button{margin:0;font-size:12px;padding:12px}
+main{padding:13px}
+.panel{padding:13px;overflow-x:auto}
 }
 </style>
 </head>
 <body>
 
 <header>
-<h2>🌍 WORLD AT ARMS</h2>
-<p>ADMIN CONTROL CENTER | پنل مدیریت مرکزی</p>
+<h1>🌍 WORLD AT ARMS</h1>
+<p>مرکز فرماندهی مدیریت بازی | ADMIN CONTROL</p>
 </header>
 
-<div class="container">
-
-<nav>
-<button class="active" onclick="showPage('dashboard',this)">📊 داشبورد</button>
-<button onclick="showPage('users',this)">👥 کاربران</button>
-<button onclick="showPage('admins',this)">🛡️ ادمین‌ها</button>
-<button onclick="showPage('countries',this)">🌐 کشورها</button>
-<button onclick="showPage('alliances',this)">🤝 اتحادها</button>
-<button onclick="showPage('resolutions',this)">📜 قطعنامه‌ها</button>
-<button onclick="showPage('wars',this)">⚔️ جنگ‌ها</button>
-<button onclick="showPage('announcements',this)">📢 اطلاعیه‌ها</button>
-<button onclick="showPage('seasons',this)">📅 فصل‌ها</button>
-<button onclick="showPage('support',this)">💬 پشتیبانی</button>
-<button onclick="showPage('logs',this)">📋 گزارش‌ها</button>
-<button onclick="showPage('settings',this)">⚙️ تنظیمات</button>
-</nav>
+<div class="layout">
+<aside>
+<button class="active" data-page="dashboard">🏠 داشبورد</button>
+<button data-page="players">👥 مدیریت پلیرها</button>
+<button data-page="admins">🛡 مدیریت ادمین‌ها</button>
+<button data-page="worlds">🌐 ساخت World</button>
+<button data-page="treasury">💰 مدیریت خزانه</button>
+<button data-page="resolutions">📜 قطعنامه‌ها</button>
+<button data-page="messages">📨 ارسال پیام</button>
+</aside>
 
 <main>
 
 <section class="page active" id="dashboard">
 <h2>داشبورد فرماندهی</h2>
-<p class="note">نمای کلی مدیریت WORLD AT ARMS</p>
 <div class="cards">
-<div class="card">👥 کاربران<strong>—</strong><p>آمار کاربران</p></div>
-<div class="card">🌐 کشورها<strong>—</strong><p>کشورهای ثبت‌شده</p></div>
-<div class="card">🛡️ مدیران<strong>—</strong><p>تعداد ادمین‌ها</p></div>
-<div class="card">📅 فصل<strong>—</strong><p>فصل جاری</p></div>
+<div class="card">بخش‌های مدیریت<strong>۶ بخش</strong></div>
+<div class="card">Worldهای ثبت‌شده<strong id="worldCount">۰</strong></div>
+<div class="card">ادمین‌های ثبت‌شده<strong id="adminCount">۰</strong></div>
 </div>
 <div class="panel">
-<h3>وضعیت سامانه</h3>
-<p class="note">پنل طراحی شده اما هنوز به ربات و پایگاه داده متصل نیست.</p>
+<h3>وضعیت پنل</h3>
+<p>به مرکز فرماندهی WORLD AT ARMS خوش آمدی.</p>
+<p class="small">این نسخه آزمایشی است. اطلاعات هنوز به سرور بازی متصل نیستند.</p>
 </div>
 </section>
 
-<section class="page" id="users">
-<h2>مدیریت کاربران</h2>
+<section class="page" id="players">
+<h2>👥 مدیریت پلیرها</h2>
 <div class="panel">
-<input placeholder="جست‌وجو با آیدی یا نام تلگرام">
-<button class="action" onclick="alert('جست‌وجو پس از اتصال سرور فعال می‌شود')">جست‌وجو</button>
-<p class="note">مشاهده پروفایل، وضعیت حساب، مسدودسازی و رفع مسدودی کاربران در نسخه متصل قابل انجام خواهد بود.</p>
+<label>آیدی تلگرام پلیر</label>
+<input id="playerId" placeholder="مثلاً 123456789" inputmode="numeric">
+<button class="action" onclick="searchPlayer()">جست‌وجوی پلیر</button>
+<div id="playerResult"></div>
 </div>
 </section>
 
 <section class="page" id="admins">
-<h2>مدیریت ادمین‌ها</h2>
+<h2>🛡 مدیریت ادمین‌ها</h2>
 <div class="panel">
-<h3>افزودن مدیر جدید</h3>
-<label>آیدی عددی تلگرام</label>
-<input id="adminId" type="number" placeholder="مثلاً 123456789">
-<label>سطح دسترسی</label>
-<select id="adminRole">
-<option>مدیر کل</option>
-<option>مدیر کاربران</option>
-<option>مدیر محتوا</option>
-<option>ناظر</option>
-</select>
-<button class="action" onclick="addAdmin()">افزودن نمایشی</button>
-<p class="note">این فهرست فعلاً آزمایشی است و مدیر واقعی به سرور اضافه نمی‌کند.</p>
+<label>آیدی تلگرام ادمین جدید</label>
+<input id="newAdmin" placeholder="Telegram ID" inputmode="numeric">
+<button class="action" onclick="addAdmin()">افزودن ادمین</button>
+<p class="small">این فهرست فعلاً آزمایشی است و دسترسی واقعی ایجاد نمی‌کند.</p>
 </div>
 <div class="panel">
 <h3>فهرست ادمین‌ها</h3>
-<table>
-<thead><tr><th>آیدی</th><th>نقش</th><th>عملیات</th></tr></thead>
-<tbody id="adminList">
-<tr><td colspan="3">ادمینی ثبت نشده است.</td></tr>
-</tbody>
-</table>
+<div id="adminList">هنوز ادمینی ثبت نشده است.</div>
 </div>
 </section>
 
-<section class="page" id="countries">
-<h2>مدیریت کشورها</h2>
+<section class="page" id="worlds">
+<h2>🌐 ساخت World جدید</h2>
 <div class="panel">
+<label>نام World</label>
+<input id="worldName" placeholder="مثلاً World 2">
+<label>توضیحات World</label>
+<textarea id="worldDescription" placeholder="توضیحات جهان جدید..."></textarea>
+<button class="action" onclick="createWorld()">ایجاد World</button>
+<p class="small">در نسخه واقعی، جهان جدید باید مستقل از Worldهای قبلی ایجاد شود.</p>
+</div>
+<div class="panel">
+<h3>Worldهای ساخته‌شده</h3>
+<div id="worldList">هنوز World جدیدی ثبت نشده است.</div>
+</div>
+</section>
+
+<section class="page" id="treasury">
+<h2>💰 مدیریت خزانه</h2>
+<div class="panel">
+<label>انتخاب World</label>
+<select id="treasuryWorld">
+<option value="">انتخاب World</option>
+</select>
 <label>نام کشور</label>
-<input placeholder="نام کشور">
-<label>نام فرمانده</label>
-<input placeholder="نام فرمانده">
-<button class="action" onclick="alert('ثبت کشور پس از اتصال سرور فعال می‌شود')">ثبت کشور</button>
-<p class="note">امکان ساخت، ویرایش و حذف کشورها در نسخه نهایی.</p>
-</div>
-</section>
-
-<section class="page" id="alliances">
-<h2>مدیریت اتحادها</h2>
-<div class="panel">
-<label>نام اتحاد</label>
-<input placeholder="نام اتحاد">
-<label>اعضای اتحاد</label>
-<textarea placeholder="نام کشورهای عضو"></textarea>
-<button class="action" onclick="alert('ثبت اتحاد پس از اتصال سرور فعال می‌شود')">ثبت اتحاد</button>
+<input id="countryName" placeholder="نام کشور">
+<label>آیدی پلیر صاحب کشور</label>
+<input id="treasuryPlayer" placeholder="Telegram ID" inputmode="numeric">
+<label>مبلغ</label>
+<input id="amount" type="number" min="1" placeholder="مبلغ موردنظر">
+<label>نوع عملیات</label>
+<select id="operation">
+<option value="add">افزایش موجودی (+)</option>
+<option value="subtract">کاهش موجودی (-)</option>
+</select>
+<button class="action" onclick="adjustTreasury()">ثبت عملیات آزمایشی</button>
+<div id="treasuryResult"></div>
 </div>
 </section>
 
 <section class="page" id="resolutions">
-<h2>مدیریت قطعنامه‌ها</h2>
+<h2>📜 مدیریت قطعنامه‌ها</h2>
 <div class="panel">
-<label>عنوان قطعنامه</label>
-<input placeholder="عنوان">
-<label>متن قطعنامه</label>
-<textarea rows="6" placeholder="متن قطعنامه را وارد کنید"></textarea>
-<button class="action" onclick="alert('انتشار پس از اتصال سرور فعال می‌شود')">انتشار قطعنامه</button>
+<label>انتخاب World</label>
+<select id="resolutionWorld">
+<option value="">انتخاب World</option>
+</select>
+<label>نام کشور</label>
+<input id="resolutionCountry" placeholder="نام کشور">
+<button class="action" onclick="showResolutions()">نمایش قطعنامه‌ها</button>
+<div id="resolutionList"></div>
 </div>
 </section>
 
-<section class="page" id="wars">
-<h2>مدیریت جنگ‌ها</h2>
+<section class="page" id="messages">
+<h2>📨 ارسال پیام</h2>
 <div class="panel">
-<label>کشور اول</label>
-<input placeholder="نام کشور">
-<label>کشور دوم</label>
-<input placeholder="نام کشور">
-<label>وضعیت جنگ</label>
-<select><option>در حال بررسی</option><option>فعال</option><option>پایان‌یافته</option></select>
-<button class="action" onclick="alert('ثبت جنگ پس از اتصال سرور فعال می‌شود')">ثبت وضعیت</button>
+<label>گیرنده پیام</label>
+<select id="messageTarget">
+<option value="all">تمام پلیرها</option>
+<option value="single">یک پلیر مشخص</option>
+</select>
+<div id="singlePlayerBox" class="hidden">
+<label>آیدی تلگرام پلیر</label>
+<input id="messagePlayer" placeholder="Telegram ID">
 </div>
-</section>
-
-<section class="page" id="announcements">
-<h2>اطلاعیه‌ها</h2>
-<div class="panel">
-<label>عنوان</label>
-<input placeholder="عنوان اطلاعیه">
 <label>متن پیام</label>
-<textarea rows="5" placeholder="متن اطلاعیه"></textarea>
-<button class="action" onclick="alert('ارسال پیام پس از اتصال ربات فعال می‌شود')">ارسال اطلاعیه</button>
-</div>
-</section>
-
-<section class="page" id="seasons">
-<h2>مدیریت فصل‌ها</h2>
-<div class="panel">
-<label>نام فصل</label>
-<input placeholder="مثلاً فصل اول">
-<label>تاریخ شروع</label>
-<input type="date">
-<label>تاریخ پایان</label>
-<input type="date">
-<button class="action" onclick="alert('ساخت فصل پس از اتصال سرور فعال می‌شود')">ساخت فصل</button>
-</div>
-</section>
-
-<section class="page" id="support">
-<h2>مرکز پشتیبانی</h2>
-<div class="panel">
-<p class="note">در این بخش درخواست‌ها و پیام‌های کاربران نمایش داده خواهند شد.</p>
-</div>
-</section>
-
-<section class="page" id="logs">
-<h2>گزارش فعالیت مدیران</h2>
-<div class="panel">
-<p class="note">تاریخچه ورود مدیران و تغییرات پس از اتصال سرور ثبت خواهد شد.</p>
-</div>
-</section>
-
-<section class="page" id="settings">
-<h2>تنظیمات سامانه</h2>
-<div class="panel">
-<label>نام سامانه</label>
-<input value="WORLD AT ARMS">
-<label>وضعیت ربات</label>
-<input value="متصل نشده" disabled>
-<p class="note">توکن ربات و اطلاعات محرمانه باید فقط در سرور ذخیره شوند، نه در GitHub.</p>
+<textarea id="messageText" placeholder="متن پیام خود را بنویس..."></textarea>
+<button class="action" onclick="sendMessage()">ثبت پیام آزمایشی</button>
+<div id="messageResult"></div>
 </div>
 </section>
 
@@ -215,41 +178,156 @@ main{padding:14px}
 </div>
 
 <script>
-function showPage(id,btn){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-btn.classList.add('active');
+const $ = id => document.getElementById(id);
+
+let admins = [];
+let worlds = [];
+let resolutions = [];
+let demoBalances = {};
+
+document.querySelectorAll("aside button").forEach(button=>{
+button.addEventListener("click",()=>{
+document.querySelectorAll("aside button").forEach(b=>b.classList.remove("active"));
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+button.classList.add("active");
+$(button.dataset.page).classList.add("active");
+});
+});
+
+function searchPlayer(){
+const id=$("playerId").value.trim();
+if(!/^\d+$/.test(id)){
+$("playerResult").innerHTML='<p class="result">آیدی معتبر وارد کن.</p>';
+return;
+}
+$("playerResult").innerHTML=`
+<div class="result">
+آیدی پلیر: ${id}<br>
+وضعیت: اطلاعات واقعی هنوز متصل نیست
+<br><br>
+<button class="action danger" onclick="alert('بن واقعی نیازمند اتصال به سرور است.')">بن پلیر</button>
+<button class="action secondary" onclick="alert('رفع بن واقعی نیازمند اتصال به سرور است.')">رفع بن</button>
+</div>`;
 }
 
 function addAdmin(){
-const id=document.getElementById('adminId').value.trim();
-const role=document.getElementById('adminRole').value;
-if(!id || !/^\d+$/.test(id)){
-alert('آیدی عددی معتبر وارد کنید');
+const id=$("newAdmin").value.trim();
+if(!/^\d+$/.test(id)){
+alert("آیدی عددی معتبر وارد کن.");
 return;
 }
-const list=document.getElementById('adminList');
-if(list.querySelector('.empty-row')) list.innerHTML='';
-if(list.textContent.includes('ادمینی ثبت نشده')) list.innerHTML='';
-const row=document.createElement('tr');
-const idCell=document.createElement('td');
-const roleCell=document.createElement('td');
-const actionCell=document.createElement('td');
-idCell.textContent=id;
-roleCell.textContent=role;
-const remove=document.createElement('button');
-remove.textContent='حذف';
-remove.className='action';
-remove.onclick=()=>row.remove();
-actionCell.appendChild(remove);
-row.append(idCell,roleCell,actionCell);
-list.appendChild(row);
-document.getElementById('adminId').value='';
-alert('به فهرست آزمایشی اضافه شد؛ هنوز دسترسی واقعی ندارد.');
+if(admins.includes(id)){
+alert("این آیدی قبلاً ثبت شده است.");
+return;
+}
+admins.push(id);
+$("newAdmin").value="";
+renderAdmins();
+}
+
+function renderAdmins(){
+$("adminCount").textContent=admins.length;
+$("adminList").innerHTML=admins.length?admins.map(id=>`
+<div class="result">
+آیدی: ${id}
+<button class="action danger" onclick="removeAdmin('${id}')">حذف</button>
+</div>`).join(""):"هنوز ادمینی ثبت نشده است.";
+}
+
+function removeAdmin(id){
+admins=admins.filter(x=>x!==id);
+renderAdmins();
+}
+
+function createWorld(){
+const name=$("worldName").value.trim();
+if(!name){alert("نام World را وارد کن.");return;}
+if(worlds.some(w=>w.name===name)){alert("این نام قبلاً ثبت شده است.");return;}
+worlds.push({name,description:$("worldDescription").value.trim()});
+$("worldName").value="";
+$("worldDescription").value="";
+renderWorlds();
+}
+
+function renderWorlds(){
+$("worldCount").textContent=worlds.length;
+$("worldList").innerHTML=worlds.length?worlds.map(w=>`
+<div class="result"><strong>${escapeHTML(w.name)}</strong><br>
+${escapeHTML(w.description||"بدون توضیحات")}</div>`).join(""):"هنوز World جدیدی ثبت نشده است.";
+["treasuryWorld","resolutionWorld"].forEach(id=>{
+const select=$(id);
+select.innerHTML='<option value="">انتخاب World</option>'+worlds.map(w=>
+`<option value="${escapeHTML(w.name)}">${escapeHTML(w.name)}</option>`).join("");
+});
+}
+
+function adjustTreasury(){
+const world=$("treasuryWorld").value;
+const country=$("countryName").value.trim();
+const player=$("treasuryPlayer").value.trim();
+const amount=Number($("amount").value);
+const operation=$("operation").value;
+if(!world||!country||!/^\d+$/.test(player)||!Number.isSafeInteger(amount)||amount<=0){
+alert("اطلاعات را کامل و معتبر وارد کن.");
+return;
+}
+const key=[world,country,player].join("|");
+const old=demoBalances[key]||0;
+if(operation==="subtract"&&old<amount){
+alert("موجودی آزمایشی برای این کسری کافی نیست.");
+return;
+}
+demoBalances[key]=operation==="add"?old+amount:old-amount;
+$("treasuryResult").innerHTML=`<div class="result">
+عملیات آزمایشی ثبت شد.<br>
+موجودی آزمایشی جدید: ${demoBalances[key].toLocaleString("fa-IR")}
+</div>`;
+}
+
+function showResolutions(){
+const world=$("resolutionWorld").value;
+const country=$("resolutionCountry").value.trim();
+if(!world||!country){alert("World و کشور را انتخاب کن.");return;}
+const found=resolutions.filter(r=>r.world===world&&r.country===country);
+$("resolutionList").innerHTML=found.length?found.map(r=>`
+<div class="result">
+${escapeHTML(r.text)}
+<button class="action danger" onclick="deleteResolution(${r.id})">حذف</button>
+</div>`).join(""):"قطعنامه آزمایشی برای این کشور ثبت نشده است.";
+}
+
+function deleteResolution(id){
+resolutions=resolutions.filter(r=>r.id!==id);
+showResolutions();
+}
+
+$("messageTarget").addEventListener("change",()=>{
+$("singlePlayerBox").classList.toggle("hidden",$("messageTarget").value!=="single");
+});
+
+function sendMessage(){
+const text=$("messageText").value.trim();
+const target=$("messageTarget").value;
+const player=$("messagePlayer").value.trim();
+if(!text){alert("متن پیام را بنویس.");return;}
+if(target==="single"&&!/^\d+$/.test(player)){
+alert("آیدی معتبر پلیر را وارد کن.");
+return;
+}
+$("messageResult").innerHTML=`<div class="result">
+پیام آزمایشی آماده شد.<br>
+گیرنده: ${target==="all"?"تمام پلیرها":"پلیر "+escapeHTML(player)}<br>
+متن: ${escapeHTML(text)}<br>
+<span class="small">برای ارسال واقعی باید ربات تلگرام به سرور متصل شود.</span>
+</div>`;
+}
+
+function escapeHTML(value){
+return String(value).replace(/[&<>"']/g,char=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+})[char]);
 }
 </script>
-
 </body>
   </html>
-
+  
