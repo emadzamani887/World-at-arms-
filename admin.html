@@ -2,562 +2,350 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>WORLD AT ARMS - Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORLD AT ARMS | Admin Panel</title>
 <style>
 :root{
- --bg:#f1f7ff;--panel:#fff;--blue:#8bbcf5;--dark:#35618f;
- --soft:#e1efff;--text:#263d55;--muted:#8193a8;
- --red:#e77b88;--green:#62b99a;--border:#e1eaf5;
+ --bg:#f1f6fc;--panel:#fff;--blue:#77a9e8;--blue2:#e4efff;
+ --dark:#263b57;--muted:#8191a8;--border:#e5edf6;
+ --green:#35ae82;--red:#e46e78;--orange:#e5a44c;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}
+body{margin:0;background:var(--bg);color:var(--dark);font-family:Tahoma,Arial,sans-serif}
 button,input,select,textarea{font:inherit}
-button{border:0;border-radius:10px;padding:10px 14px;background:var(--blue);color:#fff;cursor:pointer}
-button:hover{filter:brightness(.96)}
-button.danger{background:var(--red)}
-button.success{background:var(--green)}
-input,select,textarea{width:100%;padding:11px;border:1px solid var(--border);border-radius:10px;margin:6px 0 12px;background:#fff;color:var(--text)}
-textarea{min-height:85px}
-.layout{display:flex;min-height:100vh}
-aside{width:245px;background:#e4f0ff;padding:16px;flex-shrink:0}
-.logo{font-size:18px;font-weight:bold;color:var(--dark);padding:12px 4px}
-.nav{margin-top:15px}
-.nav button{display:block;width:100%;text-align:right;background:transparent;color:var(--text);margin:4px 0}
-.nav button.active,.nav button:hover{background:#c9e1ff;color:var(--dark)}
-main{flex:1;padding:22px;min-width:0}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-h1{font-size:22px;margin:0}
-h2{font-size:18px;margin-top:0}
-.muted{color:var(--muted);font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;margin-bottom:18px}
-.card,.section{background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:16px;margin-bottom:14px;box-shadow:0 3px 12px #4776a50a}
-.stat{font-size:27px;font-weight:bold;color:var(--dark);margin-top:8px}
+button{cursor:pointer;border:0}
+.app{display:flex;min-height:100vh}
+.sidebar{width:245px;background:#fff;border-left:1px solid var(--border);padding:22px 14px;position:fixed;right:0;top:0;bottom:0;overflow-y:auto;z-index:5}
+.brand{font-size:18px;font-weight:bold;color:#538bd0;padding:12px 10px 24px}
+.brand small{display:block;color:var(--muted);font-size:10px;margin-top:8px}
+.nav-title{font-size:11px;color:#a0aec0;padding:15px 12px 7px}
+.nav-btn{width:100%;text-align:right;background:transparent;color:#667991;padding:12px;border-radius:10px;margin:2px 0;font-size:13px}
+.nav-btn:hover,.nav-btn.active{background:var(--blue2);color:#3978c6}
+.main{margin-right:245px;width:calc(100% - 245px);padding:25px;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:25px;gap:12px}
+.topbar h2{margin:0;font-size:21px}
+.sub{font-size:12px;color:var(--muted);margin-top:7px}
+.profile{background:#fff;border:1px solid var(--border);padding:10px 14px;border-radius:12px;font-size:12px}
 .page{display:none}.page.active{display:block}
-.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-.table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:570px}
-th,td{padding:11px;border-bottom:1px solid var(--border);text-align:right;font-size:13px}
-th{background:#f5f9ff;color:var(--dark)}
-.actions{display:flex;gap:5px;flex-wrap:wrap}
-.actions button{font-size:12px;padding:7px 9px}
-.tag{background:var(--soft);color:var(--dark);padding:6px 10px;border-radius:20px;font-size:12px}
-.notice{background:#fff8df;border:1px solid #f1e4ae;border-radius:12px;padding:12px;font-size:12px;margin-bottom:16px}
-.empty{text-align:center;color:var(--muted);padding:20px}
-@media(max-width:750px){
- .layout{display:block}
- aside{width:100%;padding:10px}
- .nav{display:flex;overflow-x:auto;gap:5px;margin-top:8px}
- .nav button{white-space:nowrap;width:auto;margin:0}
- main{padding:13px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:20px}
+.stat,.card,.panel{background:#fff;border:1px solid var(--border);border-radius:15px;padding:18px}
+.stat small{color:var(--muted);font-size:12px}
+.stat strong{display:block;font-size:25px;margin-top:12px;color:#477fbe}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0}
+.section-head h3{margin:0;font-size:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.table-wrap{overflow-x:auto;background:#fff;border:1px solid var(--border);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:600px;font-size:12px}
+th,td{padding:14px 12px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+th{background:#f7faff;color:#71849d}
+tr:last-child td{border-bottom:0}
+.btn{padding:9px 13px;border-radius:9px;background:var(--blue2);color:#477fbe;font-size:12px}
+.btn:hover{filter:brightness(.97)}
+.btn.primary{background:#77a9e8;color:white}
+.btn.danger{background:#ffeaec;color:#d65e6a}
+.btn.success{background:#e2f6ed;color:#26956d}
+.btn.warning{background:#fff3df;color:#bd8435}
+.btn.small{padding:6px 9px;font-size:11px}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:7px;margin:12px 0}
+.field label{font-size:12px;color:#687b94}
+.field input,.field select,.field textarea{
+ width:100%;padding:11px;border:1px solid var(--border);border-radius:9px;
+ outline:none;background:#fbfdff;color:var(--dark)
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue)}
+.field textarea{min-height:85px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;font-size:10px;background:#edf3fb;color:#6583a8}
+.badge.green{background:#e4f7ed;color:#26956d}
+.badge.red{background:#ffeaec;color:#d65e6a}
+.badge.orange{background:#fff3df;color:#bd8435}
+.empty{text-align:center;padding:30px;color:var(--muted);font-size:13px}
+.modal-bg{display:none;position:fixed;inset:0;background:#1d2c4266;z-index:20;align-items:center;justify-content:center;padding:15px}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:17px;padding:22px;width:min(480px,100%);max-height:90vh;overflow:auto}
+.modal h3{margin-top:0}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.toast{position:fixed;bottom:22px;left:22px;background:#263b57;color:#fff;padding:12px 18px;border-radius:10px;display:none;z-index:50;font-size:12px}
+.menu-toggle{display:none}
+.search{max-width:260px}
+.log-item{padding:12px 0;border-bottom:1px solid var(--border);font-size:12px}
+.log-item:last-child{border:0}
+@media(max-width:900px){
+ .sidebar{width:210px}.main{margin-right:210px;width:calc(100% - 210px)}
+ .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:650px){
+ .sidebar{transform:translateX(100%);transition:.2s;width:245px}
+ .sidebar.open{transform:translateX(0)}
+ .main{margin:0;width:100%;padding:15px}
+ .menu-toggle{display:inline-block}
+ .topbar h2{font-size:17px}
+ .grid2,.form-grid{grid-template-columns:1fr}
+ .stats{gap:9px}
+ .stat{padding:13px}
+ .stat strong{font-size:21px}
 }
 </style>
 </head>
 <body>
-<div class="layout">
-<aside>
- <div class="logo">🌐 WORLD AT ARMS</div>
- <div class="muted">مرکز مدیریت بازی</div>
- <div class="nav" id="nav">
-  <button class="active" data-page="dashboard">📊 داشبورد</button>
-  <button data-page="players">👥 پلیرها</button>
-  <button data-page="admins">🛡️ ادمین‌ها</button>
-  <button data-page="worlds">🌍 ورلدها</button>
-  <button data-page="countries">🏳️ کشورها</button>
-  <button data-page="treasury">💰 خزانه</button>
-  <button data-page="wars">⚔️ جنگ‌ها</button>
-  <button data-page="alliances">🤝 اتحادها</button>
-  <button data-page="resolutions">📜 قطعنامه‌ها</button>
-  <button data-page="events">🎯 رویدادها</button>
-  <button data-page="messages">✉️ پیام‌ها</button>
-  <button data-page="logs">📋 گزارش عملیات</button>
-  <button data-page="settings">⚙️ تنظیمات</button>
-  <button data-page="backup">💾 پشتیبان‌گیری</button>
- </div>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+ <div class="brand">🌐 WORLD AT ARMS<small>ADMINISTRATION CENTER</small></div>
+ <div class="nav-title">نمای کلی</div>
+ <button class="nav-btn active" data-page="dashboard">▦ داشبورد</button>
+ <div class="nav-title">مدیریت بازی</div>
+ <button class="nav-btn" data-page="players">♟ بازیکنان</button>
+ <button class="nav-btn" data-page="admins">♛ مدیران و دسترسی‌ها</button>
+ <button class="nav-btn" data-page="worlds">🌍 جهان‌ها</button>
+ <button class="nav-btn" data-page="countries">🏳 کشورها</button>
+ <button class="nav-btn" data-page="treasury">💰 خزانه و تراکنش‌ها</button>
+ <button class="nav-btn" data-page="wars">⚔ جنگ‌ها</button>
+ <button class="nav-btn" data-page="alliances">🤝 اتحادها</button>
+ <button class="nav-btn" data-page="resolutions">📜 قطعنامه‌ها</button>
+ <button class="nav-btn" data-page="events">🎯 رویدادها</button>
+ <div class="nav-title">ارتباطات و سیستم</div>
+ <button class="nav-btn" data-page="messages">✉ پیام‌ها</button>
+ <button class="nav-btn" data-page="logs">📋 گزارش فعالیت</button>
+ <button class="nav-btn" data-page="settings">⚙ تنظیمات و پشتیبان</button>
 </aside>
-<main>
-<header>
- <div>
-  <h1 id="pageTitle">داشبورد مدیریت</h1>
-  <div class="muted">WORLD AT ARMS | پنل مدیریت</div>
- </div>
- <span class="tag">نسخه آزمایشی</span>
-</header>
-<div class="notice">توجه: این نسخه فعلاً محلی است. اطلاعات در مرورگر همین دستگاه ذخیره می‌شوند؛ بن واقعی، ارسال پیام تلگرام و مدیریت آنلاین تا زمان اتصال سرور فعال نیستند.</div>
 
-<section class="page active" id="dashboard">
- <div class="grid" id="stats"></div>
- <div class="section"><h2>آخرین فعالیت‌ها</h2><div id="recentLogs"></div></div>
-</section>
+<main class="main">
+ <header class="topbar">
+  <div>
+   <button class="btn menu-toggle" id="menuToggle">☰</button>
+   <h2 id="pageTitle">داشبورد</h2>
+   <div class="sub">مرکز مدیریت بازی WORLD AT ARMS</div>
+  </div>
+  <div class="profile">👤 مدیر سیستم</div>
+ </header>
 
-<section class="page" id="players">
- <div class="section">
-  <h2>مدیریت پلیرها</h2>
-  <button data-action="addPlayer">➕ افزودن پلیر</button>
-  <input id="playerSearch" placeholder="جست‌وجو با نام یا Telegram ID">
-  <div class="table-wrap"><table>
-   <thead><tr><th>نام</th><th>Telegram ID</th><th>کشور</th><th>وضعیت</th><th>عملیات</th></tr></thead>
-   <tbody id="playersTable"></tbody>
-  </table></div>
- </div>
-</section>
+ <section class="page active" id="dashboard">
+  <div class="stats" id="stats"></div>
+  <div class="section-head"><h3>آخرین فعالیت‌ها</h3></div>
+  <div class="panel" id="recentLogs"></div>
+  <div class="section-head"><h3>دسترسی سریع</h3></div>
+  <div class="grid2">
+   <div class="card"><h3>مدیریت بازیکنان</h3><p class="sub">مشاهده و مدیریت حساب‌های بازیکنان</p><button class="btn primary" data-go="players">ورود به بخش</button></div>
+   <div class="card"><h3>مدیریت جهان‌ها</h3><p class="sub">ساخت و مدیریت جهان‌های بازی</p><button class="btn primary" data-go="worlds">ورود به بخش</button></div>
+  </div>
+ </section>
 
-<section class="page" id="admins">
- <div class="section">
-  <h2>مدیریت ادمین‌ها</h2>
-  <button data-action="addAdmin">➕ افزودن ادمین</button>
-  <div class="table-wrap"><table>
-   <thead><tr><th>نام</th><th>Telegram ID</th><th>دسترسی</th><th>عملیات</th></tr></thead>
-   <tbody id="adminsTable"></tbody>
-  </table></div>
- </div>
-</section>
+ <section class="page" id="players">
+  <div class="section-head"><h3>فهرست بازیکنان</h3><button class="btn primary" data-action="addPlayer">＋ بازیکن جدید</button></div>
+  <div class="field"><input id="playerSearch" class="search" placeholder="جستجو نام یا آیدی تلگرام..."></div>
+  <div class="table-wrap"><table><thead><tr><th>نام</th><th>آیدی تلگرام</th><th>کشور</th><th>جهان</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="playersTable"></tbody></table></div>
+ </section>
 
-<section class="page" id="worlds">
- <div class="section">
-  <h2>مدیریت ورلدها</h2>
-  <button data-action="addWorld">➕ ساخت World</button>
-  <div class="table-wrap"><table>
-   <thead><tr><th>نام</th><th>توضیحات</th><th>وضعیت</th><th>عملیات</th></tr></thead>
-   <tbody id="worldsTable"></tbody>
-  </table></div>
- </div>
-</section>
+ <section class="page" id="admins">
+  <div class="section-head"><h3>مدیران پنل</h3><button class="btn primary" data-action="addAdmin">＋ افزودن مدیر</button></div>
+  <div class="table-wrap"><table><thead><tr><th>نام مدیر</th><th>آیدی تلگرام</th><th>سطح دسترسی</th><th>عملیات</th></tr></thead><tbody id="adminsTable"></tbody></table></div>
+  <p class="sub">این فهرست در نسخه آزمایشی فقط در همین مرورگر ذخیره می‌شود و احراز هویت واقعی ایجاد نمی‌کند.</p>
+ </section>
 
-<section class="page" id="countries">
- <div class="section">
-  <h2>مدیریت کشورها</h2>
-  <button data-action="addCountry">➕ افزودن کشور</button>
-  <div class="table-wrap"><table>
-   <thead><tr><th>کشور</th><th>World</th><th>حاکم</th><th>عملیات</th></tr></thead>
-   <tbody id="countriesTable"></tbody>
-  </table></div>
- </div>
-</section>
+ <section class="page" id="worlds">
+  <div class="section-head"><h3>جهان‌های بازی</h3><button class="btn primary" data-action="addWorld">＋ ساخت جهان</button></div>
+  <div class="grid2" id="worldsList"></div>
+ </section>
 
-<section class="page" id="treasury">
- <div class="section">
-  <h2>مدیریت خزانه</h2>
-  <div class="table-wrap"><table>
-   <thead><tr><th>کشور</th><th>موجودی</th><th>عملیات</th></tr></thead>
-   <tbody id="treasuryTable"></tbody>
-  </table></div>
- </div>
- <div class="section"><h2>تاریخچه تراکنش‌ها</h2><div id="transactions"></div></div>
-</section>
+ <section class="page" id="countries">
+  <div class="section-head"><h3>کشورهای بازی</h3><button class="btn primary" data-action="addCountry">＋ افزودن کشور</button></div>
+  <div class="table-wrap"><table><thead><tr><th>کشور</th><th>جهان</th><th>رهبر</th><th>بازیکن</th><th>عملیات</th></tr></thead><tbody id="countriesTable"></tbody></table></div>
+ </section>
 
-<section class="page" id="wars">
- <div class="section">
-  <h2>مدیریت جنگ‌ها</h2>
-  <button data-action="addWar">➕ ثبت جنگ</button>
-  <div id="warsList"></div>
- </div>
-</section>
+ <section class="page" id="treasury">
+  <div class="section-head"><h3>مدیریت خزانه</h3><button class="btn primary" data-action="addTransaction">＋ تراکنش جدید</button></div>
+  <div class="stats" id="treasuryStats"></div>
+  <div class="table-wrap"><table><thead><tr><th>بازیکن</th><th>مبلغ</th><th>نوع</th><th>توضیحات</th><th>تاریخ</th></tr></thead><tbody id="transactionsTable"></tbody></table></div>
+ </section>
 
-<section class="page" id="alliances">
- <div class="section">
-  <h2>مدیریت اتحادها</h2>
-  <button data-action="addAlliance">➕ ایجاد اتحاد</button>
-  <div id="alliancesList"></div>
- </div>
-</section>
+ <section class="page" id="wars">
+  <div class="section-head"><h3>مدیریت جنگ‌ها</h3><button class="btn primary" data-action="addWar">＋ ثبت جنگ</button></div>
+  <div class="grid2" id="warsList"></div>
+ </section>
 
-<section class="page" id="resolutions">
- <div class="section">
-  <h2>مدیریت قطعنامه‌ها</h2>
-  <button data-action="addResolution">➕ ثبت قطعنامه</button>
+ <section class="page" id="alliances">
+  <div class="section-head"><h3>اتحادها و پیمان‌ها</h3><button class="btn primary" data-action="addAlliance">＋ ایجاد اتحاد</button></div>
+  <div class="grid2" id="alliancesList"></div>
+ </section>
+
+ <section class="page" id="resolutions">
+  <div class="section-head"><h3>قطعنامه‌ها</h3><button class="btn primary" data-action="addResolution">＋ ثبت قطعنامه</button></div>
   <div id="resolutionsList"></div>
- </div>
-</section>
+ </section>
 
-<section class="page" id="events">
- <div class="section">
-  <h2>مدیریت رویدادها</h2>
-  <button data-action="addEvent">➕ ساخت رویداد</button>
-  <div id="eventsList"></div>
- </div>
-</section>
+ <section class="page" id="events">
+  <div class="section-head"><h3>رویدادها</h3><button class="btn primary" data-action="addEvent">＋ رویداد جدید</button></div>
+  <div class="grid2" id="eventsList"></div>
+ </section>
 
-<section class="page" id="messages">
- <div class="section">
-  <h2>ثبت پیام آزمایشی</h2>
-  <label>مخاطب</label>
-  <select id="messageTarget">
-   <option>همه پلیرها</option><option>یک World</option><option>یک کشور</option><option>یک پلیر</option>
-  </select>
-  <label>متن پیام</label>
-  <textarea id="messageText" placeholder="متن پیام..."></textarea>
-  <button data-action="sendMessage">ثبت پیام</button>
+ <section class="page" id="messages">
+  <div class="panel">
+   <h3>ارسال پیام آزمایشی</h3>
+   <div class="field"><label>گیرنده</label><select id="messageTarget"><option>همه بازیکنان</option><option>یک جهان</option><option>یک کشور</option><option>بازیکن مشخص</option></select></div>
+   <div class="field"><label>عنوان پیام</label><input id="messageTitle" placeholder="عنوان پیام"></div>
+   <div class="field"><label>متن پیام</label><textarea id="messageBody" placeholder="متن پیام..."></textarea></div>
+   <button class="btn primary" data-action="sendMessage">ثبت پیام</button>
+   <p class="sub">در این نسخه پیام فقط ثبت می‌شود و واقعاً به تلگرام ارسال نمی‌شود.</p>
+  </div>
+  <div class="section-head"><h3>پیام‌های ثبت‌شده</h3></div>
   <div id="messagesList"></div>
- </div>
-</section>
+ </section>
 
-<section class="page" id="logs">
- <div class="section">
-  <h2>گزارش عملیات</h2>
-  <button class="danger" data-action="clearLogs">پاک‌کردن گزارش‌ها</button>
-  <div id="logsList"></div>
- </div>
-</section>
+ <section class="page" id="logs">
+  <div class="section-head"><h3>گزارش فعالیت مدیران</h3><button class="btn danger" data-action="clearLogs">پاک‌کردن گزارش‌ها</button></div>
+  <div class="panel" id="logsList"></div>
+ </section>
 
-<section class="page" id="settings">
- <div class="section">
-  <h2>تنظیمات بازی</h2>
-  <label>نام بازی</label><input id="gameName">
-  <label>مدت فصل (روز)</label><input id="seasonLength" type="number">
-  <label>ثبت‌نام</label>
-  <select id="registration"><option value="open">فعال</option><option value="closed">غیرفعال</option></select>
-  <button data-action="saveSettings">ذخیره تنظیمات</button>
- </div>
-</section>
-
-<section class="page" id="backup">
- <div class="section">
-  <h2>پشتیبان‌گیری و بازیابی</h2>
-  <button data-action="exportBackup">⬇️ دریافت پشتیبان</button>
-  <label>انتخاب فایل JSON برای بازیابی</label>
-  <input type="file" id="backupFile" accept=".json">
-  <button data-action="importBackup">بازیابی اطلاعات</button>
-  <button class="danger" data-action="resetData">بازنشانی کامل اطلاعات</button>
- </div>
-</section>
+ <section class="page" id="settings">
+  <div class="panel">
+   <h3>تنظیمات بازی</h3>
+   <div class="field"><label>نام بازی</label><input id="gameName" value="WORLD AT ARMS"></div>
+   <div class="field"><label>مدت فصل (روز)</label><input id="seasonLength" type="number" min="1" value="31"></div>
+   <button class="btn primary" data-action="saveSettings">ذخیره تنظیمات</button>
+  </div>
+  <div class="panel" style="margin-top:15px">
+   <h3>پشتیبان‌گیری</h3>
+   <p class="sub">خروجی اطلاعات آزمایشی را دریافت یا از فایل JSON بازیابی کن.</p>
+   <div class="actions">
+    <button class="btn success" data-action="exportData">⬇ دریافت پشتیبان</button>
+    <button class="btn warning" data-action="importData">⬆ بازیابی پشتیبان</button>
+    <input type="file" id="importFile" accept=".json,application/json" hidden>
+   </div>
+  </div>
+  <div class="panel" style="margin-top:15px">
+   <h3>بازنشانی اطلاعات</h3>
+   <p class="sub">تمام داده‌های آزمایشی ذخیره‌شده در این مرورگر پاک می‌شوند.</p>
+   <button class="btn danger" data-action="resetData">بازنشانی کامل</button>
+  </div>
+ </section>
 </main>
 </div>
 
-<script>
-"use strict";
+<div class="modal-bg" id="modalBg">
+ <div class="modal">
+  <h3 id="modalTitle">فرم</h3>
+  <div id="modalBody"></div>
+  <div class="modal-actions">
+   <button class="btn" data-action="closeModal">انصراف</button>
+   <button class="btn primary" id="modalSave">ذخیره</button>
+  </div>
+ </div>
+</div>
+<div class="toast" id="toast"></div>
 
-const KEY="WAA_ADMIN_FINAL_V3";
-const initial={
+<script>
+(function(){
+"use strict";
+const KEY="WAA_ADMIN_WORKING_V1";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const today=()=>new Date().toLocaleString("fa-IR");
+const blank=()=>({
  players:[],admins:[],worlds:[],countries:[],transactions:[],
  wars:[],alliances:[],resolutions:[],events:[],messages:[],logs:[],
- settings:{gameName:"WORLD AT ARMS",seasonLength:31,registration:"open"}
-};
+ settings:{gameName:"WORLD AT ARMS",seasonLength:31}
+});
+let db;
+try{db=JSON.parse(localStorage.getItem(KEY))||blank()}catch(e){db=blank()}
+let saveCallback=null;
 
-function clone(x){return JSON.parse(JSON.stringify(x))}
-let db=clone(initial);
-
-try{
- const old=JSON.parse(localStorage.getItem(KEY)||"null");
- if(old&&typeof old==="object"){
-  db={...db,...old};
-  Object.keys(initial).forEach(k=>{if(db[k]===undefined)db[k]=clone(initial[k])});
- }
-}catch(e){db=clone(initial)}
-
-const $=id=>document.getElementById(id);
-const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({
- "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-}[c]));
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-const ask=(text,def="")=>prompt(text,def);
-const money=n=>Number(n||0).toLocaleString("fa-IR");
-
-function save(){
- try{localStorage.setItem(KEY,JSON.stringify(db))}
- catch(e){alert("ذخیره اطلاعات انجام نشد. حافظه مرورگر را بررسی کن.")}
-}
-function log(text){
- db.logs.unshift({text,time:new Date().toLocaleString("fa-IR")});
- save();
-}
-function worldName(id){return db.worlds.find(x=>x.id===id)?.name||"—"}
-function countryName(id){return db.countries.find(x=>x.id===id)?.name||"—"}
-function button(text,action,id,cls=""){
- return `<button class="${cls}" data-action="${action}" data-id="${id||""}">${text}</button>`;
-}
-function card(title,description=""){
- return `<div class="card"><b>${esc(title)}</b><p class="muted">${esc(description)}</p></div>`;
-}
-function row(fields,actions){
- return `<tr>${fields.map(x=>`<td>${esc(x)}</td>`).join("")}<td><div class="actions">${actions}</div></td></tr>`;
-}
-function empty(cols,text="موردی ثبت نشده است"){
- return `<tr><td colspan="${cols}" class="empty">${text}</td></tr>`;
-}
-
-/* منوی اصلی */
-function showPage(id){
- document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
- document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
- const active=document.querySelector(`#nav button[data-page="${id}"]`);
- $("pageTitle").textContent=active?active.textContent.trim():"مدیریت";
+function persist(){
+ localStorage.setItem(KEY,JSON.stringify(db));
  render();
 }
-$("nav").addEventListener("click",e=>{
- const b=e.target.closest("[data-page]");
- if(b)showPage(b.dataset.page);
-});
-
-/* افزودن و مدیریت پلیرها */
+function log(text){
+ db.logs.unshift({id:uid(),text,time:today()});
+ db.logs=db.logs.slice(0,200);
+}
+function toast(text){
+ const t=$("toast");t.textContent=text;t.style.display="block";
+ clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display="none",2600);
+}
+function page(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
+ document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ const active=document.querySelector('[data-page="'+id+'"]');
+ $("pageTitle").textContent=active?active.textContent.trim():"داشبورد";
+ $("sidebar").classList.remove("open");
+}
+function modal(title,fields,callback){
+ $("modalTitle").textContent=title;
+ $("modalBody").innerHTML=fields.map(f=>{
+  const value=esc(f.value||"");
+  if(f.type==="select"){
+   return `<div class="field"><label>${esc(f.label)}</label><select name="${esc(f.name)}">${(f.options||[]).map(o=>`<option value="${esc(o)}" ${o===f.value?"selected":""}>${esc(o)}</option>`).join("")}</select></div>`;
+  }
+  if(f.type==="textarea")return `<div class="field"><label>${esc(f.label)}</label><textarea name="${esc(f.name)}">${value}</textarea></div>`;
+  return `<div class="field"><label>${esc(f.label)}</label><input name="${esc(f.name)}" type="${f.type||"text"}" value="${value}" ${f.required?"required":""}></div>`;
+ }).join("");
+ saveCallback=callback;$("modalBg").classList.add("show");
+}
+function closeModal(){$("modalBg").classList.remove("show");saveCallback=null}
+function getForm(){
+ const data={};$("modalBody").querySelectorAll("[name]").forEach(x=>data[x.name]=x.value.trim());return data;
+}
+function ask(title,fields,callback){
+ modal(title,fields,data=>{
+  if(fields.some(f=>f.required&&!data[f.name])){toast("لطفاً فیلدهای ضروری را پر کن.");return}
+  callback(data);closeModal();
+ });
+}
+function btn(label,action,id,cls="small"){
+ return `<button class="btn ${cls}" data-action="${action}" data-id="${esc(id)}">${label}</button>`;
+}
+function card(title,desc,buttons=""){
+ return `<div class="card"><h3>${esc(title)}</h3><p class="sub">${esc(desc)}</p><div class="actions">${buttons}</div></div>`;
+}
+function empty(text){return `<tr><td colspan="6" class="empty">${text}</td></tr>`}
+function render(){
+ $("stats").innerHTML=[
+  ["بازیکنان",db.players.length],["جهان‌ها",db.worlds.length],
+  ["کشورها",db.countries.length],["جنگ‌های فعال",db.wars.filter(x=>x.status==="فعال").length]
+ ].map(x=>`<div class="stat"><small>${x[0]}</small><strong>${x[1]}</strong></div>`).join("");
+ $("recentLogs").innerHTML=db.logs.slice(0,5).map(x=>`<div class="log-item">${esc(x.text)} <span class="sub">${esc(x.time)}</span></div>`).join("")||'<div class="empty">هنوز فعالیتی ثبت نشده است.</div>';
+ $("playersTable").innerHTML=db.players.map(p=>`<tr>
+ <td>${esc(p.name)}</td><td>${esc(p.telegram)}</td><td>${esc(p.country||"-")}</td><td>${esc(p.world||"-")}</td>
+ <td><span class="badge ${p.banned?"red":"green"}">${p.banned?"مسدود":"فعال"}</span></td>
+ <td><div class="actions">${btn("ویرایش","editPlayer",p.id)}${btn(p.banned?"رفع مسدودی":"مسدود","toggleBan",p.id,p.banned?"success":"danger")}${btn("حذف","deletePlayer",p.id,"danger small")}</div></td>
+ </tr>`).join("")||empty("بازیکنی ثبت نشده است.");
+ $("adminsTable").innerHTML=db.admins.map(a=>`<tr><td>${esc(a.name)}</td><td>${esc(a.telegram)}</td><td>${esc(a.role)}</td><td>${btn("حذف","deleteAdmin",a.id,"danger small")}</td></tr>`).join("")||empty("مدیری ثبت نشده است.");
+ $("worldsList").innerHTML=db.worlds.map(w=>card(w.name,"وضعیت: "+w.status+" | کشورها: "+db.countries.filter(c=>c.world===w.name).length,btn("ویرایش","editWorld",w.id)+btn("حذف","deleteWorld",w.id,"danger small"))).join("")||'<div class="empty">جهانی وجود ندارد.</div>';
+ $("countriesTable").innerHTML=db.countries.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.world)}</td><td>${esc(c.ruler||"-")}</td><td>${esc(c.player||"-")}</td><td><div class="actions">${btn("ویرایش","editCountry",c.id)}${btn("حذف","deleteCountry",c.id,"danger small")}</div></td></tr>`).join("")||empty("کشوری ثبت نشده است.");
+ const total=db.transactions.reduce((s,t)=>s+(Number(t.amount)||0)*(t.type==="افزایش"?1:-1),0);
+ $("treasuryStats").innerHTML=`<div class="stat"><small>مجموع خالص تراکنش‌ها</small><strong>${total.toLocaleString("fa-IR")}</strong></div><div class="stat"><small>تعداد تراکنش‌ها</small><strong>${db.transactions.length}</strong></div>`;
+ $("transactionsTable").innerHTML=db.transactions.map(t=>`<tr><td>${esc(t.player)}</td><td>${Number(t.amount).toLocaleString("fa-IR")}</td><td>${esc(t.type)}</td><td>${esc(t.note)}</td><td>${esc(t.date)}</td></tr>`).join("")||empty("تراکنشی وجود ندارد.");
+ $("warsList").innerHTML=db.wars.map(w=>card(w.a+" ⚔ "+w.b,"وضعیت: "+w.status,btn("پایان جنگ","closeWar",w.id,"success small")+btn("حذف","deleteWar",w.id,"danger small"))).join("")||'<div class="empty">جنگی ثبت نشده است.</div>';
+ $("alliancesList").innerHTML=db.alliances.map(a=>card(a.name,"اعضا: "+a.members,btn("حذف","deleteAlliance",a.id,"danger small"))).join("")||'<div class="empty">اتحادی وجود ندارد.</div>';
+ $("resolutionsList").innerHTML=db.resolutions.map(r=>`<div class="card" style="margin-bottom:12px"><h3>${esc(r.title)}</h3><p>${esc(r.text)}</p><span class="badge">${esc(r.status)}</span><div class="actions">${btn("حذف","deleteResolution",r.id,"danger small")}</div></div>`).join("")||'<div class="empty">قطعنامه‌ای ثبت نشده است.</div>';
+ $("eventsList").innerHTML=db.events.map(e=>card(e.title,e.date+" | "+e.description,btn("حذف","deleteEvent",e.id,"danger small"))).join("")||'<div class="empty">رویدادی وجود ندارد.</div>';
+ $("messagesList").innerHTML=db.messages.map(m=>`<div class="card" style="margin-bottom:10px"><b>${esc(m.title)}</b><p>${esc(m.body)}</p><span class="sub">${esc(m.target)} | ${esc(m.date)}</span></div>`).join("")||'<div class="empty">پیامی ثبت نشده است.</div>';
+ $("logsList").innerHTML=db.logs.map(l=>`<div class="log-item">${esc(l.text)} <span class="sub">${esc(l.time)}</span></div>`).join("")||'<div class="empty">گزارشی وجود ندارد.</div>';
+ $("gameName").value=db.settings.gameName||"WORLD AT ARMS";
+ $("seasonLength").value=db.settings.seasonLength||31;
+}
+function removeItem(type,id,label){
+ if(!confirm("از حذف این مورد مطمئنی؟"))return;
+ db[type]=db[type].filter(x=>x.id!==id);log(label+" حذف شد.");persist();toast("حذف شد.");
+}
+function playerFields(p={}){
+ return [
+  {name:"name",label:"نام بازیکن",value:p.name||"",required:true},
+  {name:"telegram",label:"آیدی تلگرام",value:p.telegram||"",required:true},
+  {name:"country",label:"کشور",value:p.country||""},
+  {name:"world",label:"جهان",value:p.world||""}
+ ];
+}
 function addPlayer(){
- const name=ask("نام پلیر:");if(!name)return;
- const telegramId=ask("Telegram ID:");if(!telegramId)return;
- db.players.push({id:uid(),name,telegramId,countryId:"",banned:false});
- log("افزودن پلیر: "+name);render();
+ ask("افزودن بازیکن",playerFields(),d=>{
+  db.players.push({id:uid(),...d,banned:false});log("بازیکن "+d.name+" اضافه شد.");persist();toast("بازیکن اضافه شد.");
+ });
 }
 function editPlayer(id){
  const p=db.players.find(x=>x.id===id);if(!p)return;
- p.name=ask("نام پلیر:",p.name)||p.name;
- p.telegramId=ask("Telegram ID:",p.telegramId)||p.telegramId;
- log("ویرایش پلیر: "+p.name);render();
+ ask("ویرایش بازیکن",playerFields(p),d=>{Object.assign(p,d);log("اطلاعات بازیکن "+p.name+" ویرایش شد.");persist();});
 }
-function toggleBan(id){
- const p=db.players.find(x=>x.id===id);if(!p)return;
- p.banned=!p.banned;log((p.banned?"بن ":"رفع بن ")+p.name);render();
-}
-function deletePlayer(id){
- const p=db.players.find(x=>x.id===id);
- if(!p||!confirm("پلیر "+p.name+" حذف شود؟"))return;
- db.players=db.players.filter(x=>x.id!==id);
- log("حذف پلیر: "+p.name);render();
-}
-function renderPlayers(){
- const q=($("playerSearch")?.value||"").toLowerCase();
- const list=db.players.filter(p=>(p.name+" "+p.telegramId).toLowerCase().includes(q));
- $("playersTable").innerHTML=list.map(p=>row(
- [p.name,p.telegramId,countryName(p.countryId),p.banned?"مسدود":"فعال"],
- button("ویرایش","editPlayer",p.id)+
- button(p.banned?"رفع بن":"بن","toggleBan",p.id,p.banned?"success":"danger")+
- button("حذف","deletePlayer",p.id,"danger")
- )).join("")||empty(5,"پلیر پیدا نشد");
-}
-
-/* ادمین‌ها */
 function addAdmin(){
- const name=ask("نام ادمین:");if(!name)return;
- const telegramId=ask("Telegram ID:");if(!telegramId)return;
- const role=ask("سطح دسترسی: مدیر کل / مدیر / ناظر","مدیر")||"مدیر";
- db.admins.push({id:uid(),name,telegramId,role});
- log("افزودن ادمین: "+name);render();
-}
-function deleteAdmin(id){
- const a=db.admins.find(x=>x.id===id);
- if(!a||!confirm("ادمین حذف شود؟"))return;
- db.admins=db.admins.filter(x=>x.id!==id);
- log("حذف ادمین: "+a.name);render();
-}
-
-/* Worldها */
-function addWorld(){
- const name=ask("نام World:");if(!name)return;
- const description=ask("توضیحات:")||"";
- db.worlds.push({id:uid(),name,description,active:true});
- log("ساخت World: "+name);render();
-}
-function toggleWorld(id){
- const w=db.worlds.find(x=>x.id===id);if(!w)return;
- w.active=!w.active;log("تغییر وضعیت World: "+w.name);render();
-}
-function deleteWorld(id){
- const w=db.worlds.find(x=>x.id===id);
- if(!w||!confirm("World حذف شود؟"))return;
- db.worlds=db.worlds.filter(x=>x.id!==id);
- log("حذف World: "+w.name);render();
-}
-
-/* کشورها */
-function addCountry(){
- const name=ask("نام کشور:");if(!name)return;
- if(!db.worlds.length)return alert("ابتدا یک World بساز.");
- const choices=db.worlds.map((w,i)=>(i+1)+". "+w.name).join("\n");
- const index=Number(ask("شماره World:\n"+choices,"1"))-1;
- const world=db.worlds[index];if(!world)return;
- const ruler=ask("نام حاکم:")||"بدون حاکم";
- db.countries.push({id:uid(),name,worldId:world.id,ruler,treasury:0});
- log("افزودن کشور: "+name);render();
-}
-function editCountry(id){
- const c=db.countries.find(x=>x.id===id);if(!c)return;
- c.name=ask("نام کشور:",c.name)||c.name;
- c.ruler=ask("نام حاکم:",c.ruler)||c.ruler;
- log("ویرایش کشور: "+c.name);render();
-}
-function deleteCountry(id){
- const c=db.countries.find(x=>x.id===id);
- if(!c||!confirm("کشور حذف شود؟"))return;
- db.countries=db.countries.filter(x=>x.id!==id);
- log("حذف کشور: "+c.name);render();
-}
-function changeMoney(id){
- const c=db.countries.find(x=>x.id===id);if(!c)return;
- const amount=Number(ask("مقدار تغییر موجودی (مثبت یا منفی):","100"));
- if(!Number.isFinite(amount)||amount===0)return alert("عدد معتبر وارد کن.");
- const reason=ask("دلیل تغییر موجودی:")||"بدون توضیح";
- c.treasury=Number(c.treasury||0)+amount;
- db.transactions.unshift({country:c.name,amount,reason,time:new Date().toLocaleString("fa-IR")});
- log("تغییر خزانه "+c.name+": "+amount);render();
-}
-
-/* جنگ‌ها */
-function addWar(){
- const a=ask("کشور آغازگر جنگ:");if(!a)return;
- const b=ask("کشور مقابل:");if(!b)return;
- db.wars.push({id:uid(),a,b,status:"فعال"});
- log("ثبت جنگ: "+a+" - "+b);render();
-}
-function closeWar(id){
- const w=db.wars.find(x=>x.id===id);if(!w)return;
- w.status="پایان‌یافته";log("پایان جنگ: "+w.a+" - "+w.b);render();
-}
-
-/* اتحادها */
-function addAlliance(){
- const name=ask("نام اتحاد:");if(!name)return;
- const members=ask("نام اعضا را با کاما جدا کن:")||"";
- db.alliances.push({id:uid(),name,members});
- log("ایجاد اتحاد: "+name);render();
-}
-function deleteAlliance(id){
- db.alliances=db.alliances.filter(x=>x.id!==id);
- log("حذف اتحاد");render();
-}
-
-/* قطعنامه‌ها */
-function addResolution(){
- const title=ask("عنوان قطعنامه:");if(!title)return;
- const text=ask("متن قطعنامه:")||"";
- db.resolutions.push({id:uid(),title,text,status:"ثبت‌شده"});
- log("ثبت قطعنامه: "+title);render();
-}
-function deleteResolution(id){
- db.resolutions=db.resolutions.filter(x=>x.id!==id);
- log("حذف قطعنامه");render();
-}
-
-/* رویدادها */
-function addEvent(){
- const title=ask("عنوان رویداد:");if(!title)return;
- const description=ask("توضیحات:")||"";
- db.events.push({id:uid(),title,description});
- log("ساخت رویداد: "+title);render();
-}
-function deleteEvent(id){
- db.events=db.events.filter(x=>x.id!==id);
- log("حذف رویداد");render();
-}
-
-/* پیام‌ها */
-function sendMessage(){
- const text=$("messageText").value.trim();
- if(!text)return alert("متن پیام را وارد کن.");
- const target=$("messageTarget").value;
- db.messages.unshift({id:uid(),target,text,time:new Date().toLocaleString("fa-IR")});
- $("messageText").value="";
- log("ثبت پیام آزمایشی برای "+target);render();
-}
-
-/* گزارش و تنظیمات */
-function clearLogs(){
- if(!confirm("گزارش‌ها پاک شوند؟"))return;
- db.logs=[];save();render();
-}
-function saveSettings(){
- db.settings.gameName=$("gameName").value;
- db.settings.seasonLength=Number($("seasonLength").value)||31;
- db.settings.registration=$("registration").value;
- log("ذخیره تنظیمات");render();
-}
-
-/* پشتیبان‌گیری */
-function exportBackup(){
- const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;a.download="world-at-arms-backup.json";a.click();
- URL.revokeObjectURL(url);
-}
-function importBackup(){
- const file=$("backupFile").files[0];
- if(!file)return alert("ابتدا فایل را انتخاب کن.");
- const reader=new FileReader();
- reader.onload=()=>{
-  try{
-   const data=JSON.parse(reader.result);
-   if(!data||!Array.isArray(data.players)||!Array.isArray(data.worlds))throw Error();
-   db={...clone(initial),...data};
-   save();render();alert("بازیابی انجام شد.");
-  }catch(e){alert("فایل پشتیبان معتبر نیست.");}
- };
- reader.readAsText(file);
-}
-function resetData(){
- if(!confirm("تمام اطلاعات این پنل پاک شود؟"))return;
- db=clone(initial);save();render();alert("اطلاعات بازنشانی شد.");
-}
-
-/* اتصال دکمه‌ها */
-const actions={
- addPlayer,editPlayer,toggleBan,deletePlayer,
- addAdmin,deleteAdmin,
- addWorld,toggleWorld,deleteWorld,
- addCountry,editCountry,deleteCountry,changeMoney,
- addWar,closeWar,addAlliance,deleteAlliance,
- addResolution,deleteResolution,addEvent,deleteEvent,
- sendMessage,clearLogs,saveSettings,
- exportBackup,importBackup,resetData
-};
-document.addEventListener("click",e=>{
- const b=e.target.closest("[data-action]");
- if(!b)return;
- const fn=actions[b.dataset.action];
- if(typeof fn==="function")fn(b.dataset.id);
-});
-$("playerSearch").addEventListener("input",renderPlayers);
-
-/* نمایش اطلاعات */
-function render(){
- save();
-
- $("stats").innerHTML=[
- ["پلیرها",db.players.length],
- ["ادمین‌ها",db.admins.length],
- ["Worldها",db.worlds.length],
- ["کشورها",db.countries.length],
- ["جنگ‌های فعال",db.wars.filter(x=>x.status==="فعال").length],
- ["قطعنامه‌ها",db.resolutions.length]
- ].map(x=>`<div class="card"><div class="muted">${x[0]}</div><div class="stat">${money(x[1])}</div></div>`).join("");
-
- $("recentLogs").innerHTML=db.logs.slice(0,6).map(x=>card(x.text,x.time)).join("")||'<div class="empty">فعالیتی ثبت نشده است.</div>';
-
- renderPlayers();
-
- $("adminsTable").innerHTML=db.admins.map(a=>row(
- [a.name,a.telegramId,a.role],
- button("حذف","deleteAdmin",a.id,"danger")
- )).join("")||empty(4);
-
- $("worldsTable").innerHTML=db.worlds.map(w=>row(
- [w.name,w.description,w.active?"فعال":"غیرفعال"],
- button(w.active?"غیرفعال‌سازی":"فعال‌سازی","toggleWorld",w.id)+
- button("حذف","deleteWorld",w.id,"danger")
- )).join("")||empty(4);
-
- $("countriesTable").innerHTML=db.countries.map(c=>row(
- [c.name,worldName(c.worldId),c.ruler],
- button("ویرایش","editCountry",c.id)+
- button("حذف","deleteCountry",c.id,"danger")
- )).join("")||empty(4);
-
- $("treasuryTable").innerHTML=db.countries.map(c=>row(
- [c.name,money(c.treasury)],
- button("تغییر موجودی","changeMoney",c.id)
- )).join("")||empty(3);
-
- $("transactions").innerHTML=db.transactions.slice(0,30).map(t=>card(
- t.country+" | "+(t.amount>0?"+":"")+money(t.amount),
- t.reason+" | "+t.time
- )).join("")||'<div class="empty">تراکنشی ثبت نشده است.</div>';
-
- $("warsList").innerHTML=db.wars.map(w=>card(
- w.a+" ⚔️ "+w.b,
- w.status+" "+(w.status==="فعال"?button("پایان جنگ","closeWar",w.id):"")
- )).join("")||'<div class="empty">جنگی ثبت نشده است.</div>';
-
- $("alliancesList").innerHTML=db.alliances.map(x=>card(
- x.name,x.members+" "+button("حذف","deleteAlliance",x.id,"danger")
- )).join("")||'<div class="empty">اتحادی ثبت نشده است.</div>';
-
- $("resolutionsList").innerHTML=db.resolutions.map(x=>card(
- x.title,x.text+" "+button("حذف","deleteResolution",x.id,"danger")
- )).join("")||'<div class="empty">قطع
+ ask("افزودن مدیر",[
+  {
