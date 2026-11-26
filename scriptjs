@@ -1,1 +1,26 @@
 
+const tg = window.Telegram.WebApp;
+
+tg.ready();
+tg.expand();
+
+// اطلاعات کاربر تلگرام
+const user = tg.initDataUnsafe?.user;
+
+console.log("WORLD AT ARMS started");
+
+if (user) {
+    console.log("User:", user.first_name);
+}
+
+// پیام خوش‌آمدگویی
+function welcomeUser() {
+    if (user) {
+        tg.showAlert("خوش آمدی " + user.first_name);
+    } else {
+        alert("به WORLD AT ARMS خوش آمدی!");
+    }
+}
+
+// اجرای اولیه
+welcomeUser();
