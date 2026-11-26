@@ -4,23 +4,70 @@ const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();
 
-// اطلاعات کاربر تلگرام
 const user = tg.initDataUnsafe?.user;
 
-console.log("WORLD AT ARMS started");
+const main = document.querySelector("main");
 
-if (user) {
-    console.log("User:", user.first_name);
-}
-
-// پیام خوش‌آمدگویی
-function welcomeUser() {
-    if (user) {
-        tg.showAlert("خوش آمدی " + user.first_name);
-    } else {
-        alert("به WORLD AT ARMS خوش آمدی!");
+const pages = {
+    "🌐 کشورها": {
+        title: "کشورهای جهان",
+        text: "فهرست ۳۲ کشور بازی در این بخش قرار می‌گیرد."
+    },
+    "📜 قطعنامه‌ها": {
+        title: "قطعنامه‌ها",
+        text: "در این بخش قطعنامه‌های ثبت‌شده نمایش داده می‌شوند."
+    },
+    "🤝 اتحادها": {
+        title: "اتحادها",
+        text: "اینجا می‌توانی اتحادهای کشورها را مشاهده کنی."
+    },
+    "⚔️ مدیریت جنگ": {
+        title: "مدیریت جنگ",
+        text: "وضعیت جنگ‌های فعال بازی در این بخش نمایش داده می‌شود."
+    },
+    "👤 پروفایل": {
+        title: "پروفایل فرمانده",
+        text: user
+            ? "نام فرمانده: " + user.first_name
+            : "برای نمایش اطلاعات کامل وارد تلگرام شو."
     }
+};
+
+function showHome() {
+    main.innerHTML = `
+        <section class="welcome">
+            <h2>به دنیای جنگ خوش آمدید</h2>
+            <p>سیستم مدیریت و فرماندهی</p>
+        </section>
+        <section class="menu">
+            ${Object.keys(pages).map(name =>
+                `<button data-page="${name}">${name}</button>`
+            ).join("")}
+        </section>
+    `;
 }
 
-// اجرای اولیه
-welcomeUser();
+function showPage(name) {
+    const page = pages[name];
+    if (!page) return;
+
+    main.innerHTML = `
+        <section class="welcome">
+            <h2>${page.title}</h2>
+            <p>${page.text}</p>
+            <button id="backButton">بازگشت به منوی اصلی</button>
+        </section>
+    `;
+
+    document.getElementById("backButton")
+        .addEventListener("click", showHome);
+}
+
+main.addEventListener("click", event => {
+    const button = event.target.closest("[data-page]");
+    if (button) showPage(button.dataset.page);
+});
+
+showHome();
+
+console.log("WORLD AT ARMS started");
