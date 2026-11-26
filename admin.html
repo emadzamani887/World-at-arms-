@@ -1,56 +1,55 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WORLD AT ARMS | Admin Panel</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WORLD AT ARMS - Admin</title>
 <style>
 :root{
- --bg:#f1f7ff;--panel:#fff;--blue:#75aef5;--dark:#315d91;
- --soft:#e1efff;--text:#243b53;--muted:#718096;
- --red:#e77b88;--green:#64b99b;--border:#e1eaf5;
+ --bg:#f1f7ff;--panel:#fff;--blue:#8bbcf5;--dark:#35618f;
+ --soft:#e1efff;--text:#263d55;--muted:#8193a8;
+ --red:#e77b88;--green:#62b99a;--border:#e1eaf5;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif}
 button,input,select,textarea{font:inherit}
-button{border:0;border-radius:10px;padding:10px 14px;background:var(--blue);color:white;cursor:pointer}
+button{border:0;border-radius:10px;padding:10px 14px;background:var(--blue);color:#fff;cursor:pointer}
 button:hover{filter:brightness(.96)}
 button.danger{background:var(--red)}
 button.success{background:var(--green)}
-input,select,textarea{width:100%;padding:11px;border:1px solid var(--border);border-radius:10px;background:white;color:var(--text);margin:6px 0 12px}
-textarea{min-height:80px;resize:vertical}
+input,select,textarea{width:100%;padding:11px;border:1px solid var(--border);border-radius:10px;margin:6px 0 12px;background:#fff;color:var(--text)}
+textarea{min-height:85px}
 .layout{display:flex;min-height:100vh}
-aside{width:245px;background:#e4f0ff;padding:18px;flex-shrink:0}
-.logo{font-size:18px;font-weight:bold;color:var(--dark);padding:12px 4px 22px}
+aside{width:245px;background:#e4f0ff;padding:16px;flex-shrink:0}
+.logo{font-size:18px;font-weight:bold;color:var(--dark);padding:12px 4px}
+.nav{margin-top:15px}
 .nav button{display:block;width:100%;text-align:right;background:transparent;color:var(--text);margin:4px 0}
 .nav button.active,.nav button:hover{background:#c9e1ff;color:var(--dark)}
-main{flex:1;padding:24px;min-width:0}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
-h1{font-size:23px;margin:0}
+main{flex:1;padding:22px;min-width:0}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+h1{font-size:22px;margin:0}
 h2{font-size:18px;margin-top:0}
 .muted{color:var(--muted);font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
-.card,.section{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 3px 12px #4776a50a}
-.stat{font-size:27px;font-weight:bold;color:var(--dark);margin-top:9px}
-.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-table{width:100%;border-collapse:collapse;min-width:600px}
-th,td{padding:12px;border-bottom:1px solid var(--border);text-align:right;font-size:13px}
-th{color:var(--dark);background:#f5f9ff}
-.table-wrap{overflow:auto}
-.actions{display:flex;gap:6px;flex-wrap:wrap}
-.actions button{padding:7px 10px;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;margin-bottom:18px}
+.card,.section{background:var(--panel);border:1px solid var(--border);border-radius:15px;padding:16px;margin-bottom:14px;box-shadow:0 3px 12px #4776a50a}
+.stat{font-size:27px;font-weight:bold;color:var(--dark);margin-top:8px}
 .page{display:none}.page.active{display:block}
-.tag{background:var(--soft);color:var(--dark);padding:5px 9px;border-radius:20px;font-size:12px}
-.notice{background:#fff8df;border:1px solid #f1e4ae;border-radius:12px;padding:12px;font-size:13px;margin-bottom:16px}
-.empty{padding:25px;text-align:center;color:var(--muted)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:570px}
+th,td{padding:11px;border-bottom:1px solid var(--border);text-align:right;font-size:13px}
+th{background:#f5f9ff;color:var(--dark)}
+.actions{display:flex;gap:5px;flex-wrap:wrap}
+.actions button{font-size:12px;padding:7px 9px}
+.tag{background:var(--soft);color:var(--dark);padding:6px 10px;border-radius:20px;font-size:12px}
+.notice{background:#fff8df;border:1px solid #f1e4ae;border-radius:12px;padding:12px;font-size:12px;margin-bottom:16px}
+.empty{text-align:center;color:var(--muted);padding:20px}
 @media(max-width:750px){
  .layout{display:block}
  aside{width:100%;padding:10px}
- .logo{padding:8px}
- .nav{display:flex;overflow:auto;gap:5px}
- .nav button{white-space:nowrap;width:auto;margin:0;padding:9px}
- main{padding:14px}
+ .nav{display:flex;overflow-x:auto;gap:5px;margin-top:8px}
+ .nav button{white-space:nowrap;width:auto;margin:0}
+ main{padding:13px}
 }
 </style>
 </head>
@@ -76,31 +75,26 @@ th{color:var(--dark);background:#f5f9ff}
   <button data-page="backup">💾 پشتیبان‌گیری</button>
  </div>
 </aside>
-
 <main>
 <header>
  <div>
   <h1 id="pageTitle">داشبورد مدیریت</h1>
-  <div class="muted">WORLD AT ARMS — نسخه مدیریتی آزمایشی</div>
+  <div class="muted">WORLD AT ARMS | پنل مدیریت</div>
  </div>
- <span class="tag">● پنل محلی</span>
+ <span class="tag">نسخه آزمایشی</span>
 </header>
-
-<div class="notice">این پنل در حال حاضر آزمایشی است. اطلاعات فقط در مرورگر همین دستگاه ذخیره می‌شوند و هنوز عملیات واقعی تلگرام یا سرور را اجرا نمی‌کنند.</div>
+<div class="notice">توجه: این نسخه فعلاً محلی است. اطلاعات در مرورگر همین دستگاه ذخیره می‌شوند؛ بن واقعی، ارسال پیام تلگرام و مدیریت آنلاین تا زمان اتصال سرور فعال نیستند.</div>
 
 <section class="page active" id="dashboard">
  <div class="grid" id="stats"></div>
- <div class="section">
-  <h2>آخرین فعالیت‌ها</h2>
-  <div id="recentLogs"></div>
- </div>
+ <div class="section"><h2>آخرین فعالیت‌ها</h2><div id="recentLogs"></div></div>
 </section>
 
 <section class="page" id="players">
  <div class="section">
   <h2>مدیریت پلیرها</h2>
-  <button onclick="addPlayer()">➕ افزودن پلیر</button>
-  <input id="playerSearch" placeholder="جست‌وجو با نام یا Telegram ID..." oninput="renderPlayers()">
+  <button data-action="addPlayer">➕ افزودن پلیر</button>
+  <input id="playerSearch" placeholder="جست‌وجو با نام یا Telegram ID">
   <div class="table-wrap"><table>
    <thead><tr><th>نام</th><th>Telegram ID</th><th>کشور</th><th>وضعیت</th><th>عملیات</th></tr></thead>
    <tbody id="playersTable"></tbody>
@@ -111,9 +105,9 @@ th{color:var(--dark);background:#f5f9ff}
 <section class="page" id="admins">
  <div class="section">
   <h2>مدیریت ادمین‌ها</h2>
-  <button onclick="addAdmin()">➕ افزودن ادمین</button>
+  <button data-action="addAdmin">➕ افزودن ادمین</button>
   <div class="table-wrap"><table>
-   <thead><tr><th>نام</th><th>Telegram ID</th><th>سطح دسترسی</th><th>عملیات</th></tr></thead>
+   <thead><tr><th>نام</th><th>Telegram ID</th><th>دسترسی</th><th>عملیات</th></tr></thead>
    <tbody id="adminsTable"></tbody>
   </table></div>
  </div>
@@ -122,7 +116,7 @@ th{color:var(--dark);background:#f5f9ff}
 <section class="page" id="worlds">
  <div class="section">
   <h2>مدیریت ورلدها</h2>
-  <button onclick="addWorld()">➕ ساخت World</button>
+  <button data-action="addWorld">➕ ساخت World</button>
   <div class="table-wrap"><table>
    <thead><tr><th>نام</th><th>توضیحات</th><th>وضعیت</th><th>عملیات</th></tr></thead>
    <tbody id="worldsTable"></tbody>
@@ -133,7 +127,7 @@ th{color:var(--dark);background:#f5f9ff}
 <section class="page" id="countries">
  <div class="section">
   <h2>مدیریت کشورها</h2>
-  <button onclick="addCountry()">➕ افزودن کشور</button>
+  <button data-action="addCountry">➕ افزودن کشور</button>
   <div class="table-wrap"><table>
    <thead><tr><th>کشور</th><th>World</th><th>حاکم</th><th>عملیات</th></tr></thead>
    <tbody id="countriesTable"></tbody>
@@ -143,22 +137,19 @@ th{color:var(--dark);background:#f5f9ff}
 
 <section class="page" id="treasury">
  <div class="section">
-  <h2>مدیریت خزانه کشورها</h2>
+  <h2>مدیریت خزانه</h2>
   <div class="table-wrap"><table>
    <thead><tr><th>کشور</th><th>موجودی</th><th>عملیات</th></tr></thead>
    <tbody id="treasuryTable"></tbody>
   </table></div>
  </div>
- <div class="section">
-  <h2>تاریخچه تراکنش‌ها</h2>
-  <div id="transactions"></div>
- </div>
+ <div class="section"><h2>تاریخچه تراکنش‌ها</h2><div id="transactions"></div></div>
 </section>
 
 <section class="page" id="wars">
  <div class="section">
   <h2>مدیریت جنگ‌ها</h2>
-  <button onclick="addWar()">➕ ثبت جنگ</button>
+  <button data-action="addWar">➕ ثبت جنگ</button>
   <div id="warsList"></div>
  </div>
 </section>
@@ -166,7 +157,7 @@ th{color:var(--dark);background:#f5f9ff}
 <section class="page" id="alliances">
  <div class="section">
   <h2>مدیریت اتحادها</h2>
-  <button onclick="addAlliance()">➕ ایجاد اتحاد</button>
+  <button data-action="addAlliance">➕ ایجاد اتحاد</button>
   <div id="alliancesList"></div>
  </div>
 </section>
@@ -174,7 +165,7 @@ th{color:var(--dark);background:#f5f9ff}
 <section class="page" id="resolutions">
  <div class="section">
   <h2>مدیریت قطعنامه‌ها</h2>
-  <button onclick="addResolution()">➕ ثبت قطعنامه</button>
+  <button data-action="addResolution">➕ ثبت قطعنامه</button>
   <div id="resolutionsList"></div>
  </div>
 </section>
@@ -182,21 +173,21 @@ th{color:var(--dark);background:#f5f9ff}
 <section class="page" id="events">
  <div class="section">
   <h2>مدیریت رویدادها</h2>
-  <button onclick="addEvent()">➕ ساخت رویداد</button>
+  <button data-action="addEvent">➕ ساخت رویداد</button>
   <div id="eventsList"></div>
  </div>
 </section>
 
 <section class="page" id="messages">
  <div class="section">
-  <h2>ارسال پیام آزمایشی</h2>
+  <h2>ثبت پیام آزمایشی</h2>
   <label>مخاطب</label>
   <select id="messageTarget">
    <option>همه پلیرها</option><option>یک World</option><option>یک کشور</option><option>یک پلیر</option>
   </select>
   <label>متن پیام</label>
   <textarea id="messageText" placeholder="متن پیام..."></textarea>
-  <button onclick="sendMessage()">ثبت پیام</button>
+  <button data-action="sendMessage">ثبت پیام</button>
   <div id="messagesList"></div>
  </div>
 </section>
@@ -204,7 +195,7 @@ th{color:var(--dark);background:#f5f9ff}
 <section class="page" id="logs">
  <div class="section">
   <h2>گزارش عملیات</h2>
-  <button class="danger" onclick="clearLogs()">پاک‌کردن گزارش‌ها</button>
+  <button class="danger" data-action="clearLogs">پاک‌کردن گزارش‌ها</button>
   <div id="logsList"></div>
  </div>
 </section>
@@ -214,231 +205,359 @@ th{color:var(--dark);background:#f5f9ff}
   <h2>تنظیمات بازی</h2>
   <label>نام بازی</label><input id="gameName">
   <label>مدت فصل (روز)</label><input id="seasonLength" type="number">
-  <label>وضعیت ثبت‌نام</label>
+  <label>ثبت‌نام</label>
   <select id="registration"><option value="open">فعال</option><option value="closed">غیرفعال</option></select>
-  <button onclick="saveSettings()">ذخیره تنظیمات</button>
+  <button data-action="saveSettings">ذخیره تنظیمات</button>
  </div>
 </section>
 
 <section class="page" id="backup">
  <div class="section">
   <h2>پشتیبان‌گیری و بازیابی</h2>
-  <p class="muted">از اطلاعات ذخیره‌شده در همین مرورگر نسخه پشتیبان بگیر.</p>
-  <button onclick="exportBackup()">⬇️ دریافت پشتیبان</button>
-  <label>بازیابی فایل JSON</label>
+  <button data-action="exportBackup">⬇️ دریافت پشتیبان</button>
+  <label>انتخاب فایل JSON برای بازیابی</label>
   <input type="file" id="backupFile" accept=".json">
-  <button onclick="importBackup()">بازیابی اطلاعات</button>
-  <button class="danger" onclick="resetData()">بازنشانی کامل اطلاعات</button>
+  <button data-action="importBackup">بازیابی اطلاعات</button>
+  <button class="danger" data-action="resetData">بازنشانی کامل اطلاعات</button>
  </div>
 </section>
-
 </main>
 </div>
 
 <script>
-(function(){
 "use strict";
-const KEY="WAA_PASTEL_ADMIN_V2";
+
+const KEY="WAA_ADMIN_FINAL_V3";
 const initial={
  players:[],admins:[],worlds:[],countries:[],transactions:[],
  wars:[],alliances:[],resolutions:[],events:[],messages:[],logs:[],
  settings:{gameName:"WORLD AT ARMS",seasonLength:31,registration:"open"}
 };
-let db;
+
+function clone(x){return JSON.parse(JSON.stringify(x))}
+let db=clone(initial);
+
 try{
- const saved=JSON.parse(localStorage.getItem(KEY)||"null");
- db=saved&&typeof saved==="object"?{...initial,...saved}:JSON.parse(JSON.stringify(initial));
- Object.keys(initial).forEach(k=>{if(db[k]===undefined)db[k]=initial[k]});
-}catch(e){db=JSON.parse(JSON.stringify(initial))}
+ const old=JSON.parse(localStorage.getItem(KEY)||"null");
+ if(old&&typeof old==="object"){
+  db={...db,...old};
+  Object.keys(initial).forEach(k=>{if(db[k]===undefined)db[k]=clone(initial[k])});
+ }
+}catch(e){db=clone(initial)}
+
 const $=id=>document.getElementById(id);
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function save(){localStorage.setItem(KEY,JSON.stringify(db))}
-function log(action){db.logs.unshift({action,time:new Date().toLocaleString("fa-IR")});save()}
-function ask(label,def=""){return prompt(label,def)}
-function confirmDelete(label){return confirm("آیا از حذف "+label+" مطمئنی؟")}
-function item(name,extra=""){return `<div class="card"><b>${esc(name)}</b><p class="muted">${esc(extra)}</p></div>`}
-function tableRow(id,fields,actions){return `<tr>${fields.map(x=>`<td>${esc(x)}</td>`).join("")}<td><div class="actions">${actions}</div></td></tr>`}
-function btn(label,fn,cls=""){return `<button class="${cls}" onclick="${fn}">${label}</button>`}
+const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const ask=(text,def="")=>prompt(text,def);
+const money=n=>Number(n||0).toLocaleString("fa-IR");
+
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify(db))}
+ catch(e){alert("ذخیره اطلاعات انجام نشد. حافظه مرورگر را بررسی کن.")}
+}
+function log(text){
+ db.logs.unshift({text,time:new Date().toLocaleString("fa-IR")});
+ save();
+}
 function worldName(id){return db.worlds.find(x=>x.id===id)?.name||"—"}
 function countryName(id){return db.countries.find(x=>x.id===id)?.name||"—"}
-function makeId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function button(text,action,id,cls=""){
+ return `<button class="${cls}" data-action="${action}" data-id="${id||""}">${text}</button>`;
+}
+function card(title,description=""){
+ return `<div class="card"><b>${esc(title)}</b><p class="muted">${esc(description)}</p></div>`;
+}
+function row(fields,actions){
+ return `<tr>${fields.map(x=>`<td>${esc(x)}</td>`).join("")}<td><div class="actions">${actions}</div></td></tr>`;
+}
+function empty(cols,text="موردی ثبت نشده است"){
+ return `<tr><td colspan="${cols}" class="empty">${text}</td></tr>`;
+}
 
-window.showPage=function(id){
- document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===id));
- document.querySelectorAll("#nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===id));
- const b=document.querySelector(`#nav button[data-page="${id}"]`);
- $("pageTitle").textContent=b?b.textContent.trim():"مدیریت";
+/* منوی اصلی */
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
+ document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ const active=document.querySelector(`#nav button[data-page="${id}"]`);
+ $("pageTitle").textContent=active?active.textContent.trim():"مدیریت";
  render();
-};
+}
 $("nav").addEventListener("click",e=>{
- const b=e.target.closest("button[data-page]");
+ const b=e.target.closest("[data-page]");
  if(b)showPage(b.dataset.page);
 });
 
-window.addPlayer=function(){
+/* افزودن و مدیریت پلیرها */
+function addPlayer(){
  const name=ask("نام پلیر:");if(!name)return;
  const telegramId=ask("Telegram ID:");if(!telegramId)return;
- db.players.push({id:makeId(),name,telegramId,countryId:"",banned:false});
+ db.players.push({id:uid(),name,telegramId,countryId:"",banned:false});
  log("افزودن پلیر: "+name);render();
-};
-window.editPlayer=function(id){
+}
+function editPlayer(id){
  const p=db.players.find(x=>x.id===id);if(!p)return;
- const name=ask("نام جدید:",p.name);if(!name)return;
- p.name=name;p.telegramId=ask("Telegram ID:",p.telegramId)||p.telegramId;
+ p.name=ask("نام پلیر:",p.name)||p.name;
+ p.telegramId=ask("Telegram ID:",p.telegramId)||p.telegramId;
  log("ویرایش پلیر: "+p.name);render();
-};
-window.toggleBan=function(id){
+}
+function toggleBan(id){
  const p=db.players.find(x=>x.id===id);if(!p)return;
  p.banned=!p.banned;log((p.banned?"بن ":"رفع بن ")+p.name);render();
-};
-window.deletePlayer=function(id){
- const p=db.players.find(x=>x.id===id);if(p&&confirmDelete(p.name)){
- db.players=db.players.filter(x=>x.id!==id);log("حذف پلیر: "+p.name);render();
- }};
-window.renderPlayers=function(){
- const q=$("playerSearch").value.toLowerCase();
- const rows=db.players.filter(p=>(p.name+" "+p.telegramId).toLowerCase().includes(q));
- $("playersTable").innerHTML=rows.map(p=>tableRow(p.id,[p.name,p.telegramId,countryName(p.countryId),p.banned?"مسدود":"فعال"],
- `${btn("ویرایش",`editPlayer('${p.id}')`)}${btn(p.banned?"رفع بن":"بن",`toggleBan('${p.id}')`,"${p.banned?"success":"danger"}")}${btn("حذف",`deletePlayer('${p.id}')`,"danger")}`)).join("")||`<tr><td colspan="5" class="empty">پلیر ثبت نشده است</td></tr>`;
-};
-window.addAdmin=function(){
+}
+function deletePlayer(id){
+ const p=db.players.find(x=>x.id===id);
+ if(!p||!confirm("پلیر "+p.name+" حذف شود؟"))return;
+ db.players=db.players.filter(x=>x.id!==id);
+ log("حذف پلیر: "+p.name);render();
+}
+function renderPlayers(){
+ const q=($("playerSearch")?.value||"").toLowerCase();
+ const list=db.players.filter(p=>(p.name+" "+p.telegramId).toLowerCase().includes(q));
+ $("playersTable").innerHTML=list.map(p=>row(
+ [p.name,p.telegramId,countryName(p.countryId),p.banned?"مسدود":"فعال"],
+ button("ویرایش","editPlayer",p.id)+
+ button(p.banned?"رفع بن":"بن","toggleBan",p.id,p.banned?"success":"danger")+
+ button("حذف","deletePlayer",p.id,"danger")
+ )).join("")||empty(5,"پلیر پیدا نشد");
+}
+
+/* ادمین‌ها */
+function addAdmin(){
  const name=ask("نام ادمین:");if(!name)return;
- const telegramId=ask("Telegram ID ادمین:");if(!telegramId)return;
- const role=ask("سطح دسترسی (مدیر کل / مدیر / ناظر):","مدیر");
- db.admins.push({id:makeId(),name,telegramId,role});log("افزودن ادمین: "+name);render();
-};
-window.deleteAdmin=function(id){
+ const telegramId=ask("Telegram ID:");if(!telegramId)return;
+ const role=ask("سطح دسترسی: مدیر کل / مدیر / ناظر","مدیر")||"مدیر";
+ db.admins.push({id:uid(),name,telegramId,role});
+ log("افزودن ادمین: "+name);render();
+}
+function deleteAdmin(id){
  const a=db.admins.find(x=>x.id===id);
- if(a&&confirmDelete(a.name)){db.admins=db.admins.filter(x=>x.id!==id);log("حذف ادمین: "+a.name);render()}
-};
-window.addWorld=function(){
+ if(!a||!confirm("ادمین حذف شود؟"))return;
+ db.admins=db.admins.filter(x=>x.id!==id);
+ log("حذف ادمین: "+a.name);render();
+}
+
+/* Worldها */
+function addWorld(){
  const name=ask("نام World:");if(!name)return;
- const description=ask("توضیحات World:")||"";
- db.worlds.push({id:makeId(),name,description,active:true});log("ساخت World: "+name);render();
-};
-window.toggleWorld=function(id){
- const w=db.worlds.find(x=>x.id===id);if(w){w.active=!w.active;log("تغییر وضعیت World: "+w.name);render()}
-};
-window.deleteWorld=function(id){
+ const description=ask("توضیحات:")||"";
+ db.worlds.push({id:uid(),name,description,active:true});
+ log("ساخت World: "+name);render();
+}
+function toggleWorld(id){
+ const w=db.worlds.find(x=>x.id===id);if(!w)return;
+ w.active=!w.active;log("تغییر وضعیت World: "+w.name);render();
+}
+function deleteWorld(id){
  const w=db.worlds.find(x=>x.id===id);
- if(w&&confirmDelete(w.name)){db.worlds=db.worlds.filter(x=>x.id!==id);log("حذف World: "+w.name);render()}
-};
-window.addCountry=function(){
+ if(!w||!confirm("World حذف شود؟"))return;
+ db.worlds=db.worlds.filter(x=>x.id!==id);
+ log("حذف World: "+w.name);render();
+}
+
+/* کشورها */
+function addCountry(){
  const name=ask("نام کشور:");if(!name)return;
- if(!db.worlds.length){alert("اول یک World بساز.");return}
- const options=db.worlds.map((w,i)=>`${i+1}. ${w.name}`).join("\n");
- const n=Number(ask("شماره World:\n"+options,"1"))-1;
- const w=db.worlds[n];if(!w)return;
- const ruler=ask("نام حاکم (اختیاری):")||"بدون حاکم";
- db.countries.push({id:makeId(),name,worldId:w.id,ruler,treasury:0});
+ if(!db.worlds.length)return alert("ابتدا یک World بساز.");
+ const choices=db.worlds.map((w,i)=>(i+1)+". "+w.name).join("\n");
+ const index=Number(ask("شماره World:\n"+choices,"1"))-1;
+ const world=db.worlds[index];if(!world)return;
+ const ruler=ask("نام حاکم:")||"بدون حاکم";
+ db.countries.push({id:uid(),name,worldId:world.id,ruler,treasury:0});
  log("افزودن کشور: "+name);render();
-};
-window.editCountry=function(id){
+}
+function editCountry(id){
  const c=db.countries.find(x=>x.id===id);if(!c)return;
  c.name=ask("نام کشور:",c.name)||c.name;
- c.ruler=ask("حاکم:",c.ruler)||c.ruler;
+ c.ruler=ask("نام حاکم:",c.ruler)||c.ruler;
  log("ویرایش کشور: "+c.name);render();
-};
-window.deleteCountry=function(id){
+}
+function deleteCountry(id){
  const c=db.countries.find(x=>x.id===id);
- if(c&&confirmDelete(c.name)){db.countries=db.countries.filter(x=>x.id!==id);log("حذف کشور: "+c.name);render()}
-};
-window.changeMoney=function(id){
+ if(!c||!confirm("کشور حذف شود؟"))return;
+ db.countries=db.countries.filter(x=>x.id!==id);
+ log("حذف کشور: "+c.name);render();
+}
+function changeMoney(id){
  const c=db.countries.find(x=>x.id===id);if(!c)return;
  const amount=Number(ask("مقدار تغییر موجودی (مثبت یا منفی):","100"));
- if(!Number.isFinite(amount)||amount===0)return alert("مقدار نامعتبر است");
- const reason=ask("دلیل تراکنش:")||"بدون توضیح";
- c.treasury+=amount;
+ if(!Number.isFinite(amount)||amount===0)return alert("عدد معتبر وارد کن.");
+ const reason=ask("دلیل تغییر موجودی:")||"بدون توضیح";
+ c.treasury=Number(c.treasury||0)+amount;
  db.transactions.unshift({country:c.name,amount,reason,time:new Date().toLocaleString("fa-IR")});
  log("تغییر خزانه "+c.name+": "+amount);render();
-};
-window.addWar=function(){
+}
+
+/* جنگ‌ها */
+function addWar(){
  const a=ask("کشور آغازگر جنگ:");if(!a)return;
  const b=ask("کشور مقابل:");if(!b)return;
- db.wars.push({id:makeId(),a,b,status:"فعال"});log("ثبت جنگ: "+a+" - "+b);render();
-};
-window.closeWar=function(id){
- const w=db.wars.find(x=>x.id===id);if(w){w.status="پایان‌یافته";log("پایان جنگ: "+w.a+" - "+w.b);render()}
-};
-window.addAlliance=function(){
+ db.wars.push({id:uid(),a,b,status:"فعال"});
+ log("ثبت جنگ: "+a+" - "+b);render();
+}
+function closeWar(id){
+ const w=db.wars.find(x=>x.id===id);if(!w)return;
+ w.status="پایان‌یافته";log("پایان جنگ: "+w.a+" - "+w.b);render();
+}
+
+/* اتحادها */
+function addAlliance(){
  const name=ask("نام اتحاد:");if(!name)return;
- const members=ask("اعضای اتحاد را با کاما جدا کن:")||"";
- db.alliances.push({id:makeId(),name,members});log("ایجاد اتحاد: "+name);render();
-};
-window.addResolution=function(){
+ const members=ask("نام اعضا را با کاما جدا کن:")||"";
+ db.alliances.push({id:uid(),name,members});
+ log("ایجاد اتحاد: "+name);render();
+}
+function deleteAlliance(id){
+ db.alliances=db.alliances.filter(x=>x.id!==id);
+ log("حذف اتحاد");render();
+}
+
+/* قطعنامه‌ها */
+function addResolution(){
  const title=ask("عنوان قطعنامه:");if(!title)return;
- const text=ask("متن یا توضیح قطعنامه:")||"";
- db.resolutions.push({id:makeId(),title,text,status:"ثبت‌شده"});log("ثبت قطعنامه: "+title);render();
-};
-window.addEvent=function(){
+ const text=ask("متن قطعنامه:")||"";
+ db.resolutions.push({id:uid(),title,text,status:"ثبت‌شده"});
+ log("ثبت قطعنامه: "+title);render();
+}
+function deleteResolution(id){
+ db.resolutions=db.resolutions.filter(x=>x.id!==id);
+ log("حذف قطعنامه");render();
+}
+
+/* رویدادها */
+function addEvent(){
  const title=ask("عنوان رویداد:");if(!title)return;
- const description=ask("توضیحات رویداد:")||"";
- db.events.push({id:makeId(),title,description});log("ساخت رویداد: "+title);render();
-};
-window.sendMessage=function(){
- const target=$("messageTarget").value;
+ const description=ask("توضیحات:")||"";
+ db.events.push({id:uid(),title,description});
+ log("ساخت رویداد: "+title);render();
+}
+function deleteEvent(id){
+ db.events=db.events.filter(x=>x.id!==id);
+ log("حذف رویداد");render();
+}
+
+/* پیام‌ها */
+function sendMessage(){
  const text=$("messageText").value.trim();
- if(!text)return alert("متن پیام را وارد کن");
- db.messages.unshift({target,text,time:new Date().toLocaleString("fa-IR")});
- $("messageText").value="";log("ثبت پیام آزمایشی برای "+target);render();
-};
-window.clearLogs=function(){
- if(confirm("گزارش‌ها پاک شوند؟")){db.logs=[];save();render()}
-};
-window.saveSettings=function(){
+ if(!text)return alert("متن پیام را وارد کن.");
+ const target=$("messageTarget").value;
+ db.messages.unshift({id:uid(),target,text,time:new Date().toLocaleString("fa-IR")});
+ $("messageText").value="";
+ log("ثبت پیام آزمایشی برای "+target);render();
+}
+
+/* گزارش و تنظیمات */
+function clearLogs(){
+ if(!confirm("گزارش‌ها پاک شوند؟"))return;
+ db.logs=[];save();render();
+}
+function saveSettings(){
  db.settings.gameName=$("gameName").value;
  db.settings.seasonLength=Number($("seasonLength").value)||31;
  db.settings.registration=$("registration").value;
- log("ذخیره تنظیمات بازی");render();
-};
-window.exportBackup=function(){
+ log("ذخیره تنظیمات");render();
+}
+
+/* پشتیبان‌گیری */
+function exportBackup(){
  const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
- const a=document.createElement("a");a.href=URL.createObjectURL(blob);
- a.download="world-at-arms-backup.json";a.click();URL.revokeObjectURL(a.href);
-};
-window.importBackup=function(){
- const file=$("backupFile").files[0];if(!file)return alert("فایل JSON را انتخاب کن");
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;a.download="world-at-arms-backup.json";a.click();
+ URL.revokeObjectURL(url);
+}
+function importBackup(){
+ const file=$("backupFile").files[0];
+ if(!file)return alert("ابتدا فایل را انتخاب کن.");
  const reader=new FileReader();
  reader.onload=()=>{
- try{
- const x=JSON.parse(reader.result);
- if(!x||typeof x!=="object"||!Array.isArray(x.players)||!Array.isArray(x.worlds))throw Error();
- db={...initial,...x};save();alert("بازیابی انجام شد");render();
- }catch(e){alert("فایل پشتیبان معتبر نیست")}
+  try{
+   const data=JSON.parse(reader.result);
+   if(!data||!Array.isArray(data.players)||!Array.isArray(data.worlds))throw Error();
+   db={...clone(initial),...data};
+   save();render();alert("بازیابی انجام شد.");
+  }catch(e){alert("فایل پشتیبان معتبر نیست.");}
  };
  reader.readAsText(file);
+}
+function resetData(){
+ if(!confirm("تمام اطلاعات این پنل پاک شود؟"))return;
+ db=clone(initial);save();render();alert("اطلاعات بازنشانی شد.");
+}
+
+/* اتصال دکمه‌ها */
+const actions={
+ addPlayer,editPlayer,toggleBan,deletePlayer,
+ addAdmin,deleteAdmin,
+ addWorld,toggleWorld,deleteWorld,
+ addCountry,editCountry,deleteCountry,changeMoney,
+ addWar,closeWar,addAlliance,deleteAlliance,
+ addResolution,deleteResolution,addEvent,deleteEvent,
+ sendMessage,clearLogs,saveSettings,
+ exportBackup,importBackup,resetData
 };
-window.resetData=function(){
- if(confirm("تمام اطلاعات این پنل پاک شود؟")){
- db=JSON.parse(JSON.stringify(initial));save();render();alert("اطلاعات بازنشانی شد")
- }};
+document.addEventListener("click",e=>{
+ const b=e.target.closest("[data-action]");
+ if(!b)return;
+ const fn=actions[b.dataset.action];
+ if(typeof fn==="function")fn(b.dataset.id);
+});
+$("playerSearch").addEventListener("input",renderPlayers);
+
+/* نمایش اطلاعات */
 function render(){
  save();
+
  $("stats").innerHTML=[
- ["پلیرها",db.players.length],["ادمین‌ها",db.admins.length],
- ["Worldها",db.worlds.length],["کشورها",db.countries.length],
+ ["پلیرها",db.players.length],
+ ["ادمین‌ها",db.admins.length],
+ ["Worldها",db.worlds.length],
+ ["کشورها",db.countries.length],
  ["جنگ‌های فعال",db.wars.filter(x=>x.status==="فعال").length],
  ["قطعنامه‌ها",db.resolutions.length]
- ].map(x=>`<div class="card"><div class="muted">${x[0]}</div><div class="stat">${x[1]}</div></div>`).join("");
- $("recentLogs").innerHTML=db.logs.slice(0,6).map(x=>item(x.action,x.time)).join("")||`<div class="empty">هنوز فعالیتی ثبت نشده</div>`;
+ ].map(x=>`<div class="card"><div class="muted">${x[0]}</div><div class="stat">${money(x[1])}</div></div>`).join("");
+
+ $("recentLogs").innerHTML=db.logs.slice(0,6).map(x=>card(x.text,x.time)).join("")||'<div class="empty">فعالیتی ثبت نشده است.</div>';
+
  renderPlayers();
- $("adminsTable").innerHTML=db.admins.map(a=>tableRow(a.id,[a.name,a.telegramId,a.role],btn("حذف",`deleteAdmin('${a.id}')`,"danger"))).join("")||`<tr><td colspan="4" class="empty">ادمینی ثبت نشده</td></tr>`;
- $("worldsTable").innerHTML=db.worlds.map(w=>tableRow(w.id,[w.name,w.description,w.active?"فعال":"غیرفعال"],`${btn(w.active?"غیرفعال‌سازی":"فعال‌سازی",`toggleWorld('${w.id}')`)}${btn("حذف",`deleteWorld('${w.id}')`,"danger")}`)).join("")||`<tr><td colspan="4" class="empty">World ثبت نشده</td></tr>`;
- $("countriesTable").innerHTML=db.countries.map(c=>tableRow(c.id,[c.name,worldName(c.worldId),c.ruler],`${btn("ویرایش",`editCountry('${c.id}')`)}${btn("حذف",`deleteCountry('${c.id}')`,"danger")}`)).join("")||`<tr><td colspan="4" class="empty">کشوری ثبت نشده</td></tr>`;
- $("treasuryTable").innerHTML=db.countries.map(c=>tableRow(c.id,[c.name,c.treasury.toLocaleString("fa-IR"),btn("تغییر موجودی",`changeMoney('${c.id}')`)])).join("")||`<tr><td colspan="3" class="empty">کشوری ثبت نشده</td></tr>`;
- $("transactions").innerHTML=db.transactions.slice(0,30).map(t=>item(t.country+" | "+t.amount,t.reason+" — "+t.time)).join("")||`<div class="empty">تراکنشی ثبت نشده</div>`;
- $("warsList").innerHTML=db.wars.map(w=>item(w.a+" ⚔️ "+w.b,w.status+" "+(w.status==="فعال"?btn("پایان جنگ",`closeWar('${w.id}')`):""))).join("")||`<div class="empty">جنگی ثبت نشده</div>`;
- $("alliancesList").innerHTML=db.alliances.map(x=>item(x.name,x.members)).join("")||`<div class="empty">اتحادی ثبت نشده</div>`;
- $("resolutionsList").innerHTML=db.resolutions.map(x=>item(x.title,x.text+" | "+x.status)).join("")||`<div class="empty">قطعنامه‌ای ثبت نشده</div>`;
- $("eventsList").innerHTML=db.events.map(x=>item(x.title,x.description)).join("")||`<div class="empty">رویدادی ثبت نشده</div>`;
- $("messagesList").innerHTML=db.messages.slice(0,20).map(x=>item(x.target,x.text+" — "+x.time)).join("")||`<div class="empty">پیامی ثبت نشده</div>`;
- $("logsList").innerHTML=db.logs.map(x=>item(x.action,x.time)).join("")||`<div class="empty">گزارشی ثبت نشده</div>`;
- $("gameName").value=db.settings.gameName;
- $("seasonLength").value=db.settings.seasonLength;
- $("registration").value=db.settings.registration;
-}
-render();
-})();
-</script>
-</body>
-</html>
+
+ $("adminsTable").innerHTML=db.admins.map(a=>row(
+ [a.name,a.telegramId,a.role],
+ button("حذف","deleteAdmin",a.id,"danger")
+ )).join("")||empty(4);
+
+ $("worldsTable").innerHTML=db.worlds.map(w=>row(
+ [w.name,w.description,w.active?"فعال":"غیرفعال"],
+ button(w.active?"غیرفعال‌سازی":"فعال‌سازی","toggleWorld",w.id)+
+ button("حذف","deleteWorld",w.id,"danger")
+ )).join("")||empty(4);
+
+ $("countriesTable").innerHTML=db.countries.map(c=>row(
+ [c.name,worldName(c.worldId),c.ruler],
+ button("ویرایش","editCountry",c.id)+
+ button("حذف","deleteCountry",c.id,"danger")
+ )).join("")||empty(4);
+
+ $("treasuryTable").innerHTML=db.countries.map(c=>row(
+ [c.name,money(c.treasury)],
+ button("تغییر موجودی","changeMoney",c.id)
+ )).join("")||empty(3);
+
+ $("transactions").innerHTML=db.transactions.slice(0,30).map(t=>card(
+ t.country+" | "+(t.amount>0?"+":"")+money(t.amount),
+ t.reason+" | "+t.time
+ )).join("")||'<div class="empty">تراکنشی ثبت نشده است.</div>';
+
+ $("warsList").innerHTML=db.wars.map(w=>card(
+ w.a+" ⚔️ "+w.b,
+ w.status+" "+(w.status==="فعال"?button("پایان جنگ","closeWar",w.id):"")
+ )).join("")||'<div class="empty">جنگی ثبت نشده است.</div>';
+
+ $("alliancesList").innerHTML=db.alliances.map(x=>card(
+ x.name,x.members+" "+button("حذف","deleteAlliance",x.id,"danger")
+ )).join("")||'<div class="empty">اتحادی ثبت نشده است.</div>';
+
+ $("resolutionsList").innerHTML=db.resolutions.map(x=>card(
+ x.title,x.text+" "+button("حذف","deleteResolution",x.id,"danger")
+ )).join("")||'<div class="empty">قطع
