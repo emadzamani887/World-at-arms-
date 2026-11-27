@@ -161,27 +161,28 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .receipt{min-height:100px;resize:vertical}
 footer{text-align:center;color:#857b62;font-size:10px;padding:20px 5px 8px}
 
-/* نقشه */
+/* نقشه سه‌بعدی */
 #mapPage{
  display:none;position:fixed;inset:0;z-index:3000;
  background:#080d14;color:#eee4ca;flex-direction:column;
- height:100dvh;width:100%;overflow:hidden
+ height:100vh;height:100dvh;width:100%;overflow:hidden
 }
 #mapPage.active{display:flex}
 .map-header{
  display:flex;justify-content:space-between;align-items:center;
  gap:10px;padding:12px;background:#20251f;border-bottom:1px solid #756644;
- flex-shrink:0
+ flex-shrink:0;z-index:2
 }
 .map-title{font-size:15px;font-weight:900;color:#e1c782}
 .map-subtitle{font-size:10px;color:#b9ad8d}
-#mapClose{background:#343326;color:#eee4ca;border:1px solid #756644;border-radius:8px;padding:8px 13px}
+#mapClose{background:#343326;color:#eee4ca;border:1px solid #756644;border-radius:8px;padding:8px 13px;white-space:nowrap}
 #globeContainer{
- flex:1;min-height:180px;min-width:0;position:relative;
- background:radial-gradient(circle,#172b3b,#080d14 75%);overflow:hidden
+ flex:1;min-height:0;min-width:0;width:100%;height:100%;
+ position:relative;background:radial-gradient(circle,#172b3b,#080d14 75%);
+ overflow:hidden
 }
-#globeContainer canvas{display:block;max-width:100%}
-.map-footer{padding:10px;background:#20251f;border-top:1px solid #756644;flex-shrink:0}
+#globeContainer canvas{display:block;width:100%;height:100%}
+.map-footer{padding:10px;background:#20251f;border-top:1px solid #756644;flex-shrink:0;z-index:2}
 #mapStatus{text-align:center;font-size:11px;color:#d5c49b;margin-bottom:8px;line-height:1.8}
 .map-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;font-size:10px;color:#c9bd9c}
 .map-legend span{display:flex;align-items:center;gap:5px}
@@ -824,7 +825,7 @@ async function cancelOrder(orderId){
 }
 
 /* =========================================================
-   نقشه تاریخی سه‌بعدی - نسخه اصلاح‌شده
+   نقشه تاریخی سه‌بعدی
 ========================================================= */
 
 const HISTORICAL_MAP_URL=
@@ -838,31 +839,49 @@ const mapState={
  selected:null,
  initialized:false,
  loading:false,
- resizeObserver:null
+ resizeObserver:null,
+ lastError:null
 };
 
 /*
-  نام‌های دیتابیس فارسی هستند.
-  نام‌های فایل GeoJSON انگلیسی هستند.
-  این جدول آن‌ها را به یک شناسه مشترک تبدیل می‌کند.
+  تبدیل نام فارسی دیتابیس به شناسه انگلیسی نقشه.
+  نام‌ها قبل از مقایسه یکسان‌سازی می‌شوند تا تفاوت فاصله
+  و نیم‌فاصله باعث خراب شدن تطبیق نشود.
 */
+function normalizeMapName(value){
+ return String(value??"")
+  .trim()
+  .toLocaleLowerCase()
+  .normalize("NFKC")
+  .replace(/[\u200c\u200f\u202a-\u202e]/g,"")
+  .replace(/[\s_\-–—.'’،,()]/g,"")
+  .replace(/[^\p{L}\p{N}]/gu,"");
+}
+
 const PERSIAN_COUNTRY_KEYS={
  "آلمان":"germany",
  "آمریکا":"unitedstates",
+ "ایالات متحده":"unitedstates",
  "ایالات متحده آمریکا":"unitedstates",
  "اتحاد جماهیر شوروی":"sovietunion",
+ "اتحاد جماهیر شوروی سوسیالیستی":"sovietunion",
+ "اتحاد شوروی":"sovietunion",
  "شوروی":"sovietunion",
  "اتریش":"austria",
  "اسپانیا":"spain",
  "ایتالیا":"italy",
  "ایران":"iran",
+ "پرشیا":"iran",
  "بریتانیا":"unitedkingdom",
  "انگلستان":"unitedkingdom",
+ "پادشاهی متحد":"unitedkingdom",
  "بلژیک":"belgium",
  "بلغارستان":"bulgaria",
  "ترکیه":"turkey",
+ "جمهوری ترکیه":"turkey",
  "چکسلواکی":"czechoslovakia",
  "چین":"china",
+ "جمهوری چین":"china",
  "دانمارک":"denmark",
  "رومانی":"romania",
  "ژاپن":"japan",
@@ -874,74 +893,132 @@ const PERSIAN_COUNTRY_KEYS={
  "نروژ":"norway",
  "هلند":"netherlands",
  "یوگسلاوی":"yugoslavia",
- "یونان":"greece"
+ "یونان":"greece",
+ "سوئد":"sweden",
+ "سوئیس":"switzerland",
+ "پرتغال":"portugal",
+ "مصر":"egypt",
+ "افغانستان":"afghanistan",
+ "عراق":"iraq",
+ "عربستان":"saudiarabia",
+ "مکزیک":"mexico",
+ "برزیل":"brazil",
+ "استرالیا":"australia",
+ "نیوزیلند":"newzealand",
+ "هند":"india",
+ "تایلند":"thailand",
+ "سیام":"thailand",
+ "نپال":"nepal",
+ "بوتان":"bhutan",
+ "مغولستان":"mongolia",
+ "آلبانی":"albania",
+ "استونی":"estonia",
+ "لتونی":"latvia",
+ "لیتوانی":"lithuania",
+ "ایرلند":"ireland",
+ "لوکزامبورگ":"luxembourg",
+ "ایسلند":"iceland"
 };
 
+/* نام‌های مختلفی که ممکن است در GeoJSON دیده شوند */
 const MAP_ALIASES={
- "unitedstatesofamerica":"unitedstates",
- "unitedstates":"unitedstates",
- "usa":"unitedstates",
- "us":"unitedstates",
- "sovietunion":"sovietunion",
- "ussr":"sovietunion",
- "unionofsovietsocialistrepublics":"sovietunion",
- "russianempire":"sovietunion",
- "persia":"iran",
- "iran":"iran",
- "turkey":"turkey",
- "turkiye":"turkey",
- "republicofturkey":"turkey",
- "greatbritain":"unitedkingdom",
- "britain":"unitedkingdom",
- "uk":"unitedkingdom",
- "unitedkingdom":"unitedkingdom",
- "germanreich":"germany",
- "germany":"germany",
- "czechoslovakia":"czechoslovakia",
- "netherlands":"netherlands",
- "holland":"netherlands",
- "japan":"japan",
- "china":"china",
- "france":"france",
- "poland":"poland",
- "italy":"italy",
- "spain":"spain",
- "austria":"austria",
- "belgium":"belgium",
- "bulgaria":"bulgaria",
- "denmark":"denmark",
- "romania":"romania",
- "finland":"finland",
- "canada":"canada",
- "hungary":"hungary",
- "norway":"norway",
- "yugoslavia":"yugoslavia",
- "greece":"greece"
+ unitedstatesofamerica:"unitedstates",
+ unitedstates:"unitedstates",
+ usa:"unitedstates",
+ us:"unitedstates",
+ sovietunion:"sovietunion",
+ ussr:"sovietunion",
+ unionofsovietsocialistrepublics:"sovietunion",
+ unionofsovietsocialistrepublics:"sovietunion",
+ socialistunionofsovietrepublics:"sovietunion",
+ persia:"iran",
+ iran:"iran",
+ turkey:"turkey",
+ turkiye:"turkey",
+ republicofturkey:"turkey",
+ greatbritain:"unitedkingdom",
+ britain:"unitedkingdom",
+ uk:"unitedkingdom",
+ unitedkingdom:"unitedkingdom",
+ germanreich:"germany",
+ germany:"germany",
+ deutschesreich:"germany",
+ czechoslovakia:"czechoslovakia",
+ netherlands:"netherlands",
+ holland:"netherlands",
+ kingdomofthenetherlands:"netherlands",
+ japan:"japan",
+ empireofjapan:"japan",
+ china:"china",
+ republicofchina:"china",
+ france:"france",
+ poland:"poland",
+ italy:"italy",
+ spain:"spain",
+ austria:"austria",
+ belgium:"belgium",
+ bulgaria:"bulgaria",
+ denmark:"denmark",
+ romania:"romania",
+ finland:"finland",
+ canada:"canada",
+ hungary:"hungary",
+ norway:"norway",
+ yugoslavia:"yugoslavia",
+ kingdomofyugoslavia:"yugoslavia",
+ greece:"greece",
+ sweden:"sweden",
+ switzerland:"switzerland",
+ portugal:"portugal",
+ egypt:"egypt",
+ afghanistan:"afghanistan",
+ iraq:"iraq",
+ saudiarabia:"saudiarabia",
+ mexico:"mexico",
+ brazil:"brazil",
+ australia:"australia",
+ newzealand:"newzealand",
+ india:"india",
+ siam:"thailand",
+ thailand:"thailand",
+ mongolia:"mongolia",
+ albania:"albania",
+ estonia:"estonia",
+ latvia:"latvia",
+ lithuania:"lithuania",
+ ireland:"ireland",
+ luxembourg:"luxembourg",
+ iceland:"iceland"
 };
 
-function normalizeMapName(value){
- return String(value||"")
-  .toLocaleLowerCase()
-  .normalize("NFD")
-  .replace(/[\u0300-\u036f]/g,"")
-  .replace(/[\s_\-.'’،]+/g,"")
-  .replace(/[^\p{L}\p{N}]/gu,"");
+/* کلیدهای فارسی نیز نرمال می‌شوند */
+const NORMALIZED_PERSIAN_COUNTRY_KEYS={};
+for(const [name,key] of Object.entries(PERSIAN_COUNTRY_KEYS)){
+ NORMALIZED_PERSIAN_COUNTRY_KEYS[normalizeMapName(name)]=key;
 }
 
 function mapKey(value){
- const raw=String(value||"").trim();
- if(PERSIAN_COUNTRY_KEYS[raw])return PERSIAN_COUNTRY_KEYS[raw];
-
- const key=normalizeMapName(raw);
- return MAP_ALIASES[key]||key;
+ const key=normalizeMapName(value);
+ if(!key)return "";
+ return NORMALIZED_PERSIAN_COUNTRY_KEYS[key]||MAP_ALIASES[key]||key;
 }
 
+/* نام اصلی کشور از اطلاعات جغرافیایی */
 function historicalCountryName(feature){
  const p=feature?.properties||{};
- return p.NAME||p.name||p.ADMIN||p.SOVEREIGNT||p.SUBJECTO||"کشور ناشناخته";
+ return p.NAME||
+        p.name||
+        p.ADMIN||
+        p.NAME_LONG||
+        p.SOVEREIGNT||
+        p.SUBJECTO||
+        p.ABBREV||
+        p.ABBREVN||
+        p.PARTOF||
+        "کشور ناشناخته";
 }
 
-/* پیدا کردن کشور دیتابیس بر اساس نام معادل */
+/* پیدا کردن کشور متناظر در دیتابیس همان جهان */
 function findMapCountry(feature){
  const featureKey=mapKey(historicalCountryName(feature));
  if(!featureKey)return null;
@@ -951,13 +1028,13 @@ function findMapCountry(feature){
  })||null;
 }
 
-/* نام فارسی دیتابیس در اولویت نمایش قرار می‌گیرد */
+/* نام قابل نمایش */
 function getMapDisplayName(feature){
  const country=findMapCountry(feature);
  return country?.name||historicalCountryName(feature);
 }
 
-/* رنگ‌بندی مالکیت */
+/* رنگ بر اساس مالکیت */
 function mapCountryColor(country){
  if(!country)return "#777b80";
 
@@ -968,16 +1045,40 @@ function mapCountryColor(country){
   return "#d6ad56";
  }
 
- if(!country.player_telegram_id)return "#777b80";
+ if(country.player_telegram_id!==null&&
+    country.player_telegram_id!==undefined&&
+    String(country.player_telegram_id)!==""){
+  return "#5795c8";
+ }
 
- return "#5795c8";
+ return "#777b80";
 }
 
+/* ارتفاع مرزها */
+function mapCountryAltitude(feature){
+ const country=findMapCountry(feature);
+ if(!country)return 0.006;
+
+ if(
+  mapState.selected&&
+  String(country.id)===String(mapState.selected.id)
+ )return 0.022;
+
+ if(country.player_telegram_id!==null&&
+    country.player_telegram_id!==undefined&&
+    String(country.player_telegram_id)!==""){
+  return 0.014;
+ }
+
+ return 0.007;
+}
+
+/* متن اطلاعات هنگام قرار گرفتن نشانگر روی کشور */
 function mapFeatureLabel(feature){
  const country=findMapCountry(feature);
  const name=getMapDisplayName(feature);
 
- let status="آزاد";
+ let status="کشور آزاد";
  if(!country)status="اطلاعات این کشور در جهان ثبت نشده";
  else if(
   mapState.selected&&
@@ -1003,7 +1104,7 @@ function mapFeatureLabel(feature){
   </div>`;
 }
 
-/* دریافت کشورهای همان جهان */
+/* دریافت کشورهای جهان انتخاب‌شده */
 async function loadMapCountries(worldId){
  const url=
   `${SUPABASE_URL}/rest/v1/countries`+
@@ -1023,7 +1124,7 @@ async function loadMapCountries(worldId){
  return readResponse(response);
 }
 
-/* ساخت برچسب‌های روی کره */
+/* ساخت فهرست نام‌ها و مختصات کشورها */
 function mapLabels(features){
  const labels=[];
 
@@ -1038,8 +1139,11 @@ function mapLabels(features){
     !Number.isFinite(center[1])
    )continue;
 
+   const displayName=getMapDisplayName(feature);
+   if(!displayName)continue;
+
    labels.push({
-    name:getMapDisplayName(feature),
+    name:displayName,
     lat:center[1],
     lng:center[0],
     feature
@@ -1052,9 +1156,24 @@ function mapLabels(features){
  return labels;
 }
 
-/* ساخت کره فقط یک بار */
+/* به‌روزرسانی اجزای گرافیکی نقشه */
+function refreshGlobeLayers(){
+ if(!mapState.globe)return;
+
+ mapState.globe
+  .polygonsData(mapState.features)
+  .polygonCapColor(feature=>mapCountryColor(findMapCountry(feature)))
+  .polygonAltitude(mapCountryAltitude)
+  .polygonLabel(mapFeatureLabel)
+  .labelsData(mapLabels(mapState.features));
+}
+
+/* ساخت کره */
 async function initializeGlobe(){
- if(mapState.initialized)return;
+ if(mapState.initialized&&mapState.globe){
+  refreshGlobeLayers();
+  return;
+ }
 
  if(typeof Globe!=="function"){
   throw new Error("کتابخانه کره سه‌بعدی بارگذاری نشده است.");
@@ -1096,26 +1215,16 @@ async function initializeGlobe(){
   .atmosphereColor("#5689ae")
   .atmosphereAltitude(0.18)
 
-  /* چندضلعی‌های کشورها */
+  /* مرزهای کشورها */
   .polygonsData(mapState.features)
   .polygonGeoJsonGeometry(feature=>feature.geometry)
-  .polygonCapColor(feature=>{
-   return mapCountryColor(findMapCountry(feature));
-  })
+  .polygonCapColor(feature=>mapCountryColor(findMapCountry(feature)))
   .polygonSideColor(()=>"rgba(40,55,70,0.8)")
   .polygonStrokeColor(()=>"rgba(225,210,165,0.75)")
-  .polygonAltitude(feature=>{
-   const country=findMapCountry(feature);
-   if(!country)return 0.006;
-   if(
-    mapState.selected&&
-    String(country.id)===String(mapState.selected.id)
-   )return 0.022;
-   return country.player_telegram_id?0.014:0.007;
-  })
+  .polygonAltitude(mapCountryAltitude)
   .polygonLabel(mapFeatureLabel)
 
-  /* کلیک روی کشور */
+  /* انتخاب کشور با کلیک */
   .onPolygonClick(feature=>{
    const country=findMapCountry(feature);
    const name=getMapDisplayName(feature);
@@ -1147,7 +1256,7 @@ async function initializeGlobe(){
    }
   })
 
-  /* نام کشورها روی سطح کره */
+  /* نمایش نام کشورها روی کره */
   .labelsData(mapLabels(mapState.features))
   .labelLat(item=>item.lat)
   .labelLng(item=>item.lng)
@@ -1164,6 +1273,8 @@ async function initializeGlobe(){
  controls.autoRotateSpeed=0.35;
  controls.enableZoom=true;
  controls.enablePan=false;
+ controls.enableDamping=true;
+ controls.dampingFactor=0.08;
 
  mapState.globe.pointOfView({
   lat:25,
@@ -1173,19 +1284,22 @@ async function initializeGlobe(){
 
  mapState.initialized=true;
 
- /* هماهنگی اندازه کره با اندازه صفحه */
+ /* تنظیم اندازه خودکار */
  if(window.ResizeObserver){
+  if(mapState.resizeObserver)mapState.resizeObserver.disconnect();
+
   mapState.resizeObserver=new ResizeObserver(()=>{
    resizeGlobe();
   });
+
   mapState.resizeObserver.observe(host);
  }
 
  $("mapStatus").textContent=
-  "نقشه تاریخی آماده است • برای چرخاندن بکشید • برای بزرگ‌نمایی اسکرول کنید";
+  "نقشه تاریخی آماده است • برای چرخاندن کره آن را بکشید";
 }
 
-/* تغییر اندازه کره */
+/* تنظیم اندازه کره */
 function resizeGlobe(){
  if(!mapState.globe)return;
 
@@ -1196,28 +1310,10 @@ function resizeGlobe(){
  mapState.globe.width(width).height(height);
 }
 
-/* به‌روزرسانی رنگ‌ها بعد از دریافت اطلاعات جهان */
+/* بازخوانی اطلاعات مالکیت و رنگ نقشه */
 function updateGlobeColors(){
  if(!mapState.globe)return;
-
- mapState.globe
-  .polygonsData(mapState.features)
-  .polygonCapColor(feature=>{
-   return mapCountryColor(findMapCountry(feature));
-  })
-  .polygonAltitude(feature=>{
-   const country=findMapCountry(feature);
-
-   if(!country)return 0.006;
-
-   if(
-    mapState.selected&&
-    String(country.id)===String(mapState.selected.id)
-   )return 0.022;
-
-   return country.player_telegram_id?0.014:0.007;
-  })
-  .labelsData(mapLabels(mapState.features));
+ refreshGlobeLayers();
 }
 
 /* باز کردن نقشه */
@@ -1246,20 +1342,22 @@ async function openHistoricalMap(){
  mapState.loading=true;
 
  try{
-  /* ابتدا داده مالکیت از سرور دریافت می‌شود */
+  /* دریافت مالکیت کشورهای جهان جاری */
   mapState.countries=await loadMapCountries(worldId);
 
-  /* سپس کره ساخته یا به‌روزرسانی می‌شود */
+  /* ساخت نقشه یا به‌روزرسانی نقشه قبلی */
   await initializeGlobe();
   updateGlobeColors();
   resizeGlobe();
 
+  const matched=mapState.features.filter(feature=>findMapCountry(feature)).length;
+
   $("mapStatus").textContent=
-   "نقشه آماده است • مرزها: داده تاریخی ۱۹۳۸ • رنگ‌ها: مالکیت همین جهان";
+   `نقشه آماده است • ${fa(matched)} کشور از دیتابیس با نقشه تطبیق داده شد`;
  }catch(error){
   console.error("MAP ERROR:",error);
-  $("mapStatus").textContent=
-   "خطا در بارگذاری نقشه: "+errorMessage(error);
+  mapState.lastError=error;
+  $("mapStatus").textContent="خطا در بارگذاری نقشه: "+errorMessage(error);
  }finally{
   mapState.loading=false;
  }
