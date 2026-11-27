@@ -3,587 +3,1079 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WORLD AT ARMS | COMMAND CENTER</title>
+<meta name="theme-color" content="#080d0a">
+<title>WORLD AT ARMS | GLOBAL COMMAND</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
- --bg:#080d0b;
- --panel:#101914;
- --panel2:#151f18;
- --line:#283a2d;
- --green:#9bc66b;
- --gold:#d8b45a;
- --text:#e9f0e9;
- --muted:#87968a;
+ --bg:#070b09;
+ --surface:#0d1510;
+ --surface2:#121d15;
+ --surface3:#19251b;
+ --line:#26372a;
+ --green:#a4d477;
+ --green2:#628e48;
+ --gold:#e0bd68;
  --red:#e46d63;
- --blue:#6ca9d6;
+ --blue:#72b9d8;
+ --white:#eaf1e9;
+ --muted:#829084;
+ --shadow:0 15px 50px #0007;
 }
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
- margin:0;
- background:var(--bg);
- color:var(--text);
+ margin:0;background:var(--bg);color:var(--white);
  font-family:Vazirmatn,sans-serif;
- min-height:100vh;
- overflow-x:hidden;
-}
-body:before{
- content:"";
- position:fixed;
- inset:0;
- pointer-events:none;
- opacity:.12;
- background-image:
- linear-gradient(rgba(155,198,107,.13) 1px,transparent 1px),
- linear-gradient(90deg,rgba(155,198,107,.13) 1px,transparent 1px);
- background-size:42px 42px;
- z-index:-1;
-}
-body:after{
- content:"";
- position:fixed;
- width:500px;height:500px;
- background:#31572b;
- filter:blur(150px);
- opacity:.14;
- top:-200px;left:-180px;
- pointer-events:none;
- z-index:-1;
+ min-height:100vh;overflow-x:hidden;
 }
 button,input,textarea,select{font:inherit}
 button{cursor:pointer}
-.app{display:flex;min-height:100vh}
+body:before{
+ content:"";position:fixed;inset:0;z-index:-3;
+ background-image:
+ linear-gradient(#9bc66b0b 1px,transparent 1px),
+ linear-gradient(90deg,#9bc66b0b 1px,transparent 1px);
+ background-size:45px 45px;
+ mask-image:linear-gradient(to bottom,black,transparent 90%);
+}
+.ambient{
+ position:fixed;z-index:-2;pointer-events:none;
+ width:520px;height:520px;border-radius:50%;
+ filter:blur(130px);opacity:.12;
+ background:#5b9c3e;top:-250px;left:-180px;
+ animation:ambient 12s ease-in-out infinite alternate;
+}
+.ambient.two{
+ width:400px;height:400px;background:#c59b3e;
+ top:auto;left:auto;bottom:-260px;right:5%;
+ animation-delay:-5s;
+}
+@keyframes ambient{
+ from{transform:translate(0,0) scale(.8)}
+ to{transform:translate(100px,80px) scale(1.25)}
+}
+.scanline{
+ position:fixed;inset:0;pointer-events:none;z-index:50;
+ opacity:.12;
+ background:repeating-linear-gradient(
+ transparent 0px,transparent 3px,#ffffff08 4px
+ );
+}
+.app{min-height:100vh}
 .sidebar{
- width:255px;
- background:rgba(12,19,14,.96);
+ position:fixed;top:0;right:0;bottom:0;
+ width:270px;z-index:30;
+ background:rgba(9,16,11,.96);
  border-left:1px solid var(--line);
- padding:22px 15px;
- position:fixed;
- top:0;right:0;bottom:0;
- z-index:20;
- display:flex;
- flex-direction:column;
+ backdrop-filter:blur(20px);
+ display:flex;flex-direction:column;
+ padding:20px 15px;
+ transition:.3s;
 }
 .brand{
  display:flex;align-items:center;gap:12px;
- padding:8px 8px 24px;
+ padding:9px 8px 22px;
  border-bottom:1px solid var(--line);
 }
-.brand-logo{
- width:45px;height:45px;
- border:1px solid var(--gold);
- color:var(--gold);
+.brand-emblem{
+ width:49px;height:49px;flex-shrink:0;
  display:grid;place-items:center;
- font-size:22px;
- border-radius:12px;
- box-shadow:0 0 20px #d8b45a20;
+ color:var(--gold);font-size:25px;
+ border:1px solid #a88c4c;
+ border-radius:14px;
+ background:linear-gradient(145deg,#29341e,#111a13);
+ box-shadow:0 0 25px #d8b45a1a,inset 0 0 15px #d8b45a12;
 }
-.brand h2{font-size:15px;margin:0;font-weight:900;letter-spacing:1px}
-.brand small{color:var(--muted);font-size:10px;letter-spacing:2px}
-.nav-title{
- color:#6f8073;font-size:10px;
- margin:23px 10px 9px;
- letter-spacing:1px;
+.brand-name{font-size:14px;font-weight:900;letter-spacing:1px}
+.brand-sub{font-size:9px;color:var(--gold);letter-spacing:2px}
+.side-caption{
+ margin:24px 10px 9px;
+ color:#627264;font-size:9px;
+ letter-spacing:2px;font-weight:700;
 }
 .nav{
  display:flex;align-items:center;gap:12px;
- padding:12px;
- border-radius:9px;
- color:#aab8ad;
- margin:3px 0;
- cursor:pointer;
- transition:.2s;
- font-size:13px;
+ min-height:43px;padding:9px 12px;
+ margin:3px 0;border-radius:9px;
+ color:#a3b0a5;font-size:12px;
  border:1px solid transparent;
+ transition:.2s;cursor:pointer;
 }
-.nav:hover,.nav.active{
- background:#1b2a1d;
- color:var(--green);
- border-color:#354b35;
- transform:translateX(-3px);
+.nav:hover{
+ background:#18251a;color:var(--green);
+ border-color:#314a32;transform:translateX(-3px);
 }
-.nav .ico{width:22px;text-align:center;font-size:17px}
-.sidebar-bottom{
- margin-top:auto;
- padding:14px;
- background:#18241a;
- border:1px solid var(--line);
- border-radius:10px;
+.nav.active{
+ background:linear-gradient(90deg,#1d3020,#142017);
+ border-color:#3e593c;color:var(--green);
+ box-shadow:inset -3px 0 var(--green),0 5px 20px #0003;
 }
-.online-dot{
- display:inline-block;width:7px;height:7px;
- border-radius:50%;background:#83c66b;
- box-shadow:0 0 10px #83c66b;
- margin-left:7px;
+.nav-icon{width:23px;text-align:center;font-size:17px}
+.nav-label{flex:1}
+.nav-count{
+ font-size:9px;color:var(--gold);
+ background:#3a321d;padding:3px 7px;border-radius:5px;
 }
-.sidebar-bottom small{color:var(--muted);font-size:10px}
+.sidebar-footer{
+ margin-top:auto;padding:13px;
+ background:#121d15;border:1px solid var(--line);
+ border-radius:11px;
+}
+.server-status{
+ display:flex;align-items:center;gap:8px;
+ font-size:11px;font-weight:700;
+}
+.pulse-dot{
+ width:8px;height:8px;border-radius:50%;
+ background:#8bca65;box-shadow:0 0 12px #8bca65;
+ animation:pulse 1.6s infinite;
+}
+@keyframes pulse{
+ 50%{box-shadow:0 0 3px #8bca65;opacity:.5}
+}
+.sidebar-footer small{
+ display:block;color:var(--muted);
+ font-size:9px;margin-top:7px;
+}
 .main{
- width:calc(100% - 255px);
- margin-right:255px;
+ margin-right:270px;
+ width:calc(100% - 270px);
  padding:25px 30px 60px;
+ max-width:1800px;
 }
 .topbar{
- display:flex;align-items:center;
- justify-content:space-between;
- gap:15px;
- margin-bottom:30px;
+ min-height:62px;display:flex;
+ align-items:center;justify-content:space-between;
+ gap:15px;margin-bottom:25px;
 }
-.page-heading h1{font-size:22px;margin:0;font-weight:800}
-.page-heading p{font-size:11px;color:var(--muted);margin:5px 0}
-.top-actions{display:flex;align-items:center;gap:10px}
-.status{
- border:1px solid var(--line);
- background:var(--panel);
- padding:9px 13px;border-radius:8px;
- font-size:11px;color:var(--green);
+.heading h1{font-size:21px;margin:0;font-weight:900}
+.heading p{font-size:10px;color:var(--muted);margin:5px 0 0}
+.top-right{display:flex;align-items:center;gap:10px}
+.system-pill{
+ display:flex;align-items:center;gap:8px;
+ padding:9px 13px;border:1px solid #354936;
+ background:#142018;border-radius:8px;
+ color:var(--green);font-size:10px;
 }
-.admin-avatar{
- width:39px;height:39px;
+.clock{
+ color:var(--gold);font-size:11px;
+ background:#1b1a12;border:1px solid #49402a;
+ padding:9px 12px;border-radius:8px;
+ font-variant-numeric:tabular-nums;
+}
+.avatar{
+ width:39px;height:39px;border-radius:11px;
  display:grid;place-items:center;
- border-radius:10px;
- background:#293a29;color:var(--gold);
- border:1px solid #53633f;
+ background:linear-gradient(140deg,#3b4c2b,#1a251a);
+ border:1px solid #71844d;color:var(--gold);
+ font-size:18px;
 }
-.section{display:none;animation:fade .35s ease}
+.mobile-toggle{
+ display:none;background:var(--surface2);
+ border:1px solid var(--line);color:white;
+ padding:9px 12px;border-radius:8px;
+}
+.section{display:none;animation:appear .35s ease}
 .section.active{display:block}
-@keyframes fade{
- from{opacity:0;transform:translateY(8px)}
+@keyframes appear{
+ from{opacity:0;transform:translateY(10px)}
  to{opacity:1;transform:translateY(0)}
 }
 .hero{
- background:linear-gradient(115deg,#1d3020,#111a14 60%,#22251a);
- border:1px solid #43583b;
- border-radius:15px;
- padding:25px;
- position:relative;
- overflow:hidden;
- margin-bottom:20px;
+ min-height:205px;position:relative;overflow:hidden;
+ border:1px solid #43583a;border-radius:17px;
+ padding:27px 29px;margin-bottom:18px;
+ background:
+ radial-gradient(ellipse at 80% 10%,#78964a29,transparent 45%),
+ linear-gradient(110deg,#1c3020,#101a13 65%,#1b2418);
+ box-shadow:var(--shadow);
 }
 .hero:after{
- content:"WAA";
- position:absolute;left:25px;top:-35px;
- font-size:125px;font-weight:900;
- color:#ffffff08;letter-spacing:5px;
+ content:"WORLD AT ARMS";
+ position:absolute;left:15px;bottom:-28px;
+ font-size:65px;font-weight:900;
+ color:#ffffff08;white-space:nowrap;
+ letter-spacing:4px;
 }
-.hero h2{font-size:21px;margin:0 0 7px}
-.hero p{font-size:12px;color:#b1c0ae;margin:0}
+.hero:before{
+ content:"✦";
+ position:absolute;left:10%;top:5px;
+ font-size:140px;color:#d7bd6b0c;
+ transform:rotate(15deg);
+}
+.hero-content{position:relative;z-index:2}
 .hero-tag{
- display:inline-block;margin-top:18px;
- border:1px solid #748b53;
- color:var(--gold);
- padding:6px 12px;border-radius:5px;
- font-size:10px;letter-spacing:1px;
+ display:inline-flex;align-items:center;gap:8px;
+ color:var(--gold);font-size:9px;
+ letter-spacing:2px;margin-bottom:15px;
+}
+.hero h2{font-size:24px;margin:0 0 8px;font-weight:900}
+.hero p{font-size:11px;color:#b1c2b1;margin:0}
+.hero-bottom{
+ display:flex;align-items:center;gap:9px;
+ margin-top:21px;flex-wrap:wrap;
+}
+.hero-chip{
+ border:1px solid #627b4b;
+ color:#c8dda9;background:#152218;
+ border-radius:6px;padding:6px 10px;font-size:9px;
 }
 .stats{
- display:grid;
- grid-template-columns:repeat(4,minmax(0,1fr));
- gap:14px;margin-bottom:20px;
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+ gap:13px;margin-bottom:18px;
 }
 .stat{
- background:var(--panel);
- border:1px solid var(--line);
- border-radius:12px;
- padding:17px;
- position:relative;
- overflow:hidden;
+ position:relative;overflow:hidden;
+ min-height:135px;padding:17px;
+ background:linear-gradient(145deg,#111b14,#0c130f);
+ border:1px solid var(--line);border-radius:13px;
+ box-shadow:0 8px 25px #0003;
+ transition:.25s;
+}
+.stat:hover{
+ transform:translateY(-4px);
+ border-color:#607c4b;
+ box-shadow:0 12px 30px #0006;
 }
 .stat:after{
  content:"";position:absolute;
- width:70px;height:70px;
- border:1px solid #9bc66b20;
- border-radius:50%;left:-25px;bottom:-35px;
+ width:100px;height:100px;
+ border:1px solid #9bc66b17;
+ border-radius:50%;left:-35px;bottom:-55px;
+ box-shadow:0 0 0 12px #9bc66b08,0 0 0 25px #9bc66b05;
 }
-.stat-icon{font-size:20px}
-.stat-label{font-size:11px;color:var(--muted);margin-top:12px}
-.stat-value{font-size:25px;font-weight:800;margin-top:4px}
-.stat-change{font-size:10px;color:var(--green);margin-top:5px}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
+.stat-icon{
+ width:36px;height:36px;display:grid;place-items:center;
+ border-radius:10px;background:#243222;
+ color:var(--green);font-size:18px;
+}
+.stat-tag{font-size:9px;color:var(--muted)}
+.stat-label{font-size:10px;color:#9aa99b;margin-top:12px}
+.stat-value{font-size:27px;font-weight:900;margin-top:2px}
+.stat-note{font-size:9px;color:var(--green);margin-top:3px}
+.content-grid{
+ display:grid;grid-template-columns:1.35fr 1fr;
+ gap:15px;margin-bottom:17px;
+}
 .panel{
- background:var(--panel);
- border:1px solid var(--line);
- border-radius:12px;
- padding:19px;
+ background:linear-gradient(145deg,#101912,#0c130f);
+ border:1px solid var(--line);border-radius:13px;
+ padding:18px;box-shadow:0 8px 25px #0002;
  margin-bottom:16px;
 }
 .panel-head{
  display:flex;align-items:center;
- justify-content:space-between;
- gap:10px;margin-bottom:17px;
+ justify-content:space-between;gap:10px;
+ margin-bottom:17px;
 }
-.panel-head h3{font-size:14px;margin:0}
-.panel-head small{color:var(--muted);font-size:10px}
-.grid-two{display:grid;grid-template-columns:1.3fr 1fr;gap:15px}
+.panel-head h3{font-size:13px;margin:0;font-weight:800}
+.panel-head small{font-size:9px;color:var(--muted)}
+.panel-mark{
+ width:28px;height:28px;display:grid;place-items:center;
+ border:1px solid var(--line);border-radius:7px;color:var(--gold);
+}
+.panel-title{display:flex;align-items:center;gap:9px}
 .activity{
- display:flex;align-items:center;gap:12px;
- padding:12px 0;border-bottom:1px solid #26342a;
+ display:flex;align-items:center;gap:11px;
+ padding:12px 0;border-bottom:1px solid #233126;
 }
 .activity:last-child{border:0}
 .activity-icon{
- width:35px;height:35px;display:grid;place-items:center;
- background:#1d2b20;border-radius:9px;
+ width:34px;height:34px;flex-shrink:0;
+ display:grid;place-items:center;
+ background:#1a291c;border:1px solid #304330;
+ border-radius:9px;font-size:15px;
 }
-.activity-text{font-size:11px}
-.activity-text small{display:block;color:var(--muted);margin-top:3px}
-.progress{
- height:6px;background:#26332a;
- border-radius:10px;overflow:hidden;margin-top:10px;
+.activity-main{flex:1;font-size:10px}
+.activity-main small{
+ display:block;color:var(--muted);font-size:9px;margin-top:4px;
 }
-.progress span{
- display:block;height:100%;
- background:linear-gradient(90deg,#688b49,#b6d77d);
- border-radius:10px;
-}
-.action-grid{
+.activity-time{font-size:9px;color:#718174}
+.quick-grid{
  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
 }
-.action{
- border:1px solid var(--line);
- background:#151f18;color:var(--text);
- padding:15px 10px;border-radius:10px;
- text-align:right;font-size:11px;
+.quick{
+ text-align:right;color:var(--white);
+ padding:14px;background:#131e16;
+ border:1px solid #2a3b2c;border-radius:10px;
  transition:.2s;
 }
-.action:hover{border-color:var(--green);background:#203020}
-.action b{display:block;font-size:19px;margin-bottom:7px}
+.quick:hover{background:#1c2b1e;border-color:var(--green)}
+.quick-icon{font-size:21px;margin-bottom:8px}
+.quick strong{display:block;font-size:10px}
+.quick small{font-size:9px;color:var(--muted)}
+.mini-chart{
+ height:125px;display:flex;align-items:end;
+ gap:9px;padding:10px 5px 0;
+ border-bottom:1px solid #344537;
+}
+.chart-bar{
+ flex:1;min-width:8px;border-radius:5px 5px 0 0;
+ background:linear-gradient(to top,#527d3e,#b4d77c);
+ opacity:.8;transition:.3s;
+ animation:grow .8s ease both;
+}
+.chart-bar:hover{opacity:1;filter:brightness(1.3)}
+@keyframes grow{
+ from{height:0}
+}
+.chart-labels{
+ display:flex;justify-content:space-around;
+ color:var(--muted);font-size:8px;margin-top:8px;
+}
+.badge{
+ display:inline-block;padding:4px 8px;
+ border-radius:20px;font-size:9px;
+ color:var(--green);background:#203323;
+}
+.badge.gold{color:var(--gold);background:#39311d}
+.badge.red{color:#f18a7e;background:#3a211f}
+.badge.blue{color:#8ac8e2;background:#1a3039}
+.btn{
+ padding:9px 14px;border:1px solid #526c42;
+ background:#263b25;color:#e0efcf;
+ border-radius:7px;font-size:10px;
+ transition:.2s;
+}
+.btn:hover{filter:brightness(1.2);transform:translateY(-1px)}
+.btn.gold{background:#3a311e;color:var(--gold);border-color:#75623a}
+.btn.red{background:#3b2220;color:#f28e83;border-color:#78443d}
+.btn.gray{background:#202a23;color:#c5d0c6;border-color:#3b4b3e}
 .table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:500px}
+table{width:100%;border-collapse:collapse;min-width:530px}
 th,td{
- padding:13px 10px;text-align:right;
- border-bottom:1px solid #26342a;
- font-size:11px;
+ text-align:right;padding:12px 10px;
+ border-bottom:1px solid #253328;font-size:10px;
 }
 th{color:var(--muted);font-weight:500}
-td{color:#d9e3da}
-.pill{
- display:inline-block;padding:4px 9px;
- border-radius:20px;font-size:9px;
- background:#253728;color:var(--green);
-}
-.pill.red{background:#3a2522;color:#ee8b7f}
-.pill.gold{background:#3a3321;color:var(--gold)}
-.btn{
- border:1px solid #536d43;
- background:#273a25;color:#d9edc9;
- padding:9px 15px;border-radius:7px;
- font-size:11px;
-}
-.btn:hover{background:#354d30}
-.btn.gold{background:#3b321d;color:var(--gold);border-color:#756036}
-.btn.red{background:#3a211f;color:#f28b7f;border-color:#77423c}
-.btn.gray{background:#202a23;color:#c4d0c6;border-color:#39473d}
+td{color:#dce6dc}
 .field{
- width:100%;background:#0b120d;
- border:1px solid #344537;
- border-radius:8px;color:white;
- padding:11px 12px;outline:none;
- margin:7px 0 13px;font-size:12px;
+ display:block;width:100%;padding:11px 12px;
+ background:#09100b;border:1px solid #344737;
+ border-radius:8px;color:white;outline:none;
+ margin:7px 0 14px;font-size:11px;
 }
-.field:focus{border-color:var(--green)}
-label{font-size:11px;color:#aab8ac}
+.field:focus{border-color:var(--green);box-shadow:0 0 0 3px #a4d47712}
+textarea.field{resize:vertical}
+label{font-size:10px;color:#aab8ac}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 13px}
-.mobile-menu{display:none}
 footer{
- text-align:center;color:#59685d;
- font-size:10px;margin-top:30px;
+ text-align:center;color:#56665a;
+ font-size:9px;margin-top:30px;letter-spacing:1px;
 }
-@media(max-width:950px){
+.toast{
+ position:fixed;bottom:20px;left:20px;z-index:100;
+ background:#1c2d1e;border:1px solid #607c4b;
+ color:#e4f0dc;padding:12px 17px;border-radius:9px;
+ font-size:11px;display:none;box-shadow:var(--shadow);
+}
+@media(max-width:1100px){
  .stats{grid-template-columns:repeat(2,1fr)}
- .grid-two{grid-template-columns:1fr}
+ .content-grid{grid-template-columns:1fr}
 }
-@media(max-width:650px){
- .sidebar{
-  width:260px;right:-270px;
-  transition:.3s;box-shadow:0 0 50px #0008;
- }
+@media(max-width:700px){
+ .sidebar{right:-285px;width:270px;box-shadow:var(--shadow)}
  .sidebar.open{right:0}
- .main{width:100%;margin:0;padding:17px 13px 40px}
- .mobile-menu{display:grid;place-items:center}
- .topbar{align-items:flex-start}
- .page-heading h1{font-size:17px}
- .status{display:none}
- .hero{padding:19px}
- .hero h2{font-size:17px}
+ .main{width:100%;margin:0;padding:16px 13px 40px}
+ .mobile-toggle{display:block}
+ .heading h1{font-size:16px}
+ .heading p{font-size:9px}
+ .system-pill{display:none}
+ .clock{font-size:9px;padding:8px}
+ .hero{padding:21px 17px;min-height:190px}
+ .hero h2{font-size:19px}
+ .hero:after{font-size:43px}
  .stats{gap:9px}
- .stat{padding:12px}
- .stat-value{font-size:21px}
+ .stat{padding:12px;min-height:125px}
+ .stat-value{font-size:23px}
+ .stat-label{font-size:9px}
  .form-grid{grid-template-columns:1fr}
+ .panel{padding:14px}
+}
+@media(max-width:360px){
+ .stats{grid-template-columns:1fr 1fr}
+ .stat-value{font-size:20px}
 }
 </style>
 </head>
 
 <body>
-<div class="app">
+<div class="ambient"></div>
+<div class="ambient two"></div>
+<div class="scanline"></div>
 
+<div class="app">
 <aside class="sidebar" id="sidebar">
+
  <div class="brand">
-  <div class="brand-logo">⚔</div>
+  <div class="brand-emblem">⚔</div>
   <div>
-   <h2>WORLD AT ARMS</h2>
-   <small>COMMAND CENTER</small>
+   <div class="brand-name">WORLD AT ARMS</div>
+   <div class="brand-sub">GLOBAL COMMAND</div>
   </div>
  </div>
 
- <div class="nav-title">فرماندهی اصلی</div>
- <div class="nav active" data-page="dashboard"><span class="ico">◈</span> داشبورد</div>
- <div class="nav" data-page="worlds"><span class="ico">🌐</span> مدیریت جهان‌ها</div>
- <div class="nav" data-page="countries"><span class="ico">⚑</span> مدیریت کشورها</div>
- <div class="nav" data-page="players"><span class="ico">♟</span> مدیریت بازیکنان</div>
+ <div class="side-caption">COMMAND CENTER</div>
+ <div class="nav active" data-page="dashboard"><span class="nav-icon">◈</span><span class="nav-label">داشبورد مرکزی</span></div>
+ <div class="nav" data-page="worlds"><span class="nav-icon">🌐</span><span class="nav-label">مدیریت جهان‌ها</span></div>
+ <div class="nav" data-page="countries"><span class="nav-icon">⚑</span><span class="nav-label">فرماندهی کشورها</span></div>
+ <div class="nav" data-page="players"><span class="nav-icon">♟</span><span class="nav-label">مدیریت بازیکنان</span></div>
 
- <div class="nav-title">امکانات مدیریتی</div>
- <div class="nav" data-page="economy"><span class="ico">◉</span> اقتصاد و خزانه</div>
- <div class="nav" data-page="messages"><span class="ico">✉</span> مرکز پیام‌ها</div>
- <div class="nav" data-page="warnings"><span class="ico">⚠</span> اخطارها</div>
- <div class="nav" data-page="logs"><span class="ico">▤</span> گزارش فعالیت‌ها</div>
+ <div class="side-caption">STRATEGIC OPERATIONS</div>
+ <div class="nav" data-page="economy"><span class="nav-icon">◉</span><span class="nav-label">اقتصاد و خزانه</span></div>
+ <div class="nav" data-page="messages"><span class="nav-icon">✉</span><span class="nav-label">مرکز ارتباطات</span></div>
+ <div class="nav" data-page="warnings"><span class="nav-icon">⚠</span><span class="nav-label">اخطار و نظارت</span></div>
+ <div class="nav" data-page="events"><span class="nav-icon">✦</span><span class="nav-label">رویدادهای جهانی</span></div>
 
- <div class="nav-title">سیستم</div>
- <div class="nav" data-page="settings"><span class="ico">⚙</span> تنظیمات</div>
+ <div class="side-caption">SYSTEM CONTROL</div>
+ <div class="nav" data-page="logs"><span class="nav-icon">▤</span><span class="nav-label">گزارش عملیات</span></div>
+ <div class="nav" data-page="admins"><span class="nav-icon">♛</span><span class="nav-label">مدیران و دسترسی‌ها</span></div>
+ <div class="nav" data-page="settings"><span class="nav-icon">⚙</span><span class="nav-label">تنظیمات سیستم</span></div>
 
- <div class="sidebar-bottom">
-  <div><span class="online-dot"></span><b style="font-size:11px">سیستم آماده است</b></div>
-  <small>WORLD AT ARMS • ADMIN PANEL</small>
+ <div class="sidebar-footer">
+  <div class="server-status"><span class="pulse-dot"></span> مرکز فرماندهی فعال</div>
+  <small>FRONTEND PREVIEW • SERVER NOT CONNECTED</small>
  </div>
 </aside>
 
 <main class="main">
  <header class="topbar">
-  <div style="display:flex;align-items:center;gap:11px">
-   <button class="btn mobile-menu" onclick="toggleMenu()">☰</button>
-   <div class="page-heading">
-    <h1 id="pageTitle">داشبورد فرماندهی</h1>
-    <p>مرکز کنترل و مدیریت کل بازی</p>
+  <div style="display:flex;align-items:center;gap:10px">
+   <button class="mobile-toggle" onclick="toggleMenu()">☰</button>
+   <div class="heading">
+    <h1 id="pageTitle">داشبورد مرکزی</h1>
+    <p>GLOBAL STRATEGIC ADMINISTRATION</p>
    </div>
   </div>
-  <div class="top-actions">
-   <div class="status">● SYSTEM ONLINE</div>
-   <div class="admin-avatar">♛</div>
+  <div class="top-right">
+   <div class="system-pill"><span class="pulse-dot"></span> COMMAND CENTER</div>
+   <div class="clock" id="clock">00:00:00</div>
+   <div class="avatar">♛</div>
   </div>
  </header>
 
  <section class="section active" id="dashboard">
   <div class="hero">
-   <h2>به مرکز فرماندهی خوش آمدید</h2>
-   <p>تمام جهان‌ها، کشورها و بازیکنان بازی از این بخش مدیریت می‌شوند.</p>
-   <span class="hero-tag">WORLD AT ARMS • GLOBAL CONTROL</span>
+   <div class="hero-content">
+    <div class="hero-tag">✦ GLOBAL WARFARE MANAGEMENT SYSTEM</div>
+    <h2>مرکز فرماندهی جهانی</h2>
+    <p>کنترل کامل جهان‌ها، کشورها، بازیکنان و اقتصاد بازی WORLD AT ARMS</p>
+    <div class="hero-bottom">
+     <span class="hero-chip">COMMANDER ACCESS</span>
+     <span class="hero-chip">GLOBAL CONTROL</span>
+     <span class="hero-chip">ALL COUNTRIES FREE</span>
+    </div>
+   </div>
   </div>
 
   <div class="stats">
    <div class="stat">
-    <div class="stat-icon">🌐</div>
-    <div class="stat-label">تعداد جهان‌ها</div>
+    <div class="stat-top"><div class="stat-icon">🌐</div><span class="stat-tag">WORLDS</span></div>
+    <div class="stat-label">جهان‌های فعال</div>
     <div class="stat-value" id="worldCount">۰</div>
-    <div class="stat-change">جهان‌های ثبت‌شده</div>
+    <div class="stat-note">جهان‌های ثبت‌شده</div>
    </div>
    <div class="stat">
-    <div class="stat-icon">⚑</div>
-    <div class="stat-label">تعداد کشورها</div>
+    <div class="stat-top"><div class="stat-icon">⚑</div><span class="stat-tag">COUNTRIES</span></div>
+    <div class="stat-label">مجموع کشورها</div>
     <div class="stat-value" id="countryCount">۰</div>
-    <div class="stat-change">کشورهای بازی</div>
+    <div class="stat-note">کشورهای تمام جهان‌ها</div>
    </div>
    <div class="stat">
-    <div class="stat-icon">♟</div>
-    <div class="stat-label">بازیکنان</div>
+    <div class="stat-top"><div class="stat-icon">♟</div><span class="stat-tag">PLAYERS</span></div>
+    <div class="stat-label">بازیکنان ثبت‌شده</div>
     <div class="stat-value" id="playerCount">۰</div>
-    <div class="stat-change">بازیکنان ثبت‌شده</div>
+    <div class="stat-note">اعضای بازی</div>
    </div>
    <div class="stat">
-    <div class="stat-icon">◉</div>
+    <div class="stat-top"><div class="stat-icon">◈</div><span class="stat-tag">AVAILABLE</span></div>
     <div class="stat-label">کشورهای آزاد</div>
     <div class="stat-value" id="freeCount">۰</div>
-    <div class="stat-change">آماده انتخاب</div>
+    <div class="stat-note">آماده انتخاب بازیکنان</div>
    </div>
   </div>
 
-  <div class="grid-two">
+  <div class="content-grid">
    <div class="panel">
     <div class="panel-head">
-     <h3>آخرین فعالیت‌ها</h3>
-     <small>LIVE ACTIVITY</small>
+     <div class="panel-title"><span class="panel-mark">▤</span><h3>فعالیت‌های اخیر سیستم</h3></div>
+     <small>RECENT OPERATIONS</small>
     </div>
     <div class="activity">
      <div class="activity-icon">⚙</div>
-     <div class="activity-text">پنل مدیریت راه‌اندازی شد<small>وضعیت: نمایشی، منتظر اتصال سرور</small></div>
+     <div class="activity-main">رابط فرماندهی بارگذاری شد<small>نسخه طراحی اولیه پنل</small></div>
+     <div class="activity-time">SYSTEM</div>
     </div>
     <div class="activity">
      <div class="activity-icon">🌐</div>
-     <div class="activity-text">مرکز مدیریت جهان‌ها<small>آماده اتصال به دیتابیس</small></div>
+     <div class="activity-main">ماژول مدیریت جهان‌ها<small>آماده اتصال به سرور</small></div>
+     <div class="activity-time">READY</div>
     </div>
     <div class="activity">
      <div class="activity-icon">♟</div>
-     <div class="activity-text">مرکز مدیریت بازیکنان<small>آماده اتصال به دیتابیس</small></div>
+     <div class="activity-main">ماژول بازیکنان<small>آماده اتصال به سرور</small></div>
+     <div class="activity-time">READY</div>
+    </div>
+    <div class="activity">
+     <div class="activity-icon">◉</div>
+     <div class="activity-main">سیستم اقتصاد بازی<small>منتظر اتصال امن دیتابیس</small></div>
+     <div class="activity-time">OFFLINE</div>
     </div>
    </div>
 
    <div class="panel">
     <div class="panel-head">
-     <h3>دسترسی سریع</h3>
+     <div class="panel-title"><span class="panel-mark">✦</span><h3>فرمان‌های سریع</h3></div>
      <small>QUICK COMMANDS</small>
     </div>
-    <div class="action-grid">
-     <button class="action" onclick="go('worlds')"><b>🌐</b>ساخت جهان</button>
-     <button class="action" onclick="go('players')"><b>♟</b>مدیریت بازیکن</button>
-     <button class="action" onclick="go('economy')"><b>◉</b>تغییر موجودی</button>
-     <button class="action" onclick="go('messages')"><b>✉</b>ارسال پیام</button>
+    <div class="quick-grid">
+     <button class="quick" onclick="go('worlds')"><div class="quick-icon">🌐</div><strong>ساخت جهان</strong><small>ایجاد دنیای جدید</small></button>
+     <button class="quick" onclick="go('players')"><div class="quick-icon">♟</div><strong>بازیکنان</strong><small>مدیریت اعضا</small></button>
+     <button class="quick" onclick="go('economy')"><div class="quick-icon">◉</div><strong>خزانه</strong><small>کنترل اقتصاد</small></button>
+     <button class="quick" onclick="go('messages')"><div class="quick-icon">✉</div><strong>ارسال پیام</strong><small>ارتباط با کاربران</small></button>
+    </div>
+   </div>
+  </div>
+
+  <div class="content-grid">
+   <div class="panel">
+    <div class="panel-head">
+     <div class="panel-title"><span class="panel-mark">▥</span><h3>نمای کلی فعالیت</h3></div>
+     <small>ACTIVITY OVERVIEW</small>
+    </div>
+    <div class="mini-chart">
+     <div class="chart-bar" style="height:35%"></div>
+     <div class="chart-bar" style="height:55%"></div>
+     <div class="chart-bar" style="height:43%"></div>
+     <div class="chart-bar" style="height:72%"></div>
+     <div class="chart-bar" style="height:60%"></div>
+     <div class="chart-bar" style="height:88%"></div>
+     <div class="chart-bar" style="height:67%"></div>
+     <div class="chart-bar" style="height:95%"></div>
+     <div class="chart-bar" style="height:76%"></div>
+     <div class="chart-bar" style="height:100%"></div>
+    </div>
+    <div class="chart-labels"><span>۱</span><span>۲</span><span>۳</span><span>۴</span><span>۵</span><span>۶</span><span>۷</span><span>۸</span><span>۹</span><span>۱۰</span></div>
+    <small style="color:var(--muted);font-size:9px">نمودار فعلاً نمایشی است و پس از اتصال، داده واقعی نمایش داده می‌شود.</small>
+   </div>
+
+   <div class="panel">
+    <div class="panel-head">
+     <div class="panel-title"><span class="panel-mark">◉</span><h3>وضعیت زیرسیستم‌ها</h3></div>
+     <small>MODULE STATUS</small>
+    </div>
+    <div class="activity">
+     <div class="activity-icon">🖥</div>
+     <div class="activity-main">رابط کاربری<small>در حال اجرا</small></div>
+     <span class="badge">READY</span>
+    </div>
+    <div class="activity">
+     <div class="activity-icon">🗄</div>
+     <div class="activity-main">پایگاه داده<small>هنوز متصل نشده</small></div>
+     <span class="badge gold">PENDING</span>
+    </div>
+    <div class="activity">
+     <div class="activity-icon">🤖</div>
+     <div class="activity-main">ربات تلگرام<small>هنوز متصل نشده</small></div>
+     <span class="badge gold">PENDING</span>
     </div>
    </div>
   </div>
  </section>
 
- <section class="section" id="worlds">
-  <div class="panel">
-   <div class="panel-head"><h3>مدیریت جهان‌ها</h3><span class="pill">WORLD CONTROL</span></div>
-   <div class="form-grid">
-    <div><label>نام جهان</label><input class="field" placeholder="مثلاً World 1"></div>
-    <div><label>حداکثر بازیکنان</label><input class="field" type="number" placeholder="32"></div>
-   </div>
-   <label>توضیحات جهان</label>
-   <textarea class="field" rows="3" placeholder="توضیحات جهان..."></textarea>
-   <button class="btn" onclick="demo('ساخت جهان پس از اتصال سرور فعال می‌شود')">＋ ساخت جهان جدید</button>
+ 
+<!-- =====================================
+PART 2 : WORLD / COUNTRY / PLAYER COMMAND
+===================================== -->
+
+<section class="section" id="worlds">
+ <div class="hero">
+  <div class="hero-content">
+   <div class="hero-tag">🌐 GLOBAL WORLD MANAGEMENT</div>
+   <h2>مدیریت جهان‌های بازی</h2>
+   <p>ایجاد، کنترل و مدیریت فصل‌ها و جهان‌های استراتژیک</p>
   </div>
-  <div class="panel">
-   <div class="panel-head"><h3>فهرست جهان‌ها</h3><small>WORLD DATABASE</small></div>
-   <div class="table-wrap"><table>
-    <thead><tr><th>نام جهان</th><th>بازیکنان</th><th>وضعیت</th><th>عملیات</th></tr></thead>
-    <tbody><tr><td colspan="4">برای نمایش جهان‌ها، اتصال سرور لازم است.</td></tr></tbody>
-   </table></div>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><div class="stat-icon">🌐</div><div class="stat-label">کل جهان‌ها</div><div class="stat-value">—</div><div class="stat-note">داده سرور</div></div>
+  <div class="stat"><div class="stat-icon">🟢</div><div class="stat-label">جهان‌های فعال</div><div class="stat-value">—</div><div class="stat-note">داده سرور</div></div>
+  <div class="stat"><div class="stat-icon">⏸</div><div class="stat-label">جهان‌های متوقف</div><div class="stat-value">—</div><div class="stat-note">داده سرور</div></div>
+  <div class="stat"><div class="stat-icon">🏁</div><div class="stat-label">فصل‌های پایان‌یافته</div><div class="stat-value">—</div><div class="stat-note">داده سرور</div></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">＋</span><h3>ایجاد جهان جدید</h3></div><span class="badge gold">NEW WORLD</span></div>
+  <div class="form-grid">
+   <div><label>نام جهان</label><input class="field" id="worldName" placeholder="مثلاً WORLD 03"></div>
+   <div><label>حداکثر بازیکنان</label><input class="field" id="worldCapacity" type="number" value="32" min="1"></div>
+   <div><label>شماره فصل</label><input class="field" id="worldSeason" type="number" value="1" min="1"></div>
+   <div><label>وضعیت اولیه</label><select class="field" id="worldStatus"><option value="waiting">در انتظار شروع</option><option value="active">فعال</option><option value="paused">متوقف</option></select></div>
   </div>
- </section>
+  <label>توضیحات جهان</label>
+  <textarea class="field" id="worldDescription" rows="3" placeholder="توضیحات و قوانین این جهان..."></textarea>
+  <button class="btn" onclick="showToast('ساخت جهان پس از اتصال امن سرور فعال می‌شود')">＋ ایجاد جهان</button>
+ </div>
 
- <section class="section" id="countries">
-  <div class="panel">
-   <div class="panel-head"><h3>مدیریت کشورها</h3><span class="pill">COUNTRY CONTROL</span></div>
-   <div class="form-grid">
-    <div><label>انتخاب جهان</label><select class="field"><option>انتخاب جهان</option></select></div>
-    <div><label>جستجوی کشور</label><input class="field" placeholder="نام کشور..."></div>
-   </div>
-   <div class="table-wrap"><table>
-    <thead><tr><th>کشور</th><th>بازیکن</th><th>موجودی</th><th>وضعیت</th><th>عملیات</th></tr></thead>
-    <tbody><tr><td colspan="5">اطلاعات کشورها بعد از اتصال سرور نمایش داده می‌شود.</td></tr></tbody>
-   </table></div>
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">▤</span><h3>فهرست جهان‌ها</h3></div><span class="badge">WORLD DATABASE</span></div>
+  <div class="form-grid">
+   <div><label>جستجوی جهان</label><input class="field" placeholder="نام یا شناسه جهان"></div>
+   <div><label>فیلتر وضعیت</label><select class="field"><option>همه وضعیت‌ها</option><option>فعال</option><option>متوقف</option><option>در انتظار</option><option>پایان‌یافته</option></select></div>
   </div>
- </section>
+  <div class="table-wrap"><table>
+   <thead><tr><th>جهان</th><th>فصل</th><th>بازیکنان</th><th>وضعیت</th><th>مدیریت</th></tr></thead>
+   <tbody><tr><td colspan="5">پس از اتصال سرور، اطلاعات جهان‌ها اینجا نمایش داده می‌شود.</td></tr></tbody>
+  </table></div>
+ </div>
 
- <section class="section" id="players">
-  <div class="panel">
-   <div class="panel-head"><h3>مرکز مدیریت بازیکنان</h3><span class="pill">PLAYER CONTROL</span></div>
-   <input class="field" placeholder="جستجو با شناسه تلگرام یا نام کاربری">
-   <div class="table-wrap"><table>
-    <thead><tr><th>شناسه</th><th>نام کاربری</th><th>کشور</th><th>وضعیت</th><th>عملیات</th></tr></thead>
-    <tbody><tr><td colspan="5">اطلاعات بازیکنان بعد از اتصال سرور نمایش داده می‌شود.</td></tr></tbody>
-   </table></div>
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">⚙</span><h3>فرمان‌های جهان انتخاب‌شده</h3></div></div>
+  <label>شناسه جهان</label>
+  <input class="field" id="worldCommandId" placeholder="World UUID">
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+   <button class="btn" onclick="showToast('فرمان شروع جهان پس از اتصال سرور فعال می‌شود')">▶ شروع جهان</button>
+   <button class="btn gold" onclick="showToast('توقف جهان پس از اتصال سرور فعال می‌شود')">Ⅱ توقف جهان</button>
+   <button class="btn red" onclick="showToast('پایان فصل پس از اتصال سرور فعال می‌شود')">🏁 پایان فصل</button>
   </div>
- </section>
+ </div>
+</section>
 
- <section class="section" id="economy">
-  <div class="panel">
-   <div class="panel-head"><h3>مدیریت اقتصاد و خزانه</h3><span class="pill gold">TREASURY</span></div>
-   <div class="form-grid">
-    <div><label>شناسه کشور</label><input class="field" placeholder="Country ID"></div>
-    <div><label>مقدار پول</label><input class="field" type="number" placeholder="مقدار"></div>
-   </div>
-   <label>دلیل تغییر موجودی</label>
-   <input class="field" placeholder="توضیح عملیات">
-   <button class="btn" onclick="demo('افزایش موجودی پس از اتصال سرور فعال می‌شود')">＋ افزایش پول</button>
-   <button class="btn red" onclick="demo('کاهش موجودی پس از اتصال سرور فعال می‌شود')">− کاهش پول</button>
+<section class="section" id="countries">
+ <div class="hero">
+  <div class="hero-content">
+   <div class="hero-tag">⚑ NATIONAL COMMAND SYSTEM</div>
+   <h2>فرماندهی کشورها</h2>
+   <p>مدیریت مالکیت، وضعیت و موجودی تمام کشورهای جهان‌ها</p>
+   <div class="hero-bottom"><span class="hero-chip">ALL COUNTRIES FREE</span><span class="hero-chip">COUNTRY CONTROL</span></div>
   </div>
- </section>
+ </div>
 
- <section class="section" id="messages">
-  <div class="panel">
-   <div class="panel-head"><h3>مرکز پیام‌رسانی</h3><span class="pill">COMMUNICATION</span></div>
-   <label>نوع ارسال</label>
-   <select class="field"><option>پیام همگانی</option><option>پیام به یک بازیکن</option><option>پیام به یک جهان</option></select>
-   <label>شناسه بازیکن (برای پیام خصوصی)</label>
-   <input class="field" placeholder="Telegram ID">
-   <label>عنوان پیام</label>
-   <input class="field" placeholder="عنوان">
-   <label>متن پیام</label>
-   <textarea class="field" rows="5" placeholder="متن پیام را بنویسید..."></textarea>
-   <button class="btn" onclick="demo('ارسال پیام پس از اتصال ربات فعال می‌شود')">ارسال پیام</button>
+ <div class="stats">
+  <div class="stat"><div class="stat-icon">⚑</div><div class="stat-label">کل کشورها</div><div class="stat-value">—</div><div class="stat-note">اطلاعات سرور</div></div>
+  <div class="stat"><div class="stat-icon">♟</div><div class="stat-label">کشورهای تصاحب‌شده</div><div class="stat-value">—</div><div class="stat-note">اطلاعات سرور</div></div>
+  <div class="stat"><div class="stat-icon">◈</div><div class="stat-label">کشورهای آزاد</div><div class="stat-value">—</div><div class="stat-note">اطلاعات سرور</div></div>
+  <div class="stat"><div class="stat-icon">🔒</div><div class="stat-label">کشورهای قفل‌شده</div><div class="stat-value">—</div><div class="stat-note">اطلاعات سرور</div></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">⌕</span><h3>جستجو و فیلتر کشورها</h3></div><span class="badge">COUNTRY DATABASE</span></div>
+  <div class="form-grid">
+   <div><label>جهان</label><select class="field" id="countryWorldFilter"><option value="">انتخاب جهان</option></select></div>
+   <div><label>نام کشور</label><input class="field" id="countrySearch" placeholder="جستجوی کشور..."></div>
+   <div><label>وضعیت مالکیت</label><select class="field" id="countryOwnerFilter"><option value="">همه کشورها</option><option value="free">آزاد</option><option value="owned">دارای بازیکن</option></select></div>
+   <div><label>وضعیت دسترسی</label><select class="field"><option>همه</option><option>باز</option><option>قفل‌شده</option></select></div>
   </div>
- </section>
+  <button class="btn gray" onclick="showToast('فیلترها بعد از اتصال دیتابیس فعال می‌شوند')">⌕ جستجو</button>
+ </div>
 
- <section class="section" id="warnings">
-  <div class="panel">
-   <div class="panel-head"><h3>مرکز اخطارها</h3><span class="pill red">MODERATION</span></div>
-   <label>شناسه تلگرام بازیکن</label>
-   <input class="field" placeholder="Telegram ID">
-   <label>دلیل اخطار</label>
-   <textarea class="field" rows="4" placeholder="دلیل اخطار را بنویسید..."></textarea>
-   <button class="btn red" onclick="demo('ثبت اخطار پس از اتصال سرور فعال می‌شود')">⚠ ثبت اخطار</button>
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">▤</span><h3>فهرست کشورها</h3></div><small>COUNTRY REGISTRY</small></div>
+  <div class="table-wrap"><table>
+   <thead><tr><th>نام کشور</th><th>جهان</th><th>بازیکن</th><th>موجودی</th><th>وضعیت</th><th>عملیات</th></tr></thead>
+   <tbody><tr><td colspan="6">اطلاعات کشورها بعد از اتصال سرور نمایش داده می‌شود.</td></tr></tbody>
+  </table></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">⚙</span><h3>فرمان مستقیم کشور</h3></div></div>
+  <div class="form-grid">
+   <div><label>شناسه کشور</label><input class="field" id="countryCommandId" placeholder="Country UUID"></div>
+   <div><label>شناسه تلگرام بازیکن جدید</label><input class="field" id="countryPlayerId" placeholder="Telegram ID"></div>
+   <div><label>نام کاربری بازیکن</label><input class="field" id="countryPlayerName" placeholder="@username"></div>
   </div>
- </section>
-
- <section class="section" id="logs">
-  <div class="panel">
-   <div class="panel-head"><h3>گزارش فعالیت‌ها</h3><span class="pill">SYSTEM LOGS</span></div>
-   <div class="table-wrap"><table>
-    <thead><tr><th>زمان</th><th>مدیر</th><th>فعالیت</th><th>جزئیات</th></tr></thead>
-    <tbody><tr><td colspan="4">گزارش‌ها بعد از اتصال سرور نمایش داده می‌شوند.</td></tr></tbody>
-   </table></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+   <button class="btn" onclick="showToast('واگذاری کشور پس از اتصال سرور فعال می‌شود')">⚑ واگذاری کشور</button>
+   <button class="btn gold" onclick="showToast('آزادسازی کشور پس از اتصال سرور فعال می‌شود')">↺ آزادسازی کشور</button>
+   <button class="btn red" onclick="showToast('قفل کشور پس از اتصال سرور فعال می‌شود')">🔒 قفل کشور</button>
   </div>
- </section>
+ </div>
+</section>
 
- <section class="section" id="settings">
-  <div class="panel">
-   <div class="panel-head"><h3>تنظیمات سیستم</h3><span class="pill">SYSTEM SETTINGS</span></div>
-   <label>نام بازی</label>
-   <input class="field" value="WORLD AT ARMS">
-   <label>واحد پول</label>
-   <input class="field" value="دلار">
-   <label>وضعیت بازی</label>
-   <select class="field"><option>فعال</option><option>توقف موقت</option><option>حالت تعمیرات</option></select>
-   <p style="font-size:10px;color:var(--muted)">تنظیمات پس از اتصال امن به سرور ذخیره خواهند شد.</p>
+<section class="section" id="players">
+ <div class="hero">
+  <div class="hero-content">
+   <div class="hero-tag">♟ GLOBAL PLAYER INTELLIGENCE</div>
+   <h2>مرکز اطلاعات بازیکنان</h2>
+   <p>مدیریت کاربران، بررسی سوابق، دسترسی‌ها و وضعیت حساب‌ها</p>
   </div>
- </section>
+ </div>
 
- <footer>WORLD AT ARMS • COMMAND CENTER • ADMINISTRATION SYSTEM</footer>
-</main>
-</div>
+ <div class="stats">
+  <div class="stat"><div class="stat-icon">♟</div><div class="stat-label">کل بازیکنان</div><div class="stat-value">—</div><div class="stat-note">ثبت‌شده در سیستم</div></div>
+  <div class="stat"><div class="stat-icon">🟢</div><div class="stat-label">بازیکنان فعال</div><div class="stat-value">—</div><div class="stat-note">اطلاعات سرور</div></div>
+  <div class="stat"><div class="stat-icon">⚠</div><div class="stat-label">دارای اخطار</div><div class="stat-value">—</div><div class="stat-note">اطلاعات سرور</div></div>
+  <div class="stat"><div class="stat-icon">⛔</div><div class="stat-label">مسدودشده</div><div class="stat-value">—</div><div class="stat-note">اطلاعات سرور</div></div>
+ </div>
 
-<div id="toast" style="
-position:fixed;bottom:22px;left:20px;z-index:100;
-background:#1b2b1d;border:1px solid #536d43;
-color:#dcebd7;padding:12px 18px;border-radius:9px;
-font-size:12px;display:none;box-shadow:0 8px 30px #0008">
-</div>
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">⌕</span><h3>جستجوی بازیکن</h3></div><span class="badge">PLAYER SEARCH</span></div>
+  <input class="field" id="playerSearch" placeholder="شناسه تلگرام، نام یا نام کاربری">
+  <div class="form-grid">
+   <div><label>وضعیت حساب</label><select class="field"><option>همه</option><option>فعال</option><option>مسدود</option></select></div>
+   <div><label>وضعیت کشور</label><select class="field"><option>همه</option><option>دارای کشور</option><option>بدون کشور</option></select></div>
+  </div>
+  <button class="btn" onclick="showToast('جستجوی بازیکن پس از اتصال سرور فعال می‌شود')">⌕ جستجو</button>
+ </div>
 
-<script>
-function go(page){
- document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
- document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));
- const target=document.getElementById(page);
- if(target) target.classList.add('active');
- const nav=document.querySelector('.nav[data-page="'+page+'"]');
- if(nav) nav.classList.add('active');
- const titles={
- dashboard:'داشبورد فرماندهی',
- worlds:'مدیریت جهان‌ها',
- countries:'مدیریت کشورها',
- players:'مدیریت بازیکنان',
- economy:'اقتصاد و خزانه',
- messages:'مرکز پیام‌ها',
- warnings:'مرکز اخطارها',
- logs:'گزارش فعالیت‌ها',
- settings:'تنظیمات سیستم'
- };
- document.getElementById('pageTitle').textContent=titles[page]||'WORLD AT ARMS';
- document.getElementById('sidebar').classList.remove('open');
-}
-document.querySelectorAll('.nav').forEach(item=>{
- item.addEventListener('click',()=>go(item.dataset.page));
-});
-function toggleMenu(){
- document.getElementById('sidebar').classList.toggle('open');
-}
-function demo(message){
- const t=document.getElementById('toast');
- t.textContent=message;
- t.style.display='block';
- clearTimeout(window.toastTimer);
- window.toastTimer=setTimeout(()=>t.style.display='none',2800);
-}
-</script>
-</body>
-    </html>
-    
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">▤</span><h3>فهرست بازیکنان</h3></div><small>PLAYER REGISTRY</small></div>
+  <div class="table-wrap"><table>
+   <thead><tr><th>شناسه تلگرام</th><th>نام کاربری</th><th>کشور</th><th>اخطارها</th><th>وضعیت</th><th>عملیات</th></tr></thead>
+   <tbody><tr><td colspan="6">اطلاعات بازیکنان پس از اتصال سرور نمایش داده می‌شود.</td></tr></tbody>
+  </table></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">♟</span><h3>مدیریت مستقیم حساب</h3></div></div>
+  <label>شناسه تلگرام بازیکن</label>
+  <input class="field" id="playerCommandId" placeholder="Telegram ID">
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+   <button class="btn" onclick="showToast('مشاهده پروفایل پس از اتصال سرور فعال می‌شود')">مشاهده پروفایل</button>
+   <button class="btn gold" onclick="showToast('رفع محدودیت پس از اتصال سرور فعال می‌شود')">رفع محدودیت</button>
+   <button class="btn red" onclick="showToast('مسدودسازی پس از اتصال سرور فعال می‌شود')">مسدودسازی</button>
+  </div>
+ </div>
+</section>
+
+<!-- END PART 2 -->
+
+<!-- =====================================
+PART 3 : ECONOMY / MESSAGES / EVENTS
+===================================== -->
+
+<section class="section" id="economy">
+ <div class="hero">
+  <div class="hero-content">
+   <div class="hero-tag">◈ GLOBAL ECONOMY CONTROL</div>
+   <h2>مرکز فرماندهی اقتصاد</h2>
+   <p>کنترل موجودی کشورها، اعتباردهی، کسر پول و بررسی تراکنش‌ها</p>
+  </div>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><div class="stat-icon">◈</div><div class="stat-label">کل پول جهان‌ها</div><div class="stat-value">—</div><div class="stat-note">داده سرور</div></div>
+  <div class="stat"><div class="stat-icon">↗</div><div class="stat-label">مجموع واریزی‌ها</div><div class="stat-value">—</div><div class="stat-note">داده سرور</div></div>
+  <div class="stat"><div class="stat-icon">↘</div><div class="stat-label">مجموع برداشت‌ها</div><div class="stat-value">—</div><div class="stat-note">داده سرور</div></div>
+  <div class="stat"><div class="stat-icon">⇄</div><div class="stat-label">تعداد تراکنش‌ها</div><div class="stat-value">—</div><div class="stat-note">داده سرور</div></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">◈</span><h3>تغییر موجودی بازیکن یا کشور</h3></div><span class="badge gold">ADMIN ECONOMY</span></div>
+  <div class="form-grid">
+   <div><label>شناسه کشور</label><input class="field" id="moneyCountry" placeholder="Country UUID"></div>
+   <div><label>شناسه بازیکن (اختیاری)</label><input class="field" id="moneyPlayer" placeholder="Telegram ID"></div>
+   <div><label>مقدار پول</label><input class="field" id="moneyAmount" type="number" min="1" placeholder="مثلاً 5000"></div>
+   <div><label>نوع عملیات</label><select class="field" id="moneyOperation"><option value="credit">افزایش موجودی +</option><option value="debit">کاهش موجودی −</option></select></div>
+  </div>
+  <label>دلیل تغییر موجودی</label>
+  <textarea class="field" id="moneyReason" rows="3" placeholder="دلیل انجام عملیات را بنویسید..."></textarea>
+  <button class="btn" onclick="showToast('تغییر موجودی پس از اتصال امن سرور فعال می‌شود')">◈ ثبت عملیات اقتصادی</button>
+  <p class="muted">تمام تغییرات باید با ثبت شناسه مدیر، دلیل و سابقه تراکنش انجام شوند.</p>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">⇄</span><h3>تاریخچه تراکنش‌ها</h3></div><span class="badge">TRANSACTION LOG</span></div>
+  <div class="form-grid">
+   <div><label>جستجوی شناسه</label><input class="field" placeholder="شناسه بازیکن یا کشور"></div>
+   <div><label>نوع تراکنش</label><select class="field"><option>همه تراکنش‌ها</option><option>واریز</option><option>برداشت</option></select></div>
+  </div>
+  <div class="table-wrap"><table>
+   <thead><tr><th>زمان</th><th>شناسه</th><th>نوع</th><th>مقدار</th><th>دلیل</th><th>مدیر</th></tr></thead>
+   <tbody><tr><td colspan="6">تراکنش‌ها پس از اتصال دیتابیس نمایش داده می‌شوند.</td></tr></tbody>
+  </table></div>
+ </div>
+</section>
+
+<section class="section" id="messages">
+ <div class="hero">
+  <div class="hero-content">
+   <div class="hero-tag">✉ GLOBAL COMMUNICATION NETWORK</div>
+   <h2>مرکز پیام‌رسانی</h2>
+   <p>ارسال پیام همگانی، پیام اختصاصی و اطلاعیه‌های جهان‌ها</p>
+  </div>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><div class="stat-icon">✉</div><div class="stat-label">پیام‌های ارسال‌شده</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">🌐</div><div class="stat-label">پیام‌های همگانی</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">♟</div><div class="stat-label">پیام‌های اختصاصی</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">◷</div><div class="stat-label">پیام‌های در انتظار</div><div class="stat-value">—</div></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">✉</span><h3>ارسال پیام جدید</h3></div><span class="badge gold">MESSAGE CENTER</span></div>
+  <div class="form-grid">
+   <div><label>نوع گیرنده</label><select class="field" id="messageTarget" onchange="document.getElementById('messageTargetId').style.display=this.value==='player'?'block':'none'"><option value="all">تمام بازیکنان</option><option value="world">تمام بازیکنان یک جهان</option><option value="player">بازیکن مشخص</option></select></div>
+   <div><label>شناسه جهان یا بازیکن</label><input class="field" id="messageTargetId" style="display:none" placeholder="شناسه مقصد"></div>
+  </div>
+  <label>عنوان پیام</label>
+  <input class="field" id="messageTitle" placeholder="عنوان اطلاعیه">
+  <label>متن پیام</label>
+  <textarea class="field" id="messageBody" rows="6" placeholder="متن پیام خود را بنویسید..."></textarea>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+   <button class="btn" onclick="showToast('ارسال پیام پس از اتصال ربات و سرور فعال می‌شود')">✉ ارسال پیام</button>
+   <button class="btn gray" onclick="document.getElementById('messageTitle').value='';document.getElementById('messageBody').value='';showToast('فرم پیام پاک شد')">پاک‌کردن فرم</button>
+  </div>
+  <p class="muted">ارسال واقعی پیام بعد از اتصال ربات تلگرام و سرور فعال خواهد شد.</p>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">▤</span><h3>تاریخچه پیام‌ها</h3></div></div>
+  <div class="table-wrap"><table>
+   <thead><tr><th>عنوان</th><th>مقصد</th><th>زمان</th><th>مدیر ارسال‌کننده</th><th>وضعیت</th></tr></thead>
+   <tbody><tr><td colspan="5">تاریخچه پیام‌ها پس از اتصال سرور نمایش داده می‌شود.</td></tr></tbody>
+  </table></div>
+ </div>
+</section>
+
+<section class="section" id="warnings">
+ <div class="hero">
+  <div class="hero-content">
+   <div class="hero-tag">⚠ PLAYER DISCIPLINE SYSTEM</div>
+   <h2>مرکز نظارت و اخطارها</h2>
+   <p>رسیدگی به تخلفات، ثبت اخطار و مدیریت محدودیت حساب‌ها</p>
+  </div>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><div class="stat-icon">⚠</div><div class="stat-label">کل اخطارها</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">🟡</div><div class="stat-label">اخطارهای فعال</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">⛔</div><div class="stat-label">محدودیت‌ها</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">✓</div><div class="stat-label">پرونده‌های بسته‌شده</div><div class="stat-value">—</div></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">⚠</span><h3>ثبت اخطار جدید</h3></div><span class="badge gold">MODERATION</span></div>
+  <label>شناسه تلگرام بازیکن</label>
+  <input class="field" id="warningPlayer" placeholder="Telegram ID">
+  <div class="form-grid">
+   <div><label>شدت اخطار</label><select class="field" id="warningLevel"><option value="low">عادی</option><option value="medium">جدی</option><option value="high">شدید</option></select></div>
+   <div><label>نوع اقدام</label><select class="field" id="warningAction"><option value="warn">اخطار</option><option value="mute">محدودیت موقت</option><option value="ban">مسدودسازی حساب</option></select></div>
+  </div>
+  <label>شرح تخلف و دلیل اقدام</label>
+  <textarea class="field" id="warningReason" rows="4" placeholder="شرح دقیق تخلف..."></textarea>
+  <button class="btn red" onclick="showToast('ثبت اخطار و محدودیت پس از اتصال سرور فعال می‌شود')">⚠ ثبت اقدام مدیریتی</button>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">▤</span><h3>سوابق اخطار بازیکنان</h3></div></div>
+  <div class="table-wrap"><table>
+   <thead><tr><th>بازیکن</th><th>نوع تخلف</th><th>شدت</th><th>مدیر</th><th>تاریخ</th><th>وضعیت</th></tr></thead>
+   <tbody><tr><td colspan="6">سوابق پس از اتصال سرور نمایش داده می‌شوند.</td></tr></tbody>
+  </table></div>
+ </div>
+</section>
+
+<section class="section" id="events">
+ <div class="hero">
+  <div class="hero-content">
+   <div class="hero-tag">🏁 WORLD EVENTS COMMAND</div>
+   <h2>مدیریت رویدادها</h2>
+   <p>ساخت رویدادهای جهانی، مسابقات و عملیات ویژه بازی</p>
+  </div>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><div class="stat-icon">🏁</div><div class="stat-label">کل رویدادها</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">🟢</div><div class="stat-label">رویدادهای فعال</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">◷</div><div class="stat-label">رویدادهای آینده</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">✓</div><div class="stat-label">پایان‌یافته</div><div class="stat-value">—</div></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">＋</span><h3>ساخت رویداد جدید</h3></div><span class="badge gold">EVENT CREATOR</span></div>
+  <label>نام رویداد</label>
+  <input class="field" id="eventName" placeholder="مثلاً عملیات زمستانی">
+  <div class="form-grid">
+   <div><label>نوع رویداد</label><select class="field" id="eventType"><option>مسابقه</option><option>عملیات ویژه</option><option>رویداد اقتصادی</option><option>اطلاعیه جهانی</option></select></div>
+   <div><label>جهان مقصد</label><input class="field" id="eventWorld" placeholder="شناسه جهان"></div>
+   <div><label>زمان شروع</label><input class="field" id="eventStart" type="datetime-local"></div>
+   <div><label>زمان پایان</label><input class="field" id="eventEnd" type="datetime-local"></div>
+  </div>
+  <label>توضیحات رویداد</label>
+  <textarea class="field" id="eventDescription" rows="4" placeholder="قوانین و توضیحات رویداد..."></textarea>
+  <button class="btn" onclick="showToast('ساخت رویداد پس از اتصال سرور فعال می‌شود')">＋ ایجاد رویداد</button>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">▤</span><h3>رویدادهای ثبت‌شده</h3></div></div>
+  <div class="table-wrap"><table>
+   <thead><tr><th>نام رویداد</th><th>نوع</th><th>جهان</th><th>شروع</th><th>پایان</th><th>وضعیت</th></tr></thead>
+   <tbody><tr><td colspan="6">رویدادها پس از اتصال دیتابیس نمایش داده می‌شوند.</td></tr></tbody>
+  </table></div>
+ </div>
+</section>
+
+<!-- END PART 3 -->
+
+<!-- =====================================
+PART 4 : LOGS / ADMINS / SETTINGS
+===================================== -->
+
+<section class="section" id="logs">
+ <div class="hero">
+  <div class="hero-content">
+   <div class="hero-tag">◉ SYSTEM INTELLIGENCE</div>
+   <h2>مرکز گزارش‌های سیستم</h2>
+   <p>نظارت بر تمام فعالیت‌ها، تغییرات و عملیات مدیریتی</p>
+  </div>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><div class="stat-icon">◉</div><div class="stat-label">کل فعالیت‌ها</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">♟</div><div class="stat-label">عملیات مدیران</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">⚠</div><div class="stat-label">رویدادهای امنیتی</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">◷</div><div class="stat-label">فعالیت امروز</div><div class="stat-value">—</div></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">⌕</span><h3>جستجو در گزارش‌ها</h3></div><span class="badge">AUDIT SEARCH</span></div>
+  <div class="form-grid">
+   <div><label>نوع فعالیت</label><select class="field"><option>همه فعالیت‌ها</option><option>اقتصاد</option><option>مدیریت کشورها</option><option>مدیریت بازیکنان</option><option>پیام‌رسانی</option><option>امنیت</option></select></div>
+   <div><label>شناسه مدیر</label><input class="field" placeholder="Admin ID"></div>
+   <div><label>از تاریخ</label><input class="field" type="date"></div>
+   <div><label>تا تاریخ</label><input class="field" type="date"></div>
+  </div>
+  <button class="btn" onclick="showToast('جستجوی گزارش‌ها پس از اتصال دیتابیس فعال می‌شود')">⌕ اعمال فیلتر</button>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">▤</span><h3>گزارش فعالیت‌ها</h3></div><span class="badge gold">SYSTEM AUDIT</span></div>
+  <div class="table-wrap"><table>
+   <thead><tr><th>زمان</th><th>مدیر</th><th>عملیات</th><th>هدف</th><th>جزئیات</th><th>نتیجه</th></tr></thead>
+   <tbody><tr><td colspan="6">گزارش‌های واقعی پس از اتصال سرور نمایش داده می‌شوند.</td></tr></tbody>
+  </table></div>
+ </div>
+</section>
+
+<section class="section" id="admins">
+ <div class="hero">
+  <div class="hero-content">
+   <div class="hero-tag">♛ ADMINISTRATOR COMMAND</div>
+   <h2>مدیریت فرماندهان سیستم</h2>
+   <p>تعریف مدیران، تعیین نقش‌ها و کنترل سطح دسترسی پنل</p>
+  </div>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><div class="stat-icon">♛</div><div class="stat-label">مدیر اصلی</div><div class="stat-value">1</div><div class="stat-note">OWNER</div></div>
+  <div class="stat"><div class="stat-icon">♟</div><div class="stat-label">مدیران</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">◈</div><div class="stat-label">ناظران</div><div class="stat-value">—</div></div>
+  <div class="stat"><div class="stat-icon">🔒</div><div class="stat-label">سطوح دسترسی</div><div class="stat-value">3</div></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">＋</span><h3>افزودن مدیر جدید</h3></div><span class="badge gold">ADMIN ACCESS</span></div>
+  <label>شناسه عددی تلگرام مدیر</label>
+  <input class="field" id="newAdminTelegramId" type="number" placeholder="Telegram ID">
+  <div class="form-grid">
+   <div><label>نقش مدیریتی</label><select class="field" id="newAdminRole"><option value="admin">مدیر</option><option value="moderator">ناظر</option></select></div>
+   <div><label>وضعیت دسترسی</label><select class="field"><option value="active">فعال</option><option value="disabled">غیرفعال</option></select></div>
+  </div>
+  <button class="btn" onclick="showToast('افزودن مدیر فقط پس از تأیید مالک و اتصال سرور فعال می‌شود')">＋ افزودن مدیر</button>
+  <p class="muted">مدیر اصلی قابل حذف یا تنزل سطح دسترسی توسط مدیران دیگر نیست.</p>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">♟</span><h3>سطوح دسترسی</h3></div></div>
+  <div class="table-wrap"><table>
+   <thead><tr><th>نقش</th><th>جهان‌ها</th><th>کشورها</th><th>اقتصاد</th><th>بازیکنان</th><th>تنظیمات</th></tr></thead>
+   <tbody>
+    <tr><td>مدیر اصلی</td><td>کامل</td><td>کامل</td><td>کامل</td><td>کامل</td><td>کامل</td></tr>
+    <tr><td>مدیر</td><td>مجاز</td><td>مجاز</td><td>محدود</td><td>مجاز</td><td>محدود</td></tr>
+    <tr><td>ناظر</td><td>مشاهده</td><td>مشاهده</td><td>بدون دسترسی</td><td>اخطار</td><td>بدون دسترسی</td></tr>
+   </tbody>
+  </table></div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">▤</span><h3>فهرست مدیران</h3></div></div>
+  <div class="table-wrap"><table>
+   <thead><tr><th>شناسه تلگرام</th><th>نام</th><th>نقش</th><th>وضعیت</th><th>مدیریت</th></tr></thead>
+   <tbody><tr><td colspan="5">مدیران ثبت‌شده پس از اتصال سرور نمایش داده می‌شوند.</td></tr></tbody>
+  </table></div>
+ </div>
+</section>
+
+<section class="section" id="settings">
+ <div class="hero">
+  <div class="hero-content">
+   <div class="hero-tag">⚙ CORE SYSTEM CONFIGURATION</div>
+   <h2>تنظیمات مرکزی سیستم</h2>
+   <p>پیکربندی بازی، امنیت، ارتباطات و وضعیت سرویس‌ها</p>
+  </div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">🌐</span><h3>تنظیمات عمومی بازی</h3></div><span class="badge">GENERAL</span></div>
+  <label>نام بازی</label>
+  <input class="field" id="settingGameName" value="WORLD AT ARMS">
+  <div class="form-grid">
+   <div><label>نام واحد پول</label><input class="field" id="settingCurrency" value="دلار"></div>
+   <div><label>حداکثر بازیکنان هر جهان</label><input class="field" id="settingMaxPlayers" type="number" value="32"></div>
+   <div><label>مدت فصل (روز)</label><input class="field" id="settingSeasonDays" type="number" value="31"></div>
+   <div><label>وضعیت ثبت‌نام</label><select class="field" id="settingRegistration"><option value="open">باز</option><option value="closed">بسته</option></select></div>
+  </div>
+  <button class="btn" onclick="showToast('ذخیره تنظیمات پس از اتصال سرور فعال می‌شود')">ذخیره تنظیمات عمومی</button>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">⚑</span><h3>قوانین تصاحب کشورها</h3></div><span class="badge gold">FREE COUNTRIES</span></div>
+  <div class="activity">
+   <div class="activity-icon">✓</div>
+   <div class="activity-content"><strong>تمام کشورها رایگان هستند</strong><p>هیچ کشور پولی یا سیستم خرید کشور در بازی وجود ندارد.</p></div>
+   <span class="badge">FREE</span>
+  </div>
+  <p class="muted">این قانون بخشی از طراحی بازی است؛ تغییرات اقتصادی نباید باعث پولی‌شدن کشورها شود.</p>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">🔧</span><h3>وضعیت سرویس‌ها</h3></div><span class="badge">SYSTEM STATUS</span></div>
+  <div class="activity">
+   <div class="activity-icon">🤖</div>
+   <div class="activity-content"><strong>ربات تلگرام</strong><p>وضعیت اتصال باید از سرور بررسی شود.</p></div>
+   <span class="badge">نامشخص</span>
+  </div>
+  <div class="activity">
+   <div class="activity-icon">▤</div>
+   <div class="activity-content"><strong>پایگاه داده</strong><p>وضعیت اتصال باید از سرور بررسی شود.</p></div>
+   <span class="badge">نامشخص</span>
+  </div>
+  <div class="activity">
+   <div class="activity-icon">🌐</div>
+   <div class="activity-content"><strong>وب‌اپلیکیشن</strong><p>وضعیت صفحه فعلی</p></div>
+   <span class="badge">OPEN</span>
+  </div>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">🔒</span><h3>امنیت و نگهداری</h3></div></div>
+  <div class="form-grid">
+   <div><label>حالت تعمیر و نگهداری</label><select class="field" id="maintenanceMode"><option value="off">غیرفعال</option><option value="on">فعال</option></select></div>
+   <div><label>ورود بازیکنان</label><select class="field"><option>مجاز</option><option>موقتاً مسدود</option></select></div>
+  </div>
+  <button class="btn gold" onclick="showToast('تنظیم حالت تعمیر پس از اتصال امن سرور فعال می‌شود')">اعمال تنظیمات نگهداری</button>
+  <p class="muted">این گزینه‌ها فعلاً نمایشی هستند و هیچ تغییری روی بازیکنان اعمال نمی‌کنند.</p>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><div class="panel-title"><span class="panel-mark">◈</span><h3>اطلاعات نسخه</h3></div></div>
+  <div class="activity">
+   <div class="activity-icon">⚔</div>
+   <div class="activity-content"><strong>WORLD AT ARMS</strong><p>پنل مدیریت مرکزی</p></div>
+   <span class="badge gold">ADMIN PANEL</span>
+  </div>
+  <p class="muted">نسخه رابط کاربری: 1.0 — اتصال سرور در مرحله بعد انجام می‌شود.</p>
+ </div>
+</section>
+
+<!-- END PART 4 -->
+ 
+
+ <footer>WORLD AT ARMS • 
