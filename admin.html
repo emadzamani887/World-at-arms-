@@ -3,914 +3,708 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#eaf4ff">
-<title>WORLD AT ARMS | Admin Center</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070b18">
+<title>WORLD AT ARMS | Supreme Command</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
 :root{
- --bg:#f3f8ff;--white:#fff;--ink:#20344f;--muted:#7c8da5;
- --blue:#6ca9e9;--pale:#e8f3ff;--line:#e4edf7;
- --green:#27a879;--red:#e46b78;--gold:#c39138;
- --shadow:0 12px 35px #8eafd01a;
+ --bg:#070b18;--panel:rgba(16,25,47,.82);--panel2:#111d35;
+ --line:rgba(130,170,255,.15);--text:#eaf1ff;--muted:#91a4c5;
+ --blue:#55a7ff;--cyan:#49e2df;--purple:#9d7cff;
+ --green:#35d6a0;--red:#ff647c;--gold:#ffca70;
 }
 *{box-sizing:border-box}
-body{margin:0;background:linear-gradient(145deg,#f3f8ff,#eef6ff 55%,#f8fbff);font-family:Vazirmatn,sans-serif;color:var(--ink)}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:Vazirmatn,sans-serif;min-height:100vh;overflow-x:hidden
+}
+body:before{
+ content:"";position:fixed;inset:0;z-index:-3;
+ background:
+ radial-gradient(ellipse at 15% 15%,#18376c 0,transparent 38%),
+ radial-gradient(ellipse at 85% 70%,#321b63 0,transparent 40%),
+ linear-gradient(140deg,#060a17,#0b1429 55%,#090d1c);
+}
+#space{position:fixed;inset:0;z-index:-2;pointer-events:none}
+.orb{
+ position:fixed;width:380px;height:380px;border-radius:50%;
+ filter:blur(100px);opacity:.14;z-index:-1;pointer-events:none;
+ animation:float 17s ease-in-out infinite alternate
+}
+.orb.one{background:#167bff;top:-150px;left:-100px}
+.orb.two{background:#9b50ff;bottom:-180px;right:-100px;animation-delay:-8s}
+@keyframes float{to{transform:translate(100px,80px) scale(1.3)}}
+*{scrollbar-width:thin;scrollbar-color:#345078 transparent}
 button,input,select,textarea{font:inherit}
-button{cursor:pointer;border:0}
+button{cursor:pointer}
 .hidden{display:none!important}
 .login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px}
-.login{width:min(430px,100%);background:#fff;border:1px solid var(--line);border-radius:28px;padding:30px;box-shadow:var(--shadow)}
-.logo{width:58px;height:58px;border-radius:20px;background:linear-gradient(135deg,#83bdf5,#c6e2ff);display:grid;place-items:center;color:#fff;font-size:25px;font-weight:900}
-.login h1{font-size:23px;margin:18px 0 4px}
-.muted{color:var(--muted);font-size:13px}
-.field{display:grid;gap:7px;margin:14px 0}
-.field label{font-size:13px;font-weight:700}
-.field input,.field select,.field textarea,.search{
- width:100%;border:1px solid var(--line);background:#fbfdff;
- border-radius:13px;padding:11px 13px;outline:none;color:var(--ink)
+.login{
+ width:min(440px,100%);padding:34px;border:1px solid var(--line);
+ border-radius:26px;background:rgba(12,21,41,.86);
+ box-shadow:0 25px 100px #0008;backdrop-filter:blur(20px)
 }
-.field input:focus,.field select:focus,.field textarea:focus,.search:focus{
- border-color:#8bbcf0;box-shadow:0 0 0 3px #8bbcf022
+.logo{
+ width:65px;height:65px;display:grid;place-items:center;
+ border-radius:20px;background:linear-gradient(135deg,#237be9,#8e67ff);
+ box-shadow:0 0 35px #438fff66;font-size:30px;font-weight:900
 }
-.btn{padding:10px 15px;border-radius:12px;background:var(--pale);color:#3678b9;font-weight:700}
-.btn.primary{background:linear-gradient(135deg,#72afea,#8cc5f5);color:white}
-.btn.danger{background:#fff0f1;color:#c94c5b}
-.btn.good{background:#e8faf3;color:#16865f}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.shell{display:grid;grid-template-columns:245px 1fr;min-height:100vh}
-.side{background:#fff;border-left:1px solid var(--line);padding:22px 15px;position:sticky;top:0;height:100vh}
-.brand{display:flex;align-items:center;gap:12px;padding:0 8px 22px}
-.brand .logo{width:43px;height:43px;border-radius:15px;font-size:19px}
-.brand strong{display:block;font-size:14px}
-.brand small{color:var(--muted);font-size:11px}
+h1,h2,h3,p{margin-top:0}
+.login h1{font-size:23px;margin:20px 0 5px}
+.muted{color:var(--muted);font-size:12px}
+.field{display:grid;gap:7px;margin:15px 0}
+.field label{font-size:12px;color:#b9c9e6}
+input,select,textarea{
+ width:100%;padding:12px 13px;border-radius:12px;
+ border:1px solid var(--line);background:#0b152a;color:var(--text);
+ outline:none;min-width:0
+}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #55a7ff18}
+option{background:#101b31}
+.btn{
+ border:1px solid var(--line);border-radius:11px;padding:10px 14px;
+ background:#172641;color:#dceaff;font-weight:700;transition:.2s
+}
+.btn:hover{filter:brightness(1.2);transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(120deg,#2679e8,#7459d9);border:0;color:white}
+.btn.good{background:#123b36;color:#5df0bd;border-color:#287c68}
+.btn.danger{background:#401c2b;color:#ff8294;border-color:#7c3449}
+.btn.gold{background:#40331d;color:#ffd17a;border-color:#775c2b}
+.btn.small{padding:6px 9px;font-size:11px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.shell{display:grid;grid-template-columns:255px minmax(0,1fr);min-height:100vh}
+.side{
+ position:sticky;top:0;height:100vh;padding:20px 14px;
+ background:rgba(7,14,29,.88);border-left:1px solid var(--line);
+ backdrop-filter:blur(20px);z-index:10;overflow:auto
+}
+.brand{display:flex;align-items:center;gap:12px;padding:3px 8px 24px}
+.brand .logo{width:43px;height:43px;font-size:20px;border-radius:14px}
+.brand strong{display:block;font-size:13px;letter-spacing:1px}
+.brand small{color:var(--cyan);font-size:9px;letter-spacing:2px}
 .nav{display:grid;gap:5px}
-.nav button{background:transparent;text-align:right;padding:11px 13px;border-radius:13px;color:#71849d;font-weight:600}
-.nav button.active,.nav button:hover{background:#eaf4ff;color:#367fbe}
-.nav button span{display:inline-block;width:28px}
-.side-foot{position:absolute;bottom:18px;right:15px;left:15px}
+.nav button{
+ border:1px solid transparent;background:transparent;color:#9aaccb;
+ text-align:right;padding:11px 12px;border-radius:12px;font-size:12px
+}
+.nav button:hover,.nav button.active{
+ background:linear-gradient(90deg,#1b3c67aa,#192846);
+ border-color:#4b91e455;color:#fff
+}
+.nav button span{display:inline-block;width:29px;font-size:15px}
+.side-foot{margin-top:25px}
 .main{padding:25px;min-width:0}
-.top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:23px}
+.top{
+ display:flex;align-items:center;justify-content:space-between;
+ gap:12px;margin-bottom:22px;flex-wrap:wrap
+}
 .top h1{font-size:22px;margin:0}
-.top p{margin:3px 0 0;color:var(--muted);font-size:13px}
-.top-actions{display:flex;gap:9px;align-items:center}
-.avatar{width:38px;height:38px;border-radius:13px;background:#e8f3ff;color:#4387c7;display:grid;place-items:center;font-weight:900}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:17px}
-.stat,.panel{background:#fff;border:1px solid var(--line);border-radius:19px;box-shadow:var(--shadow)}
-.stat{padding:17px}
-.stat .cap{color:var(--muted);font-size:12px}
-.stat strong{display:block;font-size:26px;margin-top:8px}
-.panel{padding:18px;margin-bottom:15px}
-.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-.panel h2{font-size:16px;margin:0}
-.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.search{max-width:250px;padding:9px 12px}
-.table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:13px}
-th{text-align:right;color:#8292a7;font-weight:600;background:#f8fbff}
-td,th{padding:11px;border-bottom:1px solid #edf2f8}
-tbody tr:last-child td{border-bottom:0}
-.pill{display:inline-block;padding:4px 9px;border-radius:30px;font-size:11px;background:#edf5ff;color:#5489bc}
-.green{background:#e8faf3;color:#16865f}
-.red{background:#fff0f1;color:#c94c5b}
-.gold{background:#fff7e7;color:#b7842f}
-.empty,.loading{padding:30px;text-align:center;color:var(--muted)}
-.notice{padding:12px 14px;border-radius:12px;background:#fff8e9;color:#9b762e;font-size:12px;margin:12px 0}
-.toast{position:fixed;bottom:22px;left:22px;background:#20344f;color:white;padding:12px 17px;border-radius:13px;z-index:10;max-width:90vw}
+.top p{font-size:11px;color:var(--muted);margin:4px 0 0}
+.top-actions{display:flex;gap:8px;align-items:center}
+.connection{
+ font-size:10px;padding:7px 10px;border:1px solid var(--line);
+ border-radius:30px;color:var(--green)
+}
 .mobile-menu{display:none}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:16px}
+.stat,.panel{
+ background:linear-gradient(145deg,rgba(19,34,61,.9),rgba(12,22,42,.88));
+ border:1px solid var(--line);border-radius:18px;
+ box-shadow:0 15px 40px #0002;backdrop-filter:blur(12px)
+}
+.stat{padding:17px;position:relative;overflow:hidden}
+.stat:after{
+ content:"";position:absolute;width:80px;height:80px;border-radius:50%;
+ background:#398cff12;left:-20px;top:-25px
+}
+.stat .cap{color:var(--muted);font-size:11px}
+.stat strong{display:block;font-size:27px;margin-top:8px}
+.panel{padding:17px;margin-bottom:15px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.panel h2{font-size:14px;margin:0}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.toolbar input,.toolbar select{width:auto;min-width:130px}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:11px}
+th{text-align:right;color:#91a8cd;background:#101d34;font-weight:700}
+td,th{padding:12px 10px;border-bottom:1px solid #ffffff0d}
+tbody tr:hover{background:#ffffff08}
+.pill{display:inline-block;padding:4px 9px;border-radius:30px;font-size:10px;background:#1a3454;color:#9dcaff}
+.green{background:#123c35;color:#58e5b4}
+.red{background:#451e2d;color:#ff8397}
+.gold{background:#43351f;color:#ffd17a}
+.empty,.loading{text-align:center;padding:30px;color:var(--muted);font-size:12px}
+.notice{padding:12px;border:1px solid #8e713b55;background:#3a2e1b66;border-radius:12px;color:#eac67e;font-size:11px;margin:12px 0}
+.toast{
+ position:fixed;bottom:20px;left:20px;z-index:99;
+ padding:13px 18px;border-radius:13px;background:#172b49;
+ border:1px solid #4d83c5;color:white;box-shadow:0 10px 40px #0008;
+ max-width:90vw;font-size:12px
+}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.modal-bg{
+ position:fixed;inset:0;background:#020610c9;z-index:50;
+ display:grid;place-items:center;padding:15px;backdrop-filter:blur(8px)
+}
+.modal{
+ width:min(520px,100%);max-height:90vh;overflow:auto;
+ padding:22px;border:1px solid var(--line);border-radius:20px;
+ background:#101d35;box-shadow:0 30px 100px #000b
+}
+.modal h2{font-size:17px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.search{max-width:230px}
+.mobile-overlay{display:none}
 @media(max-width:900px){
  .shell{grid-template-columns:1fr}
- .side{position:fixed;z-index:8;right:0;top:0;width:255px;transform:translateX(105%);transition:.25s;box-shadow:var(--shadow)}
+ .side{position:fixed;right:0;top:0;width:260px;transform:translateX(110%);transition:.25s}
  .side.open{transform:translateX(0)}
- .mobile-menu{display:inline-flex}
- .main{padding:17px}
+ .mobile-menu{display:inline-block}
+ .main{padding:16px}
  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .mobile-overlay.show{display:block;position:fixed;inset:0;background:#0009;z-index:8}
 }
-@media(max-width:520px){
- .main{padding:13px}
+@media(max-width:550px){
+ .main{padding:12px}
  .top h1{font-size:18px}
  .stats{gap:8px}
  .stat{padding:12px}
  .stat strong{font-size:22px}
- .panel{padding:13px}
+ .panel{padding:12px}
+ .grid2{grid-template-columns:1fr}
  .search{max-width:none;flex:1}
 }
 </style>
 </head>
 <body>
+<canvas id="space"></canvas>
+<div class="orb one"></div><div class="orb two"></div>
 
 <div id="loginView" class="login-wrap">
  <form id="loginForm" class="login">
   <div class="logo">W</div>
-  <h1>مرکز مدیریت WORLD AT ARMS</h1>
-  <p class="muted">با حساب مدیر ثبت‌شده در سامانه وارد شوید.</p>
-  <div class="field">
-   <label>ایمیل مدیر</label>
-   <input id="email" type="email" autocomplete="username" required>
-  </div>
-  <div class="field">
-   <label>رمز عبور</label>
-   <input id="password" type="password" autocomplete="current-password" required>
-  </div>
-  <button class="btn primary" style="width:100%;margin-top:8px" type="submit">ورود امن به پنل</button>
-  <p class="muted" id="loginError"></p>
-  <div class="notice">ورود فقط برای حسابی مجاز است که شناسه آن در جدول مدیران ثبت شده باشد.</div>
+  <h1>فرماندهی کل WORLD AT ARMS</h1>
+  <p class="muted">SUPREME ADMINISTRATION CENTER</p>
+  <div class="field"><label>ایمیل مدیر</label><input id="email" type="email" required autocomplete="username"></div>
+  <div class="field"><label>رمز عبور</label><input id="password" type="password" required autocomplete="current-password"></div>
+  <button class="btn primary" style="width:100%" type="submit">ورود به مرکز فرماندهی</button>
+  <p id="loginError" class="muted"></p>
+  <div class="notice">ورود فقط برای حسابی مجاز است که در فهرست مدیران دیتابیس ثبت شده باشد.</div>
  </form>
 </div>
 
 <div id="app" class="shell hidden">
  <aside class="side" id="sidebar">
-  <div class="brand">
-   <div class="logo">W</div>
-   <div><strong>WORLD AT ARMS</strong><small>ADMIN CONTROL CENTER</small></div>
-  </div>
+  <div class="brand"><div class="logo">W</div><div><strong>WORLD AT ARMS</strong><small>SUPREME COMMAND</small></div></div>
   <nav class="nav" id="nav">
-   <button class="active" data-page="dashboard"><span>▦</span>داشبورد</button>
+   <button class="active" data-page="dashboard"><span>◈</span>داشبورد مرکزی</button>
    <button data-page="worlds"><span>🌐</span>جهان‌ها</button>
    <button data-page="countries"><span>🏳</span>کشورها</button>
    <button data-page="players"><span>👤</span>بازیکنان</button>
-   <button data-page="purchases"><span>🛒</span>درخواست خرید</button>
-   <button data-page="economy"><span>◈</span>اقتصاد و تراکنش‌ها</button>
-   <button data-page="messages"><span>✉</span>پیام‌های بازی</button>
+   <button data-page="purchases"><span>💳</span>درخواست خرید</button>
+   <button data-page="economy"><span>◉</span>اقتصاد و تراکنش‌ها</button>
+   <button data-page="messages"><span>✉</span>مرکز پیام‌ها</button>
    <button data-page="warnings"><span>⚑</span>اخطارها</button>
    <button data-page="resolutions"><span>▤</span>قطعنامه‌ها</button>
    <button data-page="logs"><span>◷</span>گزارش فعالیت</button>
   </nav>
   <div class="side-foot">
-   <button class="btn" id="logoutBtn" style="width:100%">خروج از حساب ↗</button>
+   <button class="btn" id="logoutBtn" style="width:100%">خروج امن از پنل</button>
+   <p class="muted" style="text-align:center;margin-top:12px">ADMIN ACCESS · VERIFIED</p>
   </div>
  </aside>
-
+ <div id="mobileOverlay" class="mobile-overlay"></div>
  <main class="main">
   <header class="top">
    <div style="display:flex;gap:10px;align-items:center">
     <button class="btn mobile-menu" id="menuBtn">☰</button>
-    <div>
-     <h1 id="pageTitle">داشبورد مدیریتی</h1>
-     <p id="pageSub">نمای کلی وضعیت بازی و سرور</p>
-    </div>
+    <div><h1 id="pageTitle">داشبورد مرکزی</h1><p id="pageSub">وضعیت لحظه‌ای سامانه مدیریت</p></div>
    </div>
    <div class="top-actions">
+    <span class="connection">● اتصال پنل</span>
     <button class="btn" id="refreshBtn">↻ بروزرسانی</button>
-    <div class="avatar">A</div>
    </div>
   </header>
-  <section id="pageContent"><div class="loading">در حال دریافت اطلاعات...</div></section>
+  <section id="pageContent"><div class="loading">در حال اتصال...</div></section>
  </main>
 </div>
 
 <div id="toast" class="toast hidden"></div>
+<div id="modalRoot"></div>
 
 <script>
+/* =========================
+   CONFIGURATION
+========================= */
 const SUPABASE_URL = 'https://hgaliwladnrtfdkwbtzz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb';
+const db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-let adminId = null;
-let currentPage = 'dashboard';
-let worlds = [];
-let countries = [];
-
-const $ = s => document.querySelector(s);
-
-const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({
- '&':'&amp;',
- '<':'&lt;',
- '>':'&gt;',
- '"':'&quot;',
- "'":'&#39;'
-}[c]));
-
-const fa = n => Number(n || 0).toLocaleString('fa-IR');
+let adminId=null,currentPage='dashboard',worlds=[],countries=[];
+const $=s=>document.querySelector(s);
+const fa=n=>Number(n||0).toLocaleString('fa-IR');
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const date=v=>v?new Date(v).toLocaleString('fa-IR'):'—';
 
 function toast(message){
- const box = $('#toast');
- box.textContent = message;
- box.classList.remove('hidden');
- setTimeout(() => box.classList.add('hidden'), 3500);
+ const t=$('#toast');t.textContent=message;t.classList.remove('hidden');
+ clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.add('hidden'),3500);
 }
-
-function fail(error){
- console.error(error);
- toast(error?.message || 'خطایی رخ داد.');
+function fail(e){console.error(e);toast(e?.message||'خطای نامشخص');}
+function ask(message){return window.confirm(message);}
+function modal(title,body){
+ $('#modalRoot').innerHTML=`<div class="modal-bg" id="modalBg"><div class="modal">
+ <h2>${esc(title)}</h2>${body}<div class="modal-actions">
+ <button class="btn" id="modalCancel">انصراف</button>
+ <button class="btn primary" id="modalSave">ثبت نهایی</button>
+ </div></div></div>`;
+ $('#modalCancel').onclick=closeModal;
+ $('#modalBg').onclick=e=>{if(e.target.id==='modalBg')closeModal()};
 }
-
+function closeModal(){$('#modalRoot').innerHTML=''}
 async function verifyAdmin(){
- const {data,error} = await db.rpc('is_waa_admin');
- if(error) throw error;
- if(data !== true) throw new Error('این حساب در فهرست مدیران بازی ثبت نشده است.');
+ const {data,error}=await db.rpc('is_waa_admin');
+ if(error)throw error;
+ if(data!==true)throw new Error('این حساب مدیر مجاز نیست.');
 }
-
 async function enter(session){
- await verifyAdmin();
- adminId = session.user.id;
- $('#loginView').classList.add('hidden');
- $('#app').classList.remove('hidden');
+ await verifyAdmin();adminId=session.user.id;
+ $('#loginView').classList.add('hidden');$('#app').classList.remove('hidden');
  await navigate('dashboard');
 }
-
 async function init(){
- const {data:{session}} = await db.auth.getSession();
- if(session){
-  try{ await enter(session); }
-  catch(e){
-   await db.auth.signOut();
-   $('#loginError').textContent = e.message;
-  }
- }
+ const {data:{session},error}=await db.auth.getSession();
+ if(error)throw error;
+ if(session){try{await enter(session)}catch(e){await db.auth.signOut();$('#loginError').textContent=e.message}}
 }
-
 $('#loginForm').addEventListener('submit',async e=>{
- e.preventDefault();
- const button = e.submitter;
- button.disabled = true;
- button.textContent = 'در حال ورود...';
-
+ e.preventDefault();const b=e.submitter;b.disabled=true;b.textContent='در حال بررسی...';
  try{
-  const {data,error} = await db.auth.signInWithPassword({
-   email:$('#email').value.trim(),
-   password:$('#password').value
-  });
-  if(error) throw error;
-  await enter(data.session);
- }catch(error){
-  $('#loginError').textContent = error.message || 'ورود ناموفق بود.';
- }finally{
-  button.disabled = false;
-  button.textContent = 'ورود امن به پنل';
- }
+  const {data,error}=await db.auth.signInWithPassword({email:$('#email').value.trim(),password:$('#password').value});
+  if(error)throw error;await enter(data.session);
+ }catch(e){$('#loginError').textContent=e.message||'ورود ناموفق بود'}
+ finally{b.disabled=false;b.textContent='ورود به مرکز فرماندهی'}
 });
-
-$('#logoutBtn').onclick = async()=>{
- await db.auth.signOut();
- location.reload();
-};
-
-$('#menuBtn').onclick = ()=>$('#sidebar').classList.toggle('open');
-
-$('#refreshBtn').onclick = ()=>renderPage(currentPage).catch(fail);
-
+$('#logoutBtn').onclick=async()=>{await db.auth.signOut();location.reload()};
+$('#menuBtn').onclick=()=>$('#sidebar').classList.toggle('open');
+$('#mobileOverlay').onclick=()=>$('#sidebar').classList.remove('open');
+$('#refreshBtn').onclick=()=>renderPage(currentPage).catch(fail);
 $('#nav').addEventListener('click',e=>{
- const button = e.target.closest('button[data-page]');
- if(!button) return;
- $('#sidebar').classList.remove('open');
- navigate(button.dataset.page).catch(fail);
+ const b=e.target.closest('[data-page]');if(!b)return;
+ $('#sidebar').classList.remove('open');navigate(b.dataset.page).catch(fail);
 });
 
-const titles = {
- dashboard:['داشبورد مدیریتی','نمای کلی وضعیت بازی و سرور'],
- worlds:['مدیریت جهان‌ها','ساخت و کنترل جهان‌های بازی'],
- countries:['مدیریت کشورها','اطلاعات و تنظیمات کشورهای هر جهان'],
- players:['بازیکنان','بازیکنان ثبت‌شده بر اساس کشور انتخاب‌شده'],
- purchases:['درخواست‌های خرید','بررسی درخواست خرید کشور ویژه'],
- economy:['اقتصاد و تراکنش‌ها','مدیریت موجودی و سوابق مالی'],
- messages:['پیام‌های بازی','ثبت پیام سراسری، جهانی یا خصوصی'],
+const titles={
+ dashboard:['داشبورد مرکزی','وضعیت کلی جهان‌ها و سامانه'],
+ worlds:['مدیریت جهان‌ها','ساخت، ویرایش، ریست و حذف جهان'],
+ countries:['مدیریت کشورها','مالکیت، وضعیت و اقتصاد کشورها'],
+ players:['مدیریت بازیکنان','بازیکنان ثبت‌شده در جهان‌ها'],
+ purchases:['درخواست خرید','بررسی و تصمیم‌گیری درخواست‌ها'],
+ economy:['اقتصاد و تراکنش‌ها','کنترل موجودی و سوابق مالی'],
+ messages:['مرکز پیام‌ها','ثبت پیام در صف ارسال بازی'],
  warnings:['اخطارهای مدیریتی','ثبت و پیگیری اخطارها'],
- resolutions:['قطعنامه‌ها','مدیریت قطعنامه‌های جهان‌ها'],
- logs:['گزارش فعالیت','رویدادهای ثبت‌شده در سامانه']
+ resolutions:['مرکز قطعنامه‌ها','مدیریت قطعنامه‌های جهان‌ها'],
+ logs:['گزارش فعالیت','سوابق ثبت‌شده در دیتابیس']
 };
-
-async function loadTable(table){
- const {data,error} = await db.from(table)
-  .select('*')
-  .order('created_at',{ascending:false})
-  .limit(250);
- if(error) throw error;
- return data || [];
-}
-
 async function loadBase(){
- const [w,c] = await Promise.all([
+ const [w,c]=await Promise.all([
   db.from('worlds').select('*').order('created_at',{ascending:false}),
   db.from('countries').select('*').order('name')
  ]);
- if(w.error) throw w.error;
- if(c.error) throw c.error;
- worlds = w.data || [];
- countries = c.data || [];
+ if(w.error)throw w.error;if(c.error)throw c.error;
+ worlds=w.data||[];countries=c.data||[];
 }
-
-function statusPill(status){
- const cls = ({
-  active:'green',approved:'green',sent:'green',resolved:'green',
-  rejected:'red',failed:'red',critical:'red',
-  important:'gold',pending:'gold',queued:'gold',inactive:'red'
- })[status] || '';
- return '<span class="pill '+cls+'">'+esc(status || '—')+'</span>';
+async function table(name){
+ const {data,error}=await db.from(name).select('*').order('created_at',{ascending:false}).limit(300);
+ if(error)throw error;return data||[];
 }
-
+function worldName(id){return worlds.find(x=>x.id===id)?.name||'—'}
+function countryName(id){return countries.find(x=>x.id===id)?.name||'—'}
+function pill(v){
+ const cls=({active:'green',approved:'green',resolved:'green',sent:'green',pending:'gold',queued:'gold',important:'gold',critical:'red',rejected:'red',failed:'red',inactive:'red'})[v]||'';
+ return `<span class="pill ${cls}">${esc(v||'—')}</span>`;
+}
 function panel(title,body,tools=''){
- return '<div class="panel"><div class="panel-head"><h2>'+title+'</h2><div class="toolbar">'+tools+'</div></div>'+body+'</div>';
+ return `<div class="panel"><div class="panel-head"><h2>${title}</h2><div class="toolbar">${tools}</div></div>${body}</div>`;
 }
-
-function makeTable(headers,rows){
- return '<div class="table-wrap"><table><thead><tr>'+
- headers.map(x=>'<th>'+x+'</th>').join('')+
- '</tr></thead><tbody>'+
- (rows.length ? rows.join('') :
- '<tr><td class="empty" colspan="'+headers.length+'">موردی برای نمایش وجود ندارد.</td></tr>')+
- '</tbody></table></div>';
+function tableHTML(headers,rows){
+ return `<div class="table-wrap"><table><thead><tr>${headers.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>
+ ${rows.length?rows.join(''):`<tr><td class="empty" colspan="${headers.length}">اطلاعاتی وجود ندارد.</td></tr>`}
+ </tbody></table></div>`;
 }
-
-function worldName(id){
- return worlds.find(x=>x.id===id)?.name || '—';
+function worldSelect(id='worldSelect',selected=''){
+ return `<select id="${id}"><option value="">انتخاب جهان</option>${worlds.map(w=>`<option value="${w.id}" ${w.id===selected?'selected':''}>${esc(w.name)}</option>`).join('')}</select>`;
 }
-
-function worldSelect(){
- return '<select id="fWorld"><option value="">انتخاب جهان</option>'+
- worlds.map(w=>'<option value="'+w.id+'">'+esc(w.name)+'</option>').join('')+
- '</select>';
+function countrySelect(id='countrySelect',worldId='',selected=''){
+ const list=countries.filter(c=>!worldId||c.world_id===worldId);
+ return `<select id="${id}"><option value="">انتخاب کشور</option>${list.map(c=>`<option value="${c.id}" ${c.id===selected?'selected':''}>${esc(c.name)}</option>`).join('')}</select>`;
 }
-
 async function navigate(page){
- currentPage = page;
- document.querySelectorAll('#nav button').forEach(button=>{
-  button.classList.toggle('active',button.dataset.page===page);
- });
- $('#pageTitle').textContent = titles[page][0];
- $('#pageSub').textContent = titles[page][1];
+ currentPage=page;
+ document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+ $('#pageTitle').textContent=titles[page][0];$('#pageSub').textContent=titles[page][1];
  await renderPage(page);
 }
-
 async function renderPage(page){
- $('#pageContent').innerHTML = '<div class="loading">در حال بارگذاری...</div>';
- await loadBase();
-
- let html = '';
-
- if(page === 'dashboard'){
-  const [purchases,warnings,messages,logs] = await Promise.all([
-   loadTable('purchase_requests'),
-   loadTable('admin_warnings'),
-   loadTable('game_messages'),
-   loadTable('activity_logs')
+ $('#pageContent').innerHTML='<div class="loading">در حال دریافت اطلاعات...</div>';
+ await loadBase();let html='';
+ if(page==='dashboard'){
+  const [pr,wa,msg,logs,tx,res]=await Promise.all([
+   table('purchase_requests'),table('admin_warnings'),table('game_messages'),
+   table('activity_logs'),table('wallet_transactions'),table('resolutions')
   ]);
-
-  const stats = [
-   ['جهان‌ها',worlds.length],
-   ['کشورها',countries.length],
-   ['بازیکنان',countries.filter(c=>c.player_telegram_id).length],
-   ['خریدهای در انتظار',purchases.filter(x=>x.status==='pending').length]
+  const stats=[
+   ['جهان‌ها',worlds.length,'🌐'],['کشورها',countries.length,'🏳'],
+   ['بازیکنان',countries.filter(c=>c.player_telegram_id).length,'👤'],
+   ['خریدهای در انتظار',pr.filter(x=>x.status==='pending').length,'💳'],
+   ['اخطارهای فعال',wa.filter(x=>x.status==='active').length,'⚑'],
+   ['پیام‌های صف',msg.filter(x=>x.status==='queued').length,'✉'],
+   ['تراکنش‌ها',tx.length,'◉'],['قطعنامه‌ها',res.length,'▤']
   ];
-
-  html = '<div class="stats">'+stats.map(x=>
-   '<div class="stat"><div class="cap">'+x[0]+'</div><strong>'+fa(x[1])+'</strong></div>'
-  ).join('')+'</div>';
-
-  html += panel('خلاصه سامانه',
-   '<div class="stats" style="margin:0">'+[
-    ['اخطار فعال',warnings.filter(x=>x.status==='active').length],
-    ['پیام‌ها',messages.length],
-    ['گزارش‌ها',logs.length],
-    ['جهان فعال',worlds.filter(x=>x.status==='active').length]
-   ].map(x=>'<div class="stat"><div class="cap">'+x[0]+'</div><strong>'+fa(x[1])+'</strong></div>').join('')+
-   '</div>'
-  );
-
-  html += panel('جهان‌ها',makeTable(
-   ['نام','وضعیت','تعداد کشور'],
-   worlds.map(w=>'<tr><td>'+esc(w.name)+'</td><td>'+statusPill(w.status)+'</td><td>'+
-   fa(countries.filter(c=>c.world_id===w.id).length)+'</td></tr>')
-  ));
+  html=`<div class="stats">${stats.map(s=>`<div class="stat"><div class="cap">${s[2]} ${s[0]}</div><strong>${fa(s[1])}</strong></div>`).join('')}</div>`;
+  html+=panel('وضعیت جهان‌ها',tableHTML(['نام جهان','وضعیت','کشورها','بازیکنان','تاریخ ساخت'],
+   worlds.map(w=>`<tr><td>${esc(w.name)}</td><td>${pill(w.status)}</td><td>${fa(countries.filter(c=>c.world_id===w.id).length)}</td><td>${fa(countries.filter(c=>c.world_id===w.id&&c.player_telegram_id).length)}</td><td>${date(w.created_at)}</td></tr>`)));
+  html+=panel('آخرین فعالیت‌ها',tableHTML(['نوع','توضیحات','تاریخ'],
+   logs.slice(0,8).map(x=>`<tr><td>${esc(x.event_type)}</td><td>${esc(x.description)}</td><td>${date(x.created_at)}</td></tr>`)));
  }
-
- if(page === 'worlds'){
-  html = panel('فهرست جهان‌ها',makeTable(
-   ['نام','توضیحات','وضعیت','کشورها','عملیات'],
-   worlds.map(w=>'<tr><td>'+esc(w.name)+'</td><td>'+esc(w.description)+'</td><td>'+
-    statusPill(w.status)+'</td><td>'+fa(countries.filter(c=>c.world_id===w.id).length)+
-    '</td><td><button class="btn" data-edit-world="'+w.id+'">ویرایش</button> '+
-    '<button class="btn danger" data-toggle-world="'+w.id+'">'+
-    (w.status==='active'?'غیرفعال':'فعال')+'</button></td></tr>')
-  ),'<button class="btn primary" id="addWorld">+ ساخت جهان</button>');
+ if(page==='worlds'){
+  html=panel('ساخت جهان','<div class="grid2"><div class="field"><label>نام جهان</label><input id="newWorldName" placeholder="مثلاً Europe 1936"></div><div class="field"><label>توضیحات</label><input id="newWorldDesc" placeholder="توضیحات جهان"></div></div><button class="btn primary" id="createWorld">+ ساخت جهان</button>');
+  html+=panel('فهرست جهان‌ها',tableHTML(['جهان','توضیحات','وضعیت','کشورها','عملیات'],
+   worlds.map(w=>`<tr><td>${esc(w.name)}</td><td>${esc(w.description)}</td><td>${pill(w.status)}</td><td>${fa(countries.filter(c=>c.world_id===w.id).length)}</td><td><div class="actions">
+   <button class="btn small" data-edit-world="${w.id}">ویرایش</button>
+   <button class="btn small gold" data-toggle-world="${w.id}">${w.status==='active'?'غیرفعال‌سازی':'فعال‌سازی'}</button>
+   <button class="btn small" data-reset-world="${w.id}">ریست همه کشورها</button>
+   <button class="btn small danger" data-delete-world="${w.id}">حذف جهان</button>
+   </div></td></tr>`)));
  }
-
- if(page === 'countries'){
-  html = panel('کشورها',makeTable(
-   ['کشور','جهان','فرمانروا','بازیکن','موجودی','وضعیت','عملیات'],
-   countries.map(c=>'<tr><td>'+esc(c.name)+'</td><td>'+esc(worldName(c.world_id))+
-    '</td><td>'+esc(c.ruler||'—')+'</td><td>'+
-    esc(c.player_telegram_username||c.player_telegram_id||'بدون بازیکن')+
-    '</td><td>'+fa(c.balance)+'</td><td>'+statusPill(c.is_locked?'inactive':'active')+
-    '</td><td><button class="btn" data-edit-country="'+c.id+'">ویرایش</button> '+
-    '<button class="btn" data-balance="'+c.id+'">تغییر موجودی</button></td></tr>')
-  ),'<input class="search" id="countrySearch" placeholder="جستجوی کشور"> '+
-  '<button class="btn primary" id="addCountry">+ افزودن کشور</button>');
+ if(page==='countries'){
+  html=panel('افزودن کشور',`<div class="grid2"><div class="field"><label>جهان</label>${worldSelect('newCountryWorld')}</div><div class="field"><label>نام کشور</label><input id="newCountryName" placeholder="نام کشور"></div><div class="field"><label>فرمانروا</label><input id="newCountryRuler" placeholder="نام فرمانروا"></div><div class="field"><label>موجودی اولیه</label><input id="newCountryBalance" type="number" value="0" min="0"></div><div class="field"><label>قیمت کشور ویژه</label><input id="newCountryPrice" type="number" value="500000" min="0"></div><div class="field"><label>نوع کشور</label><select id="newCountryPremium"><option value="false">عادی</option><option value="true">ویژه</option></select></div></div><button class="btn primary" id="createCountry">+ افزودن کشور</button>`);
+  html+=panel('فهرست کشورها',tableHTML(['کشور','جهان','فرمانروا','بازیکن','موجودی','ویژه','قفل','عملیات'],
+   countries.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(worldName(c.world_id))}</td><td>${esc(c.ruler)}</td><td>${esc(c.player_telegram_username||c.player_telegram_id||'آزاد')}</td><td>${fa(c.balance)}</td><td>${c.is_premium?'بله':'خیر'}</td><td>${c.is_locked?'قفل':'باز'}</td><td><div class="actions">
+   <button class="btn small" data-edit-country="${c.id}">ویرایش</button>
+   <button class="btn small" data-balance="${c.id}">موجودی</button>
+   <button class="btn small gold" data-reset-country="${c.id}">آزادسازی</button>
+   <button class="btn small" data-lock-country="${c.id}">${c.is_locked?'بازکردن قفل':'قفل‌کردن'}</button>
+   <button class="btn small danger" data-delete-country="${c.id}">حذف</button>
+   </div></td></tr>`)),
+   `<input class="search" id="countrySearch" placeholder="جستجوی کشور...">`);
  }
-
- if(page === 'players'){
-  const players = countries.filter(c=>c.player_telegram_id);
-  html = panel('فهرست بازیکنان',makeTable(
-   ['شناسه تلگرام','نام کاربری','کشور','جهان','موجودی'],
-   players.map(c=>'<tr><td>'+esc(c.player_telegram_id)+'</td><td>'+
-    esc(c.player_telegram_username||'—')+'</td><td>'+esc(c.name)+'</td><td>'+
-    esc(worldName(c.world_id))+'</td><td>'+fa(c.balance)+'</td></tr>')
-  ));
+ if(page==='players'){
+  const players=countries.filter(c=>c.player_telegram_id);
+  html=panel('انتقال مالکیت بازیکن',`<div class="grid2"><div class="field"><label>جهان</label>${worldSelect('transferWorld')}</div><div class="field"><label>شناسه تلگرام بازیکن</label><input id="transferPlayer" placeholder="Telegram ID"></div><div class="field"><label>کشور مقصد آزاد</label>${countrySelect('transferCountry')}</div></div><button class="btn primary" id="transferBtn">انتقال بازیکن</button><p class="muted">کشور مقصد باید آزاد و متعلق به همان جهان باشد.</p>`);
+  html+=panel('بازیکنان ثبت‌شده',tableHTML(['شناسه تلگرام','نام کاربری','کشور','جهان','موجودی','انتخاب‌شده در'],
+   players.map(c=>`<tr><td>${esc(c.player_telegram_id)}</td><td>${esc(c.player_telegram_username||'—')}</td><td>${esc(c.name)}</td><td>${esc(worldName(c.world_id))}</td><td>${fa(c.balance)}</td><td>${date(c.selected_at)}</td></tr>`)));
  }
-
- if(page === 'purchases'){
-  const rows = await loadTable('purchase_requests');
-  html = panel('درخواست‌های خرید',makeTable(
-   ['بازیکن','جهان','کشور','مبلغ','وضعیت','رسید','عملیات'],
-   rows.map(x=>'<tr><td>'+esc(x.player_telegram_username||x.player_telegram_id)+
-    '</td><td>'+esc(worldName(x.world_id))+'</td><td>'+
-    esc(countries.find(c=>c.id===x.country_id)?.name||'—')+'</td><td>'+
-    fa(x.price)+'</td><td>'+statusPill(x.status)+'</td><td>'+
-    esc(x.receipt_text||'—')+'</td><td>'+
-    (x.status==='pending'?
-     '<button class="btn good" data-review="'+x.id+'" data-decision="approved">تأیید</button> '+
-     '<button class="btn danger" data-review="'+x.id+'" data-decision="rejected">رد</button>':'—')+
-    '</td></tr>')
-  ));
+ if(page==='purchases'){
+  const rows=await table('purchase_requests');
+  html=panel('درخواست‌های خرید',tableHTML(['بازیکن','جهان','کشور','مبلغ','وضعیت','رسید','تاریخ','عملیات'],
+   rows.map(x=>`<tr><td>${esc(x.player_telegram_username||x.player_telegram_id)}</td><td>${esc(worldName(x.world_id))}</td><td>${esc(countryName(x.country_id))}</td><td>${fa(x.price)}</td><td>${pill(x.status)}</td><td title="${esc(x.receipt_text)}">${esc((x.receipt_text||'').slice(0,45))}</td><td>${date(x.created_at)}</td><td>${x.status==='pending'?`<div class="actions"><button class="btn small good" data-review="${x.id}" data-decision="approved">تأیید</button><button class="btn small danger" data-review="${x.id}" data-decision="rejected">رد</button></div>`:'—'}</td></tr>`)));
  }
-
- if(page === 'economy'){
-  const rows = await loadTable('wallet_transactions');
-  html = panel('تغییر موجودی',
-   '<div class="toolbar">'+worldSelect()+
-   '<select id="fCountry"><option value="">انتخاب کشور</option></select>'+
-   '<select id="fOperation"><option value="credit">افزایش</option><option value="debit">کاهش</option></select>'+
-   '<input id="fAmount" class="search" type="number" min="1" placeholder="مبلغ">'+
-   '<input id="fReason" class="search" placeholder="دلیل">'+
-   '<button class="btn primary" id="applyBalance">ثبت تغییر</button></div>'+
-   '<p class="muted">تغییر موجودی از طریق تابع امن سرور انجام می‌شود.</p>'
-  );
-
-  html += panel('تراکنش‌های اخیر',makeTable(
-   ['شناسه بازیکن','مبلغ','نوع','دلیل','تاریخ'],
-   rows.map(x=>'<tr><td>'+esc(x.player_telegram_id)+'</td><td>'+fa(x.amount)+
-    '</td><td>'+statusPill(x.transaction_type)+'</td><td>'+esc(x.reason)+
-    '</td><td>'+new Date(x.created_at).toLocaleString('fa-IR')+'</td></tr>')
-  ));
+ if(page==='economy'){
+  const rows=await table('wallet_transactions');
+  html=panel('تغییر موجودی امن',`<div class="grid2"><div class="field"><label>جهان</label>${worldSelect('ecoWorld')}</div><div class="field"><label>کشور</label>${countrySelect('ecoCountry')}</div><div class="field"><label>عملیات</label><select id="ecoOperation"><option value="credit">افزایش موجودی</option><option value="debit">کاهش موجودی</option></select></div><div class="field"><label>مبلغ</label><input id="ecoAmount" type="number" min="1"></div><div class="field"><label>دلیل</label><input id="ecoReason" placeholder="علت تغییر موجودی"></div></div><button class="btn primary" id="ecoSubmit">ثبت تراکنش</button><p class="muted">ثبت تراکنش از طریق تابع امن دیتابیس انجام می‌شود.</p>`);
+  html+=panel('سوابق تراکنش‌ها',tableHTML(['شناسه بازیکن','مبلغ','نوع','دلیل','تاریخ'],
+   rows.map(x=>`<tr><td>${esc(x.player_telegram_id)}</td><td>${fa(x.amount)}</td><td>${pill(x.transaction_type)}</td><td>${esc(x.reason)}</td><td>${date(x.created_at)}</td></tr>`)));
  }
-
- if(page === 'messages'){
-  const rows = await loadTable('game_messages');
-  html = panel('ثبت پیام جدید',
-   '<div class="toolbar">'+worldSelect()+
-   '<select id="msgType"><option value="global">سراسری</option>'+
-   '<option value="world">جهانی</option><option value="private">خصوصی</option></select>'+
-   '<input id="msgPlayer" class="search" placeholder="شناسه تلگرام (خصوصی)"></div>'+
-   '<div class="field"><textarea id="msgText" rows="3" placeholder="متن پیام..."></textarea></div>'+
-   '<button class="btn primary" id="sendMessage">ثبت در صف ارسال</button>'+
-   '<p class="muted">این بخش پیام را در صف ثبت می‌کند. ارسال واقعی تلگرام به پردازشگر ربات وابسته است.</p>'
-  );
-
-  html += panel('پیام‌های ثبت‌شده',makeTable(
-   ['نوع','متن','وضعیت','زمان'],
-   rows.map(x=>'<tr><td>'+statusPill(x.message_type)+'</td><td>'+
-    esc(x.message_text)+'</td><td>'+statusPill(x.status)+'</td><td>'+
-    new Date(x.created_at).toLocaleString('fa-IR')+'</td></tr>')
-  ));
+ if(page==='messages'){
+  const rows=await table('game_messages');
+  html=panel('ثبت پیام در صف بازی',`<div class="grid2"><div class="field"><label>نوع پیام</label><select id="msgType"><option value="global">سراسری</option><option value="world">جهانی</option><option value="private">خصوصی</option></select></div><div class="field"><label>جهان مقصد</label>${worldSelect('msgWorld')}</div><div class="field"><label>شناسه تلگرام (برای خصوصی)</label><input id="msgPlayer" placeholder="Telegram ID"></div></div><div class="field"><label>متن پیام</label><textarea id="msgText" rows="4" placeholder="متن پیام..."></textarea></div><button class="btn primary" id="sendMessage">ثبت پیام</button><div class="notice">این عملیات پیام را در جدول صف ثبت می‌کند. ارسال واقعی به تلگرام به پردازشگر سمت سرور نیاز دارد.</div>`);
+  html+=panel('پیام‌های ثبت‌شده',tableHTML(['نوع','جهان','شناسه مقصد','متن','وضعیت','تاریخ'],
+   rows.map(x=>`<tr><td>${esc(x.message_type)}</td><td>${esc(worldName(x.world_id))}</td><td>${esc(x.player_telegram_id||'—')}</td><td>${esc(x.message_text.slice(0,65))}</td><td>${pill(x.status)}</td><td>${date(x.created_at)}</td></tr>`)));
  }
-
- if(page === 'warnings'){
-  const rows = await loadTable('admin_warnings');
-  html = panel('ثبت اخطار',
-   '<div class="toolbar">'+worldSelect()+
-   '<select id="warnCountry"><option value="">بدون کشور مشخص</option></select>'+
-   '<select id="warnLevel"><option value="normal">عادی</option>'+
-   '<option value="important">مهم</option><option value="critical">بحرانی</option></select></div>'+
-   '<div class="field"><textarea id="warnText" rows="3" placeholder="متن اخطار..."></textarea></div>'+
-   '<button class="btn primary" id="addWarning">ثبت اخطار</button>'
-  );
-
-  html += panel('اخطارها',makeTable(
-   ['جهان','کشور','سطح','متن','وضعیت','عملیات'],
-   rows.map(x=>'<tr><td>'+esc(worldName(x.world_id))+'</td><td>'+
-    esc(countries.find(c=>c.id===x.country_id)?.name||'—')+'</td><td>'+
-    statusPill(x.level)+'</td><td>'+esc(x.message)+'</td><td>'+
-    statusPill(x.status)+'</td><td>'+
-    (x.status==='active'?'<button class="btn good" data-resolve-warning="'+x.id+'">مختومه</button>':'—')+
-    '</td></tr>')
-  ));
+ if(page==='warnings'){
+  const rows=await table('admin_warnings');
+  html=panel('ثبت اخطار جدید',`<div class="grid2"><div class="field"><label>جهان (اختیاری)</label>${worldSelect('warnWorld')}</div><div class="field"><label>کشور (اختیاری)</label>${countrySelect('warnCountry')}</div><div class="field"><label>سطح</label><select id="warnLevel"><option value="normal">عادی</option><option value="important">مهم</option><option value="critical">بحرانی</option></select></div></div><div class="field"><label>متن اخطار</label><textarea id="warnText" rows="3"></textarea></div><button class="btn primary" id="createWarning">ثبت اخطار</button>`);
+  html+=panel('فهرست اخطارها',tableHTML(['سطح','جهان','کشور','متن','وضعیت','تاریخ','عملیات'],
+   rows.map(x=>`<tr><td>${pill(x.level)}</td><td>${esc(worldName(x.world_id))}</td><td>${esc(countryName(x.country_id))}</td><td>${esc(x.message)}</td><td>${pill(x.status)}</td><td>${date(x.created_at)}</td><td>${x.status==='active'?`<button class="btn small good" data-resolve-warning="${x.id}">مختومه</button>`:'—'}</td></tr>`)));
  }
-
- if(page === 'resolutions'){
-  const rows = await loadTable('resolutions');
-  html = panel('ثبت قطعنامه',
-   '<div class="field">'+worldSelect()+'</div>'+
-   '<div class="field"><input id="resTitle" placeholder="عنوان قطعنامه"></div>'+
-   '<div class="field"><textarea id="resDesc" rows="3" placeholder="متن قطعنامه"></textarea></div>'+
-   '<div class="toolbar"><select id="resStatus">'+
-   '<option value="draft">پیش‌نویس</option><option value="pending">در انتظار</option>'+
-   '<option value="approved">تأییدشده</option><option value="rejected">ردشده</option>'+
-   '</select><button class="btn primary" id="addResolution">ثبت قطعنامه</button></div>'
-  );
-
-  html += panel('قطعنامه‌ها',makeTable(
-   ['جهان','عنوان','وضعیت','تاریخ','عملیات'],
-   rows.map(x=>'<tr><td>'+esc(worldName(x.world_id))+'</td><td>'+
-    esc(x.title)+'</td><td>'+statusPill(x.status)+'</td><td>'+
-    new Date(x.created_at).toLocaleDateString('fa-IR')+
-    '</td><td><button class="btn" data-edit-resolution="'+x.id+'">تغییر وضعیت</button></td></tr>')
-  ));
+ if(page==='resolutions'){
+  const rows=await table('resolutions');
+  html=panel('ایجاد قطعنامه',`<div class="field"><label>جهان</label>${worldSelect('resWorld')}</div><div class="field"><label>عنوان</label><input id="resTitle"></div><div class="field"><label>توضیحات</label><textarea id="resDesc" rows="3"></textarea></div><div class="field"><label>وضعیت اولیه</label><select id="resStatus"><option value="draft">پیش‌نویس</option><option value="pending">در انتظار</option><option value="approved">تأییدشده</option><option value="rejected">ردشده</option></select></div><button class="btn primary" id="createResolution">ثبت قطعنامه</button>`);
+  html+=panel('قطعنامه‌ها',tableHTML(['عنوان','جهان','توضیحات','وضعیت','تاریخ','عملیات'],
+   rows.map(x=>`<tr><td>${esc(x.title)}</td><td>${esc(worldName(x.world_id))}</td><td>${esc(x.description)}</td><td>${pill(x.status)}</td><td>${date(x.created_at)}</td><td><div class="actions"><button class="btn small" data-edit-resolution="${x.id}">ویرایش وضعیت</button><button class="btn small danger" data-delete-resolution="${x.id}">حذف</button></div></td></tr>`)));
  }
-
- if(page === 'logs'){
-  const rows = await loadTable('activity_logs');
-  html = panel('گزارش رویدادها',makeTable(
-   ['رویداد','شرح','جهان','کشور','شناسه بازیکن','زمان'],
-   rows.map(x=>'<tr><td>'+esc(x.event_type)+'</td><td>'+esc(x.description)+
-    '</td><td>'+esc(x.world_name||worldName(x.world_id))+'</td><td>'+
-    esc(x.country_name||'—')+'</td><td>'+esc(x.player_telegram_id||'—')+
-    '</td><td>'+new Date(x.created_at).toLocaleString('fa-IR')+'</td></tr>')
-  ));
+ if(page==='logs'){
+  const rows=await table('activity_logs');
+  html=panel('گزارش فعالیت مدیران',tableHTML(['نوع رویداد','توضیحات','جهان','کشور','شناسه بازیکن','تاریخ'],
+   rows.map(x=>`<tr><td>${esc(x.event_type)}</td><td>${esc(x.description)}</td><td>${esc(x.world_name||worldName(x.world_id))}</td><td>${esc(x.country_name||countryName(x.country_id))}</td><td>${esc(x.player_telegram_id||'—')}</td><td>${date(x.created_at)}</td></tr>`)));
  }
-
- $('#pageContent').innerHTML = html;
- wirePage(page);
+ $('#pageContent').innerHTML=html;
+ bindPageEvents(page);
+}
+async function logAction(type,description,worldId=null,countryId=null){
+ const {error}=await db.from('activity_logs').insert({
+  event_type:type,description,world_id:worldId,country_id:countryId,admin_id:adminId
+ });
+ if(error)console.warn('Activity log failed:',error.message);
 }
 
-function wirePage(page){
+/* =========================
+   WORLD OPERATIONS
+========================= */
+async function createWorld(){
+ const name=$('#newWorldName').value.trim(),description=$('#newWorldDesc').value.trim();
+ if(!name)return toast('نام جهان را وارد کن.');
+ const {data,error}=await db.from('worlds').insert({name,description,status:'active'}).select().single();
+ if(error)throw error;
+ await logAction('world_created','جهان '+name+' ساخته شد.',data.id);
+ toast('جهان ساخته شد.');await renderPage('worlds');
+}
+async function editWorld(id){
+ const w=worlds.find(x=>x.id===id);if(!w)return;
+ modal('ویرایش جهان',`<div class="field"><label>نام جهان</label><input id="mWorldName" value="${esc(w.name)}"></div><div class="field"><label>توضیحات</label><textarea id="mWorldDesc">${esc(w.description)}</textarea></div>`);
+ $('#modalSave').onclick=async()=>{
+  try{
+   const name=$('#mWorldName').value.trim();if(!name)throw Error('نام الزامی است');
+   const {error}=await db.from('worlds').update({name,description:$('#mWorldDesc').value.trim()}).eq('id',id);
+   if(error)throw error;closeModal();await logAction('world_updated','جهان ویرایش شد: '+name,id);toast('ذخیره شد');await renderPage('worlds');
+  }catch(e){fail(e)}
+ };
+}
+async function toggleWorld(id){
+ const w=worlds.find(x=>x.id===id);if(!w)return;
+ const status=w.status==='active'?'inactive':'active';
+ if(!ask(`وضعیت جهان ${w.name} به ${status} تغییر کند؟`))return;
+ const {error}=await db.from('worlds').update({status}).eq('id',id);
+ if(error)throw error;await logAction('world_status','وضعیت جهان تغییر کرد: '+status,id);toast('وضعیت تغییر کرد');await renderPage('worlds');
+}
+async function resetWorld(id){
+ const w=worlds.find(x=>x.id===id);if(!w)return;
+ const resetBalances=ask('موجودی کشورها هم صفر شود؟ OK = بله / Cancel = خیر');
+ if(!ask(`تمام بازیکنان جهان «${w.name}» آزاد شوند؟ این عملیات مالکیت کشورها را پاک می‌کند.`))return;
+ const {data,error}=await db.rpc('admin_reset_world',{p_world_id:id,p_reset_balances:resetBalances});
+ if(error)throw error;toast(`${fa(data)} کشور آزاد شد.`);await renderPage('worlds');
+}
+async function deleteWorld(id){
+ const w=worlds.find(x=>x.id===id);if(!w)return;
+ if(!ask(`هشدار: جهان «${w.name}» و کشورها و اطلاعات وابسته آن حذف می‌شوند. ادامه می‌دهی؟`))return;
+ const confirmation=prompt('برای تأیید حذف، نام جهان را دقیق وارد کن:');
+ if(confirmation!==w.name)return toast('نام مطابقت نداشت؛ حذف لغو شد.');
+ const {data,error}=await db.rpc('admin_delete_world',{p_world_id:id});
+ if(error)throw error;if(data!==true)throw Error('حذف جهان تأیید نشد.');
+ toast('جهان حذف شد.');await renderPage('worlds');
+}
 
- if(page === 'worlds'){
-  $('#addWorld').onclick = async()=>{
-   const name = prompt('نام جهان؟');
-   if(!name?.trim()) return;
-   const description = prompt('توضیحات جهان؟') || '';
-   try{
-    const {error} = await db.from('worlds').insert({
-     name:name.trim(),description,status:'active'
-    });
-    if(error) throw error;
-    toast('جهان ساخته شد');
-    renderPage(page);
-   }catch(e){fail(e)}
-  };
+/* =========================
+   COUNTRY OPERATIONS
+========================= */
+async function createCountry(){
+ const world_id=$('#newCountryWorld').value,name=$('#newCountryName').value.trim();
+ if(!world_id||!name)return toast('جهان و نام کشور الزامی است.');
+ const payload={
+  world_id,name,ruler:$('#newCountryRuler').value.trim(),
+  balance:Math.max(0,Number($('#newCountryBalance').value)||0),
+  price:Math.max(0,Number($('#newCountryPrice').value)||0),
+  is_premium:$('#newCountryPremium').value==='true',is_locked:false
+ };
+ const {data,error}=await db.from('countries').insert(payload).select().single();
+ if(error)throw error;await logAction('country_created','کشور ساخته شد: '+name,world_id,data.id);
+ toast('کشور اضافه شد.');await renderPage('countries');
+}
+async function editCountry(id){
+ const c=countries.find(x=>x.id===id);if(!c)return;
+ modal('ویرایش کشور',`<div class="field"><label>نام کشور</label><input id="mCountryName" value="${esc(c.name)}"></div><div class="field"><label>فرمانروا</label><input id="mCountryRuler" value="${esc(c.ruler)}"></div><div class="field"><label>قیمت</label><input id="mCountryPrice" type="number" value="${c.price}"></div><div class="field"><label>ویژه</label><select id="mCountryPremium"><option value="false">عادی</option><option value="true" ${c.is_premium?'selected':''}>ویژه</option></select></div>`);
+ $('#modalSave').onclick=async()=>{
+  try{
+   const name=$('#mCountryName').value.trim();if(!name)throw Error('نام الزامی است');
+   const {error}=await db.from('countries').update({
+    name,ruler:$('#mCountryRuler').value.trim(),price:Number($('#mCountryPrice').value)||0,
+    is_premium:$('#mCountryPremium').value==='true'
+   }).eq('id',id);
+   if(error)throw error;closeModal();await logAction('country_updated','کشور ویرایش شد: '+name,c.world_id,id);toast('کشور ویرایش شد');await renderPage('countries');
+  }catch(e){fail(e)}
+ };
+}
+async function resetCountry(id){
+ const c=countries.find(x=>x.id===id);if(!c)return;
+ const resetBalance=ask('موجودی این کشور هم صفر شود؟ OK = بله / Cancel = خیر');
+ if(!ask(`مالکیت کشور ${c.name} پاک شود و دوباره قابل انتخاب شود؟`))return;
+ const {data,error}=await db.rpc('admin_reset_country',{p_country_id:id,p_reset_balance:resetBalance});
+ if(error)throw error;if(data!==true)throw Error('ریست انجام نشد.');
+ toast('کشور آزاد شد.');await renderPage('countries');
+}
+async function deleteCountry(id){
+ const c=countries.find(x=>x.id===id);if(!c)return;
+ if(!ask(`کشور «${c.name}» حذف شود؟ این عملیات برگشت‌پذیر نیست.`))return;
+ const {data,error}=await db.rpc('admin_delete_country',{p_country_id:id});
+ if(error)throw error;if(data!==true)throw Error('حذف کشور انجام نشد.');
+ toast('کشور حذف شد.');await renderPage('countries');
+}
+async function toggleLock(id){
+ const c=countries.find(x=>x.id===id);if(!c)return;
+ const {error}=await db.from('countries').update({is_locked:!c.is_locked}).eq('id',id);
+ if(error)throw error;toast('وضعیت قفل تغییر کرد.');await renderPage('countries');
+}
+async function changeBalance(id){
+ const c=countries.find(x=>x.id===id);if(!c)return;
+ modal('تغییر موجودی '+c.name,`<div class="field"><label>نوع عملیات</label><select id="mBalanceOp"><option value="credit">افزایش</option><option value="debit">کاهش</option></select></div><div class="field"><label>مبلغ</label><input id="mBalanceAmount" type="number" min="1"></div><div class="field"><label>دلیل</label><input id="mBalanceReason"></div>`);
+ $('#modalSave').onclick=async()=>{
+  try{
+   const amount=Number($('#mBalanceAmount').value),reason=$('#mBalanceReason').value.trim();
+   if(!Number.isSafeInteger(amount)||amount<=0||!reason)throw Error('مبلغ و دلیل معتبر وارد کن.');
+   const {error}=await db.rpc('admin_adjust_balance',{p_country_id:id,p_amount:amount,p_reason:reason,p_operation:$('#mBalanceOp').value});
+   if(error)throw error;closeModal();toast('موجودی تغییر کرد.');await renderPage('countries');
+  }catch(e){fail(e)}
+ };
+}
 
-  document.querySelectorAll('[data-edit-world]').forEach(button=>{
-   button.onclick = async()=>{
-    const w = worlds.find(x=>x.id===button.dataset.editWorld);
-    const name = prompt('نام جهان',w.name);
-    if(!name) return;
-    const description = prompt('توضیحات',w.description||'') ?? w.description;
-    try{
-     const {error} = await db.from('worlds').update({name,description}).eq('id',w.id);
-     if(error) throw error;
-     renderPage(page);
-    }catch(e){fail(e)}
-   };
-  });
+/* =========================
+   PLAYER / PURCHASE / ECONOMY
+========================= */
+async function transferPlayer(){
+ const world_id=$('#transferWorld').value,player=$('#transferPlayer').value.trim(),country_id=$('#transferCountry').value;
+ if(!world_id||!player||!country_id)return toast('همه اطلاعات را وارد کن.');
+ if(!ask('انتقال مالکیت بازیکن به کشور مقصد انجام شود؟'))return;
+ const {data,error}=await db.rpc('admin_transfer_country',{p_world_id:world_id,p_player_telegram_id:player,p_new_country_id:country_id});
+ if(error)throw error;if(data!==true)throw Error('انتقال انجام نشد.');
+ toast('انتقال انجام شد.');await renderPage('players');
+}
+async function reviewPurchase(id,decision){
+ if(!ask(decision==='approved'?'این درخواست تأیید شود؟':'این درخواست رد شود؟'))return;
+ const {data,error}=await db.rpc('admin_review_purchase',{p_request_id:id,p_decision:decision});
+ if(error)throw error;if(data!==true)throw Error('بررسی درخواست انجام نشد.');
+ toast('درخواست بررسی شد.');await renderPage('purchases');
+}
+async function submitEconomy(){
+ const country_id=$('#ecoCountry').value,amount=Number($('#ecoAmount').value),reason=$('#ecoReason').value.trim(),operation=$('#ecoOperation').value;
+ if(!country_id||!Number.isSafeInteger(amount)||amount<=0||!reason)return toast('اطلاعات تراکنش کامل نیست.');
+ if(!ask('تغییر موجودی ثبت شود؟'))return;
+ const {error}=await db.rpc('admin_adjust_balance',{p_country_id:country_id,p_amount:amount,p_reason:reason,p_operation:operation});
+ if(error)throw error;toast('تراکنش ثبت شد.');await renderPage('economy');
+}
 
-  document.querySelectorAll('[data-toggle-world]').forEach(button=>{
-   button.onclick = async()=>{
-    const w = worlds.find(x=>x.id===button.dataset.toggleWorld);
-    if(!confirm('وضعیت جهان تغییر کند؟')) return;
-    try{
-     const {error} = await db.from('worlds')
-      .update({status:w.status==='active'?'inactive':'active'}).eq('id',w.id);
-     if(error) throw error;
-     renderPage(page);
-    }catch(e){fail(e)}
-   };
-  });
+/* =========================
+   MESSAGES / WARNINGS / RESOLUTIONS
+========================= */
+async function createMessage(){
+ const type=$('#msgType').value,world=$('#msgWorld').value,player=$('#msgPlayer').value.trim(),text=$('#msgText').value.trim();
+ if(!text)return toast('متن پیام را وارد کن.');
+ if(type==='world'&&!world)return toast('جهان مقصد را انتخاب کن.');
+ if(type==='private'&&!player)return toast('شناسه تلگرام لازم است.');
+ const payload={message_type:type,world_id:type==='global'?null:world||null,player_telegram_id:type==='private'?player:null,message_text:text,status:'queued',admin_id:adminId};
+ const {error}=await db.from('game_messages').insert(payload);
+ if(error)throw error;toast('پیام در صف ثبت شد.');await renderPage('messages');
+}
+async function createWarning(){
+ const message=$('#warnText').value.trim();if(!message)return toast('متن اخطار را وارد کن.');
+ const {error}=await db.from('admin_warnings').insert({
+  world_id:$('#warnWorld').value||null,country_id:$('#warnCountry').value||null,
+  level:$('#warnLevel').value,message,status:'active',admin_id:adminId
+ });
+ if(error)throw error;toast('اخطار ثبت شد.');await renderPage('warnings');
+}
+async function resolveWarning(id){
+ if(!ask('این اخطار مختومه شود؟'))return;
+ const {error}=await db.from('admin_warnings').update({status:'resolved'}).eq('id',id);
+ if(error)throw error;toast('اخطار مختومه شد.');await renderPage('warnings');
+}
+async function createResolution(){
+ const world_id=$('#resWorld').value,title=$('#resTitle').value.trim();
+ if(!world_id||!title)return toast('جهان و عنوان الزامی است.');
+ const {error}=await db.from('resolutions').insert({
+  world_id,title,description:$('#resDesc').value.trim(),
+  status:$('#resStatus').value,admin_id:adminId
+ });
+ if(error)throw error;toast('قطعنامه ثبت شد.');await renderPage('resolutions');
+}
+async function editResolution(id){
+ const rows=await table('resolutions'),r=rows.find(x=>x.id===id);if(!r)return;
+ modal('ویرایش وضعیت قطعنامه',`<p>${esc(r.title)}</p><div class="field"><label>وضعیت</label><select id="mResStatus">
+  <option value="draft">پیش‌نویس</option><option value="pending">در انتظار</option>
+  <option value="approved">تأییدشده</option><option value="rejected">ردشده</option></select></div>`);
+ $('#mResStatus').value=r.status;
+ $('#modalSave').onclick=async()=>{
+  try{const {error}=await db.from('resolutions').update({status:$('#mResStatus').value,updated_at:new Date().toISOString()}).eq('id',id);
+   if(error)throw error;closeModal();toast('وضعیت تغییر کرد.');await renderPage('resolutions');
+  }catch(e){fail(e)}
+ };
+}
+async function deleteResolution(id){
+ if(!ask('قطعنامه حذف شود؟'))return;
+ const {error}=await db.from('resolutions').delete().eq('id',id);
+ if(error)throw error;toast('قطعنامه حذف شد.');await renderPage('resolutions');
+}
+
+/* =========================
+   PAGE EVENT BINDINGS
+========================= */
+function bindPageEvents(page){
+ const on=(selector,fn)=>{const el=$(selector);if(el)el.onclick=()=>Promise.resolve(fn()).catch(fail)};
+ if(page==='worlds'){
+  on('#createWorld',createWorld);
+  document.querySelectorAll('[data-edit-world]').forEach(b=>b.onclick=()=>editWorld(b.dataset.editWorld));
+  document.querySelectorAll('[data-toggle-world]').forEach(b=>b.onclick=()=>toggleWorld(b.dataset.toggleWorld).catch(fail));
+  document.querySelectorAll('[data-reset-world]').forEach(b=>b.onclick=()=>resetWorld(b.dataset.resetWorld).catch(fail));
+  document.querySelectorAll('[data-delete-world]').forEach(b=>b.onclick=()=>deleteWorld(b.dataset.deleteWorld).catch(fail));
  }
-
- if(page === 'countries'){
-  $('#countrySearch').oninput = e=>{
-   document.querySelectorAll('#pageContent tbody tr').forEach(row=>{
-    row.style.display = row.textContent.toLowerCase().includes(e.target.value.toLowerCase())?'':'none';
-   });
-  };
-
-  $('#addCountry').onclick = async()=>{
-   const options = worlds.map(w=>w.name+' = '+w.id).join('\n');
-   const world_id = prompt('شناسه UUID جهان:\n'+options);
-   if(!world_id) return;
-   const name = prompt('نام کشور؟');
-   if(!name) return;
-   try{
-    const {error} = await db.from('countries').insert({
-     world_id,name,ruler:'',balance:0
-    });
-    if(error) throw error;
-    toast('کشور اضافه شد');
-    renderPage(page);
-   }catch(e){fail(e)}
-  };
-
-  document.querySelectorAll('[data-edit-country]').forEach(button=>{
-   button.onclick = async()=>{
-    const c = countries.find(x=>x.id===button.dataset.editCountry);
-    const name = prompt('نام کشور',c.name);
-    if(!name) return;
-    const ruler = prompt('فرمانروا',c.ruler||'') ?? c.ruler;
-    const price = prompt('قیمت',c.price);
-    if(price===null) return;
-    const is_locked = confirm('کشور قفل شود؟ (لغو = باز)');
-    try{
-     const {error} = await db.from('countries')
-      .update({name,ruler,price:Number(price),is_locked}).eq('id',c.id);
-     if(error) throw error;
-     renderPage(page);
-    }catch(e){fail(e)}
-   };
-  });
-
-  document.querySelectorAll('[data-balance]').forEach(button=>{
-   button.onclick = ()=>navigate('economy');
-  });
- }
-
- if(page === 'economy'){
-  $('#fWorld').onchange = ()=>{
-   $('#fCountry').innerHTML = '<option value="">انتخاب کشور</option>'+
-    countries.filter(c=>c.world_id===$('#fWorld').value)
-    .map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('');
-  };
-
-  $('#applyBalance').onclick = async()=>{
-   const id = $('#fCountry').value;
-   const amount = Number($('#fAmount').value);
-   const reason = $('#fReason').value.trim();
-   const operation = $('#fOperation').value;
-
-   if(!id || !Number.isSafeInteger(amount) || amount<=0 || !reason){
-    return toast('اطلاعات تغییر موجودی کامل نیست.');
-   }
-   if(!confirm('تغییر موجودی ثبت شود؟')) return;
-
-   try{
-    const {data,error} = await db.rpc('admin_adjust_balance',{
-     p_country_id:id,
-     p_amount:amount,
-     p_reason:reason,
-     p_operation:operation
-    });
-    if(error) throw error;
-    toast('موجودی جدید: '+fa(data));
-    renderPage(page);
-   }catch(e){fail(e)}
+ if(page==='countries'){
+  on('#createCountry',createCountry);
+  document.querySelectorAll('[data-edit-country]').forEach(b=>b.onclick=()=>editCountry(b.dataset.editCountry));
+  document.querySelectorAll('[data-balance]').forEach(b=>b.onclick=()=>changeBalance(b.dataset.balance));
+  document.querySelectorAll('[data-reset-country]').forEach(b=>b.onclick=()=>resetCountry(b.dataset.resetCountry).catch(fail));
+  document.querySelectorAll('[data-delete-country]').forEach(b=>b.onclick=()=>deleteCountry(b.dataset.deleteCountry).catch(fail));
+  document.querySelectorAll('[data-lock-country]').forEach(b=>b.onclick=()=>toggleLock(b.dataset.lockCountry).catch(fail));
+  const search=$('#countrySearch');if(search)search.oninput=()=>{
+   const q=search.value.toLowerCase();
+   document.querySelectorAll('#pageContent tbody tr').forEach(r=>r.style.display=r.textContent.toLowerCase().includes(q)?'':'none');
   };
  }
-
- if(page === 'purchases'){
-  document.querySelectorAll('[data-review]').forEach(button=>{
-   button.onclick = async()=>{
-    if(!confirm('این درخواست بررسی شود؟')) return;
-    try{
-     const {data,error} = await db.rpc('admin_review_purchase',{
-      p_request_id:button.dataset.review,
-      p_decision:button.dataset.decision
-     });
-     if(error) throw error;
-     if(data!==true) throw new Error('عملیات انجام نشد.');
-     toast('درخواست بررسی شد');
-     renderPage(page);
-    }catch(e){fail(e)}
-   };
-  });
+ if(page==='players')on('#transferBtn',transferPlayer);
+ if(page==='purchases')document.querySelectorAll('[data-review]').forEach(b=>b.onclick=()=>reviewPurchase(b.dataset.review,b.dataset.decision).catch(fail));
+ if(page==='economy'){
+  const w=$('#ecoWorld'),c=$('#ecoCountry');
+  w.onchange=()=>{c.innerHTML=countrySelect('unused',w.value).replace('<select id="unused">','').replace('</select>','')};
+  on('#ecoSubmit',submitEconomy);
  }
-
- if(page === 'messages'){
-  $('#sendMessage').onclick = async()=>{
-   const message_text = $('#msgText').value.trim();
-   const message_type = $('#msgType').value;
-   const world_id = $('#fWorld').value || null;
-   const player_telegram_id = $('#msgPlayer').value.trim() || null;
-
-   if(!message_text) return toast('متن پیام را وارد کنید.');
-   if(message_type==='world' && !world_id) return toast('جهان را انتخاب کنید.');
-   if(message_type==='private' && !player_telegram_id) return toast('شناسه تلگرام لازم است.');
-
-   try{
-    const {error} = await db.from('game_messages').insert({
-     message_text,
-     message_type,
-     world_id:message_type==='global'?null:world_id,
-     player_telegram_id:message_type==='private'?player_telegram_id:null,
-     status:'queued',
-     admin_id:adminId
-    });
-    if(error) throw error;
-    toast('پیام در صف ثبت شد');
-    renderPage(page);
-   }catch(e){fail(e)}
-  };
+ if(page==='messages')on('#sendMessage',createMessage);
+ if(page==='warnings'){
+  on('#createWarning',createWarning);
+  document.querySelectorAll('[data-resolve-warning]').forEach(b=>b.onclick=()=>resolveWarning(b.dataset.resolveWarning).catch(fail));
+  const w=$('#warnWorld'),c=$('#warnCountry');
+  w.onchange=()=>{c.innerHTML=countrySelect('unused',w.value).replace('<select id="unused">','').replace('</select>','')};
  }
-
- if(page === 'warnings'){
-  $('#fWorld').onchange = ()=>{
-   $('#warnCountry').innerHTML = '<option value="">بدون کشور مشخص</option>'+
-    countries.filter(c=>c.world_id===$('#fWorld').value)
-    .map(c=>'<option value="'+c.id+'">'+esc(c.name)+'</option>').join('');
-  };
-
-  $('#addWarning').onclick = async()=>{
-   const message = $('#warnText').value.trim();
-   if(!message) return toast('متن اخطار را وارد کنید.');
-   try{
-    const {error} = await db.from('admin_warnings').insert({
-     world_id:$('#fWorld').value || null,
-     country_id:$('#warnCountry').value || null,
-     level:$('#warnLevel').value,
-     message,
-     admin_id:adminId
-    });
-    if(error) throw error;
-    toast('اخطار ثبت شد');
-    renderPage(page);
-   }catch(e){fail(e)}
-  };
-
-  document.querySelectorAll('[data-resolve-warning]').forEach(button=>{
-   button.onclick = async()=>{
-    try{
-     const {error} = await db.from('admin_warnings')
-      .update({status:'resolved'}).eq('id',button.dataset.resolveWarning);
-     if(error) throw error;
-     renderPage(page);
-    }catch(e){fail(e)}
-   };
-  });
- }
-
- if(page === 'resolutions'){
-  $('#addResolution').onclick = async()=>{
-   const world_id = $('#fWorld').value;
-   const title = $('#resTitle').value.trim();
-   if(!world_id || !title) return toast('جهان و عنوان لازم است.');
-   try{
-    const {error} = await db.from('resolutions').insert({
-     world_id,
-     title,
-     description:$('#resDesc').value,
-     status:$('#resStatus').value,
-     admin_id:adminId
-    });
-    if(error) throw error;
-    toast('قطعنامه ثبت شد');
-    renderPage(page);
-   }catch(e){fail(e)}
-  };
-
-  document.querySelectorAll('[data-edit-resolution]').forEach(button=>{
-   button.onclick = async()=>{
-    const status = prompt('وضعیت: draft / pending / approved / rejected');
-    if(!['draft','pending','approved','rejected'].includes(status)) return;
-    try{
-     const {error} = await db.from('resolutions')
-      .update({status,updated_at:new Date().toISOString()})
-      .eq('id',button.dataset.editResolution);
-     if(error) throw error;
-     renderPage(page);
-    }catch(e){fail(e)}
-   };
-  });
+ if(page==='resolutions'){
+  on('#createResolution',createResolution);
+  document.querySelectorAll('[data-edit-resolution]').forEach(b=>b.onclick=()=>editResolution(b.dataset.editResolution));
+  document.querySelectorAll('[data-delete-resolution]').forEach(b=>b.onclick=()=>deleteResolution(b.dataset.deleteResolution).catch(fail));
  }
 }
+
+/* =========================
+   ANIMATED SPACE BACKGROUND
+========================= */
+(function(){
+ const canvas=document.getElementById('space'),ctx=canvas.getContext('2d');
+ let width,height,stars=[];
+ function resize(){
+  width=canvas.width=innerWidth*devicePixelRatio;
+  height=canvas.height=innerHeight*devicePixelRatio;
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  width=innerWidth;height=innerHeight;
+  stars=Array.from({length:Math.min(180,Math.floor(width/7))},()=>({
+   x:Math.random()*width,y:Math.random()*height,
+   r:Math.random()*1.5+.25,s:Math.random()*.35+.08,
+   a:Math.random()*.7+.2,p:Math.random()*6
+  }));
+ }
+ function draw(){
+  ctx.clearRect(0,0,width,height);
+  for(const s of stars){
+   s.y+=s.s;if(s.y>height){s.y=0;s.x=Math.random()*width}
+   s.p+=.025;
+   const alpha=s.a*(.55+.45*Math.sin(s.p));
+   ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+   ctx.fillStyle=`rgba(170,205,255,${alpha})`;ctx.fill();
+  }
+  requestAnimationFrame(draw);
+ }
+ addEventListener('resize',resize);resize();draw();
+})();
 
 init().catch(fail);
- 
-<style>
-.admin-action{
- display:inline-flex;align-items:center;gap:5px;
- padding:7px 10px;margin:3px;border-radius:10px;
- font:600 12px Vazirmatn,sans-serif;cursor:pointer;border:0
-}
-.admin-reset{background:#fff5df;color:#a47720}
-.admin-delete{background:#fff0f1;color:#c94c5b}
-.admin-action:hover{filter:brightness(.96)}
-.admin-danger-box{
- background:#fff5f5;border:1px solid #f5d6d9;
- border-radius:14px;padding:13px;margin:12px 0;
- color:#a74652;font-size:12px
-}
-</style>
-
-<script>
-(function(){
- const root=document.querySelector('#pageContent');
- if(!root)return;
-
- function addAction(row,label,kind,id){
-  const cell=row.lastElementChild;
-  if(!cell || cell.querySelector('[data-admin-action="'+kind+'"]'))return;
-  const b=document.createElement('button');
-  b.className='admin-action '+(kind.includes('delete')?'admin-delete':'admin-reset');
-  b.textContent=label;
-  b.dataset.adminAction=kind;
-  b.dataset.id=id;
-  cell.appendChild(b);
- }
-
- function enhance(){
-  if(currentPage==='worlds'){
-   const rows=root.querySelectorAll('table tbody tr');
-   rows.forEach((row,i)=>{
-    const w=worlds[i];
-    if(!w)return;
-    addAction(row,'ریست تمام کشورها','world-reset',w.id);
-    addAction(row,'حذف جهان','world-delete',w.id);
-   });
-  }
-
-  if(currentPage==='countries'){
-   const rows=root.querySelectorAll('table tbody tr');
-   rows.forEach((row,i)=>{
-    const c=countries[i];
-    if(!c)return;
-    addAction(row,'آزادسازی','country-reset',c.id);
-    addAction(row,'حذف','country-delete',c.id);
-   });
-  }
- }
-
- const observer=new MutationObserver(enhance);
- observer.observe(root,{childList:true,subtree:true});
- enhance();
-
- root.addEventListener('click',async e=>{
-  const b=e.target.closest('[data-admin-action]');
-  if(!b)return;
-
-  const kind=b.dataset.adminAction;
-  const id=b.dataset.id;
-  b.disabled=true;
-
-  try{
-   if(kind==='country-reset'){
-    const c=countries.find(x=>x.id===id);
-    if(!c)throw new Error('کشور پیدا نشد.');
-
-    if(prompt('برای آزادسازی کشور این نام را دقیق وارد کن:\n'+c.name)!==c.name)
-     return;
-
-    const {error}=await db.rpc('admin_reset_country',{
-     p_country_id:id,
-     p_reset_balance:false
-    });
-    if(error)throw error;
-    toast('کشور آزاد شد؛ موجودی حفظ شد.');
-    await renderPage('countries');
-   }
-
-   if(kind==='country-delete'){
-    const c=countries.find(x=>x.id===id);
-    if(!c)throw new Error('کشور پیدا نشد.');
-
-    if(prompt('برای حذف دائمی کشور، نام آن را وارد کن:\n'+c.name)!==c.name)
-     return;
-
-    if(!confirm('حذف کشور دائمی است. ادامه می‌دهی؟'))return;
-
-    const {error}=await db.rpc('admin_delete_country',{
-     p_country_id:id
-    });
-    if(error)throw error;
-    toast('کشور حذف شد.');
-    await renderPage('countries');
-   }
-
-   if(kind==='world-reset'){
-    const w=worlds.find(x=>x.id===id);
-    if(!w)throw new Error('جهان پیدا نشد.');
-
-    if(prompt('برای ریست جهان، نام آن را دقیق وارد کن:\n'+w.name)!==w.name)
-     return;
-
-    const resetBalances=confirm(
-     'آیا موجودی تمام کشورها هم صفر شود؟\nOK = صفر شود\nCancel = موجودی حفظ شود'
-    );
-
-    const {data,error}=await db.rpc('admin_reset_world',{
-     p_world_id:id,
-     p_reset_balances:resetBalances
-    });
-    if(error)throw error;
-    toast('جهان ریست شد؛ '+data+' کشور آزاد شدند.');
-    await renderPage('worlds');
-   }
-
-   if(kind==='world-delete'){
-    const w=worlds.find(x=>x.id===id);
-    if(!w)throw new Error('جهان پیدا نشد.');
-
-    if(prompt('هشدار: حذف دائمی جهان!\nبرای تأیید، نام جهان را دقیق وارد کن:\n'+w.name)!==w.name)
-     return;
-
-    if(!confirm('این عملیات قابل بازگشت نیست. تمام کشورهای جهان حذف می‌شوند. ادامه؟'))
-     return;
-
-    const {error}=await db.rpc('admin_delete_world',{
-     p_world_id:id
-    });
-    if(error)throw error;
-    toast('جهان حذف شد.');
-    await renderPage('worlds');
-   }
-
-  }catch(error){
-   console.error(error);
-   toast(error.message||'عملیات انجام نشد.');
-  }finally{
-   b.disabled=false;
-  }
- });
-})();
 </script>
 </body>
 </html>
