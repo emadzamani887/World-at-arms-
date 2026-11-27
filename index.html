@@ -3,304 +3,699 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#091116">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1c1d18">
 <title>WORLD AT ARMS 1936</title>
+
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap');
 
 :root{
- --bg:#091116;--panel:#142129;--panel2:#1b3038;
- --line:#2c414a;--text:#edf5f4;--muted:#91a4aa;
- --green:#42dda0;--gold:#e6bd68;--red:#ff6878;
+ --bg:#1c1d18;
+ --panel:#292a21;
+ --panel2:#22231c;
+ --gold:#c6a45c;
+ --gold-light:#e1c782;
+ --text:#eee4ca;
+ --muted:#b9ad8d;
+ --border:#756644;
+ --green:#77bd83;
+ --red:#d87969;
+ --blue:#79a9c8;
 }
 *{box-sizing:border-box}
 body{
- margin:0;min-height:100vh;color:var(--text);
- font-family:Vazirmatn,Tahoma,sans-serif;
- background:radial-gradient(ellipse at 85% 0%,#17433855,transparent 38%),var(--bg);
+ margin:0;
+ padding:14px;
+ min-height:100vh;
+ background:
+ radial-gradient(ellipse at 50% 0%,#48432f 0%,transparent 60%),
+ var(--bg);
+ color:var(--text);
+ font-family:'Vazirmatn',Tahoma,sans-serif;
 }
-button,input,textarea{font:inherit}
+button,input,textarea{font-family:inherit}
 button{cursor:pointer}
 button:disabled{opacity:.5;cursor:not-allowed}
-
+.container{max-width:900px;margin:auto}
 .topbar{
- position:sticky;top:0;z-index:5;padding:14px;
- background:#091116ee;backdrop-filter:blur(15px);
- border-bottom:1px solid var(--line)
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ padding:12px 3px 17px;
+ margin-bottom:16px;
+ border-bottom:1px solid var(--border);
 }
-.topinner,main{max-width:820px;margin:auto}
-.topinner{display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:11px}
-.logo{
- width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
- font-size:23px;background:linear-gradient(145deg,#286c54,#12352c);
- border:1px solid #42dda077
+.logo{color:var(--gold-light);font-size:18px;font-weight:900}
+.world-label{color:var(--muted);font-size:11px}
+.panel{
+ background:linear-gradient(145deg,#363528,#24251e);
+ border:1px solid var(--border);
+ border-radius:13px;
+ padding:17px;
+ margin-bottom:15px;
+ box-shadow:0 8px 25px #0005;
 }
-.brand h1{margin:0;font-size:15px;font-weight:900}
-.brand small{display:block;color:var(--green);font-size:9px;letter-spacing:1.5px}
-.online{font-size:10px;color:var(--green);border:1px solid #42dda044;padding:6px 10px;border-radius:30px}
-
-main{padding:16px}
-.hero{
- padding:23px 20px;margin:5px 0 17px;border-radius:22px;
- border:1px solid #31564b;
- background:linear-gradient(120deg,#18372e,#111e25 66%,#142832);
+.section-title{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px;
+ margin:4px 0 14px;
 }
-.eyebrow{color:var(--green);font-size:10px;letter-spacing:2px}
-.hero h2{margin:8px 0 5px;font-size:23px;font-weight:900}
-.hero p{margin:0;color:#b2c4c0;font-size:12px;line-height:2}
-
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:15px 0 23px}
-.stat{text-align:center;padding:12px 7px;background:var(--panel);border:1px solid var(--line);border-radius:15px}
-.stat strong{display:block;color:var(--green);font-size:21px}
-.stat span{color:var(--muted);font-size:10px}
-
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 2px 12px}
-.section-head h3{margin:0;font-size:15px}
-.section-head small{color:var(--muted);font-size:9px}
-
-.search{
- width:100%;padding:12px;color:var(--text);background:var(--panel);
- border:1px solid var(--line);border-radius:12px;outline:none;font-size:12px
+.section-title h2,.section-title h3{
+ margin:0;
+ color:var(--gold-light);
+ font-size:17px;
 }
-.search:focus,.receipt:focus{border-color:var(--green)}
-
-.world-list{display:grid;gap:10px}
-.world-card,.country-card{
- background:linear-gradient(145deg,#17262d,#101a20);
- border:1px solid var(--line);border-radius:18px
-}
-.world-card{display:flex;align-items:center;gap:13px;padding:14px}
-.world-symbol{
- width:48px;height:48px;flex:0 0 48px;display:grid;place-items:center;
- border-radius:14px;background:#203b32;font-size:23px
-}
-.world-info{flex:1;min-width:0}
-.world-info h4{margin:0 0 4px;font-size:14px}
-.world-info p{margin:0;color:var(--muted);font-size:10px}
-.world-count{margin-top:5px;color:var(--green);font-size:10px}
-
-.countries{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.country-card{min-width:0;padding:13px}
-.country-title{display:flex;align-items:center;gap:9px}
-.flag{font-size:22px}
-.country-name{font-size:12px;font-weight:800;overflow-wrap:anywhere}
-.country-status{margin-top:8px;color:var(--green);font-size:10px}
-.country-status.taken{color:var(--red)}
-.country-status.premium{color:var(--gold)}
-.country-owner{margin-top:4px;color:var(--muted);font-size:9px}
-
-.btn{
- border:0;border-radius:11px;padding:10px 13px;
- font-size:11px;font-weight:800
-}
-.btn-primary{color:#07160f;background:var(--green)}
-.btn-gold{color:#211708;background:var(--gold)}
-.btn-quiet{color:var(--text);background:var(--panel2);border:1px solid var(--line)}
-.world-card .btn{flex:0 0 auto}
-.country-card .btn{width:100%;margin-top:11px}
-
-.notice,.state-box{
- padding:13px;border-radius:13px;margin:12px 0;
- font-size:11px;line-height:2
-}
-.notice{color:#d9c58f;background:#392d1828;border:1px solid #b78e3944}
-.state-box{color:var(--muted);background:var(--panel);border:1px solid var(--line);text-align:center}
-.state-box.error{color:#ff9aa5;border-color:#9c435055}
+.section-title small{color:var(--muted);font-size:10px}
+.page{display:none}
+.page.active{display:block}
 .hidden{display:none!important}
-.toolbar{display:flex;gap:8px;margin:12px 0}
-
-.modal{
- position:fixed;inset:0;z-index:20;display:flex;align-items:center;
- justify-content:center;padding:14px;background:#000c
-}
-.modal-box{
- width:100%;max-width:440px;max-height:90vh;overflow:auto;
- padding:18px;border-radius:20px;background:#111d24;border:1px solid #36554b
-}
-.modal-head{display:flex;justify-content:space-between;align-items:center}
-.modal-head h3{margin:0;font-size:16px}
-.form-label{display:block;margin:13px 0 7px;font-size:11px}
-.receipt{
- width:100%;min-height:105px;resize:vertical;padding:12px;color:var(--text);
- background:#091116;border:1px solid var(--line);border-radius:11px;outline:none;font-size:12px
-}
-.modal-actions{display:flex;gap:8px;margin-top:12px}
-.modal-actions button{flex:1}
-
-/* صفحه مدیریت کشور */
-.management-card{
- margin:20px 0;padding:24px 18px;
- border:1px solid #31564b;border-radius:22px;
- background:linear-gradient(145deg,#18372e,#111e25 65%,#142832);
+.divider{height:1px;background:var(--border);margin:15px 0}
+.state-box{
+ background:#22231c;
+ border:1px dashed #665739;
+ border-radius:10px;
+ padding:18px;
  text-align:center;
+ color:var(--muted);
+ font-size:13px;
+ line-height:2;
 }
-.management-emblem{
- width:76px;height:76px;margin:0 auto 15px;
- display:grid;place-items:center;border-radius:22px;
- background:#203b32;border:1px solid #42dda077;font-size:38px;
+.state-box.error{color:#ffb5a7;border-color:#98584c}
+.btn{
+ border:1px solid var(--border);
+ border-radius:8px;
+ padding:10px 13px;
+ font-size:12px;
+ color:var(--text);
+ background:#343326;
 }
-.management-card h2{font-size:23px;margin:8px 0}
-.management-country{
- color:var(--gold);font-size:21px;font-weight:900;margin:12px 0;
+.btn-primary{
+ background:linear-gradient(145deg,#827044,#595638);
+ color:#fff0c9;
+ border-color:#b39a5d;
 }
-.management-meta{
- display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px;
+.btn-gold{
+ background:linear-gradient(145deg,#927744,#6b5733);
+ color:#fff0c9;
+ border-color:#c6a45c;
 }
-.meta-item{
- padding:13px 8px;background:#09111688;
- border:1px solid var(--line);border-radius:13px;
+.btn-quiet{background:#343326;color:var(--muted)}
+.btn-danger{background:#633b30;color:#ffe0c8;border-color:#98614a}
+.btn-small{padding:6px 9px;font-size:10px}
+.world-list,.countries{display:grid;gap:11px}
+.world-card,.country-card{
+ background:linear-gradient(145deg,#373629,#24251e);
+ border:1px solid #6b5d3d;
+ border-radius:11px;
+ padding:14px;
 }
-.meta-item strong{display:block;color:var(--green);font-size:12px;overflow-wrap:anywhere}
-.meta-item span{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}
-.management-message{
- margin-top:20px;padding:15px;border-radius:13px;
- background:#09111688;color:var(--muted);font-size:11px;line-height:2;
+.world-card{
+ display:flex;
+ align-items:center;
+ gap:12px;
 }
-.management-status{
- display:inline-block;padding:6px 12px;border-radius:30px;
- color:var(--green);background:#42dda018;border:1px solid #42dda044;
- font-size:10px;margin-top:8px;
+.world-symbol{font-size:28px}
+.world-info{flex:1;min-width:0}
+.world-info h4{margin:0 0 4px;color:#e6d4a5;font-size:15px}
+.world-info p{margin:0;color:var(--muted);font-size:11px}
+.world-count{color:#d5c49b;font-size:11px;margin-top:6px}
+.toolbar{display:flex;gap:8px;margin-bottom:12px}
+.search,.field,.receipt{
+ width:100%;
+ background:#202119;
+ color:var(--gold-light);
+ border:1px solid #756644;
+ border-radius:8px;
+ padding:11px;
+ outline:none;
+ font-size:13px;
 }
-
-footer{text-align:center;padding:28px 10px;color:#61727a;font-size:9px}
-
-@media(max-width:430px){
- main{padding:12px}
- .countries{grid-template-columns:1fr}
- .management-meta{grid-template-columns:1fr 1fr}
+.search:focus,.field:focus,.receipt:focus{border-color:var(--gold-light)}
+.country-card{
+ display:flex;
+ flex-wrap:wrap;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+}
+.country-title{display:flex;align-items:center;gap:9px}
+.flag{font-size:25px}
+.country-name{font-weight:800;color:#e6d4a5}
+.country-status{font-size:11px;color:var(--green)}
+.country-status.taken{color:var(--red)}
+.country-status.premium{color:var(--gold-light)}
+.country-owner{width:100%;font-size:11px;color:var(--muted)}
+.notice{
+ background:#22231c;
+ border:1px solid #665739;
+ border-radius:9px;
+ padding:12px;
+ color:#d0c29d;
+ font-size:12px;
+ line-height:2;
+ margin-top:12px;
+}
+.management-head{
+ background:
+ radial-gradient(circle at left top,#6a6543 0%,transparent 55%),
+ linear-gradient(120deg,#41402e,#28291f);
+ border:1px solid #a18a53;
+ border-radius:13px;
+ padding:19px;
+ margin-bottom:14px;
+}
+.management-top{
+ display:flex;
+ align-items:center;
+ gap:13px;
+}
+.management-flag{
+ width:54px;height:54px;
+ border-radius:50%;
+ background:#202119;
+ border:2px solid var(--gold);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:27px;
+}
+.eyebrow{font-size:10px;color:#c9bd9c;letter-spacing:1px}
+.management-name{
+ color:#f1dba5;
+ font-size:23px;
+ font-weight:900;
+ margin:2px 0;
+}
+.management-sub{font-size:11px;color:#c9bd9c}
+.owner-status{font-size:11px;color:var(--green);margin-top:7px}
+.stats{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:10px;
+}
+.stat{
+ background:#22231c;
+ border:1px solid #554c35;
+ border-radius:10px;
+ padding:12px;
+ min-width:0;
+}
+.stat-label{font-size:11px;color:var(--muted)}
+.stat-value{
+ font-size:18px;
+ font-weight:900;
+ color:var(--gold-light);
+ margin-top:5px;
+ overflow-wrap:anywhere;
+}
+.stat-value.money{font-size:17px}
+.three-stats{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:9px;
+ margin-top:11px;
+}
+.mini-stat{
+ background:linear-gradient(145deg,#303126,#22231c);
+ border:1px solid #65583b;
+ border-radius:9px;
+ text-align:center;
+ padding:12px 5px;
+}
+.mini-stat strong{display:block;color:var(--gold-light);font-size:17px}
+.mini-stat span{font-size:10px;color:var(--muted)}
+.season{
+ display:flex;
+ justify-content:space-between;
+ flex-wrap:wrap;
+ gap:8px;
+ background:#202119;
+ border:1px solid #514a34;
+ border-radius:9px;
+ padding:11px;
+ margin-top:12px;
+ font-size:11px;
+}
+.season strong{color:var(--gold-light)}
+.hq-card{
+ background:
+ radial-gradient(circle at left top,#6a6543 0%,transparent 55%),
+ linear-gradient(120deg,#41402e,#28291f);
+ border:1px solid #a18a53;
+ border-radius:13px;
+ padding:17px;
+ cursor:pointer;
+ margin-bottom:11px;
+}
+.hq-card h3{margin:0 0 6px;color:#e9d29a;font-size:17px}
+.hq-card p{margin:0;color:#c9bd9c;font-size:11px}
+.hq-icon{float:left;font-size:25px;color:var(--gold-light)}
+.back-button{
+ background:#343326;
+ color:var(--gold-light);
+ border:1px solid var(--border);
+ border-radius:8px;
+ padding:10px 14px;
+ margin-bottom:13px;
+ font-size:12px;
+}
+.banner{
+ background:linear-gradient(120deg,#4c4933,#292a20);
+ border:1px solid #8d7949;
+ border-radius:12px;
+ padding:17px;
+ margin-bottom:13px;
+}
+.banner h2{margin:0 0 5px;color:var(--gold-light);font-size:19px}
+.banner p{margin:0;color:var(--muted);font-size:11px}
+.tabs{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:8px;
+ margin:13px 0;
+}
+.tab{
+ background:#292a21;
+ color:#c9bd9c;
+ border:1px solid #62573b;
+ border-radius:9px;
+ padding:11px 5px;
+ font-size:12px;
+}
+.tab.active{background:#756541;color:#fff0c5;border-color:var(--gold-light)}
+.unit-grid,.ammo-grid{display:grid;grid-template-columns:1fr;gap:11px}
+.unit-card,.ammo-card{
+ background:linear-gradient(145deg,#373629,#24251e);
+ border:1px solid #6b5d3d;
+ border-radius:11px;
+ padding:14px;
+ box-shadow:0 4px 12px #0003;
+}
+.unit-name,.ammo-name{
+ color:#e6d4a5;
+ font-size:15px;
+ font-weight:800;
+ margin-bottom:10px;
+}
+.unit-info,.ammo-info{
+ background:#202119;
+ border:1px solid #4d4935;
+ border-radius:8px;
+ padding:10px;
+ color:#c6b998;
+ font-size:11px;
+ line-height:2.1;
+}
+.unit-info b,.ammo-info b{color:var(--gold-light)}
+.order-button,.ammo-order{
+ width:100%;
+ margin-top:10px;
+ padding:10px;
+ background:linear-gradient(145deg,#827044,#595638);
+ color:#fff0c9;
+ border:1px solid #b39a5d;
+ border-radius:8px;
+ font-size:12px;
+}
+.stock-line{
+ display:flex;
+ justify-content:space-between;
+ gap:8px;
+ border-bottom:1px solid #49442f;
+ padding:5px 0;
+ font-size:11px;
+}
+.stock-line:last-child{border:0}
+.stock-line strong{color:var(--gold-light)}
+.queue-title{color:var(--gold-light);font-size:15px;font-weight:800;margin-top:19px}
+.queue-card{
+ background:#25261f;
+ border:1px solid #665739;
+ border-radius:9px;
+ padding:12px;
+ margin-top:9px;
+ font-size:11px;
+ line-height:2;
+}
+.queue-card strong{color:var(--gold-light)}
+.queue-actions{display:flex;justify-content:flex-end;margin-top:8px}
+.empty-queue{
+ text-align:center;
+ color:var(--muted);
+ background:#22231c;
+ border:1px dashed #665739;
+ padding:16px;
+ border-radius:9px;
+ font-size:12px;
+ margin-top:9px;
+}
+.locked{
+ text-align:center;
+ padding:24px 15px;
+ background:#22231c;
+ border:1px solid #756644;
+ border-radius:10px;
+ color:var(--muted);
+ line-height:2;
+}
+.locked strong{display:block;color:var(--gold-light);font-size:16px}
+.modal{
+ display:none;
+ position:fixed;
+ inset:0;
+ z-index:1000;
+ background:#000b;
+ align-items:center;
+ justify-content:center;
+ padding:14px;
+}
+.modal.show{display:flex}
+.modal-box{
+ width:100%;
+ max-width:440px;
+ max-height:90vh;
+ overflow-y:auto;
+ background:linear-gradient(145deg,#363528,#24251e);
+ border:1px solid #a18a53;
+ border-radius:14px;
+ padding:17px;
+ box-shadow:0 15px 50px #0009;
+}
+.modal-title{color:var(--gold-light);font-size:18px;font-weight:900;margin-bottom:13px}
+.modal-info{
+ background:#202119;
+ border:1px solid #554c35;
+ border-radius:9px;
+ padding:11px;
+ color:#d0c29d;
+ font-size:11px;
+ line-height:2;
+}
+.quantity-label,.form-label{
+ display:block;
+ color:var(--muted);
+ font-size:12px;
+ margin:14px 0 7px;
+}
+.quantity-input{
+ width:100%;
+ background:#202119;
+ color:var(--gold-light);
+ border:1px solid #756644;
+ border-radius:8px;
+ padding:12px;
+ font-size:16px;
+ outline:none;
+}
+.calculation{
+ background:#202119;
+ border:1px solid #554c35;
+ border-radius:9px;
+ padding:11px;
+ margin-top:12px;
+ font-size:11px;
+ line-height:2.1;
+ color:#c6b998;
+}
+.calculation strong{color:var(--gold-light)}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.confirm-button,.close-button{padding:11px;border-radius:8px;font-size:12px}
+.confirm-button{
+ background:linear-gradient(145deg,#827044,#595638);
+ color:#fff0c9;
+ border:1px solid #b39a5d;
+}
+.close-button{background:#343326;color:var(--muted);border:1px solid #62573b}
+.receipt{min-height:100px;resize:vertical}
+footer{
+ text-align:center;
+ color:#857b62;
+ font-size:10px;
+ padding:20px 5px 8px;
+}
+@media(min-width:650px){
+ .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .unit-grid,.ammo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .countries{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:420px){
+ body{padding:10px}
+ .panel{padding:13px}
+ .management-name{font-size:20px}
+ .stat-value{font-size:16px}
+ .world-card{flex-wrap:wrap}
+ .world-card .btn{width:100%}
 }
 </style>
 </head>
 
 <body>
+<div class="container">
 
 <header class="topbar">
- <div class="topinner">
-  <div class="brand">
-   <div class="logo">⚔️</div>
-   <div>
-    <h1>WORLD AT ARMS</h1>
-    <small>GLOBAL STRATEGY SYSTEM</small>
-   </div>
-  </div>
-  <div class="online">● SYSTEM ONLINE</div>
- </div>
+ <div class="logo">WORLD AT ARMS</div>
+ <div class="world-label">WORLD OF NATIONS • 1936</div>
 </header>
 
-<main>
+<!-- صفحه بارگذاری -->
+<section id="loadingPage" class="page active">
+ <div class="panel">
+  <div class="state-box">در حال اتصال به مرکز فرماندهی...</div>
+ </div>
+</section>
 
- <section class="hero">
-  <div class="eyebrow">COMMAND CENTER • 1936</div>
-  <h2>فرماندهی جهان در دستان توست</h2>
-  <p>جهان را انتخاب کن، کشور خود را برگزین و تاریخ را از نو بساز.</p>
- </section>
-
- <section class="stats">
-  <div class="stat"><strong id="worldCount">۰</strong><span>جهان فعال</span></div>
-  <div class="stat"><strong id="countryCount">۰</strong><span>کشور موجود</span></div>
-  <div class="stat"><strong id="freeCount">۰</strong><span>کشور آزاد</span></div>
- </section>
-
- <!-- انتخاب جهان -->
- <section id="homeView">
-  <div class="section-head">
-   <h3>🌐 انتخاب جهان</h3>
-   <small>SELECT YOUR WORLD</small>
+<!-- انتخاب جهان -->
+<section id="worldPage" class="page">
+ <div class="panel">
+  <div class="section-title">
+   <h2>🌍 انتخاب جهان</h2>
+   <small>WORLD SELECTION</small>
   </div>
   <div id="worldList" class="state-box">در حال دریافت جهان‌ها...</div>
- </section>
+ </div>
+</section>
 
- <!-- انتخاب کشور -->
- <section id="countryView" class="hidden">
-  <div class="section-head">
-   <h3 id="worldTitle">کشورهای جهان</h3>
-   <button id="backButton" class="btn btn-quiet">بازگشت ←</button>
+<!-- انتخاب کشور -->
+<section id="countryPage" class="page">
+ <div class="panel">
+  <div class="section-title">
+   <h2 id="worldTitle">کشورهای جهان</h2>
+   <button id="backWorld" class="btn btn-quiet" type="button">بازگشت</button>
   </div>
+
   <div id="worldDescription" class="notice hidden"></div>
+
   <div class="toolbar">
    <input id="countrySearch" class="search" type="search" placeholder="جستجوی کشور...">
-   <button id="refreshButton" class="btn btn-quiet">↻</button>
+   <button id="refreshCountries" class="btn btn-quiet" type="button">↻</button>
   </div>
+
   <div id="countryList" class="state-box">در حال دریافت کشورها...</div>
-  <div class="notice">هر بازیکن در هر جهان فقط می‌تواند یک کشور داشته باشد. انتخاب نهایی در سرور بررسی می‌شود.</div>
- </section>
 
- <!-- صفحه مدیریت کشور -->
- <section id="managementView" class="hidden">
-  <div class="section-head">
-   <h3>🏛️ مرکز فرماندهی کشور</h3>
-   <small>COUNTRY COMMAND</small>
+  <div class="notice">
+   هر بازیکن در هر جهان فقط می‌تواند یک کشور داشته باشد.
+   مالکیت کشور در سرور بررسی و ثبت می‌شود.
   </div>
+ </div>
+</section>
 
-  <div class="management-card">
-   <div class="management-emblem">🏛️</div>
-   <div class="eyebrow">YOUR NATION</div>
-   <h2>به مرکز فرماندهی خوش آمدی</h2>
-   <div id="managementCountryName" class="management-country">کشور شما</div>
-   <div class="management-status">● مالکیت کشور تأیید شده</div>
+<!-- صفحه اصلی مدیریت کشور -->
+<section id="managementPage" class="page">
 
-   <div class="management-meta">
-    <div class="meta-item">
-     <span>فرمانده</span>
-     <strong id="managementPlayer">بازیکن</strong>
-    </div>
-    <div class="meta-item">
-     <span>جهان</span>
-     <strong id="managementWorld">جهان شما</strong>
-    </div>
-   </div>
-
-   <div class="management-message">
-    کشور شما با موفقیت ثبت شده است.
-    <br>
-    سامانه مدیریت اصلی کشور در حال توسعه است.
-    <br>
-    به‌زودی می‌توانید اقتصاد، ارتش، دیپلماسی و سایر بخش‌های کشور را از این قسمت مدیریت کنید.
+ <div class="management-head">
+  <div class="management-top">
+   <div class="management-flag" id="countryFlag">🏳️</div>
+   <div>
+    <div class="eyebrow">NATIONAL COMMAND CENTER</div>
+    <div class="management-name" id="countryName">کشور شما</div>
+    <div class="management-sub" id="countryWorld">جهان شما</div>
+    <div class="owner-status">● مالکیت کشور تأیید شده</div>
    </div>
   </div>
- </section>
+ </div>
 
- <section id="loadingView" class="hidden">
-  <div class="state-box">در حال بررسی اطلاعات فرمانده...</div>
- </section>
+ <div class="panel">
+  <div class="section-title">
+   <h3>وضعیت کشور</h3>
+   <small id="politicalSystem">نظام سیاسی</small>
+  </div>
 
-</main>
+  <div class="stats">
+   <div class="stat">
+    <div class="stat-label">موجودی خزانه</div>
+    <div class="stat-value money" id="balance">$0</div>
+   </div>
+   <div class="stat">
+    <div class="stat-label">درآمد روزانه</div>
+    <div class="stat-value money" id="dailyIncome">$0</div>
+   </div>
+   <div class="stat">
+    <div class="stat-label">آهن</div>
+    <div class="stat-value" id="iron">0</div>
+   </div>
+   <div class="stat">
+    <div class="stat-label">نفت</div>
+    <div class="stat-value" id="oil">0</div>
+   </div>
+  </div>
 
-<div id="purchaseModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="three-stats">
+   <div class="mini-stat">
+    <strong id="manpower">0</strong>
+    <span>نیروی انسانی</span>
+   </div>
+   <div class="mini-stat">
+    <strong id="electricity">0</strong>
+    <span>برق</span>
+   </div>
+   <div class="mini-stat">
+    <strong id="armyPower">0</strong>
+    <span>قدرت نظامی</span>
+   </div>
+  </div>
+
+  <div class="season">
+   <span>فصل جاری: <strong id="season">بهار</strong></span>
+   <span>زمان باقی‌مانده: <strong id="seasonTimer">--:--:--</strong></span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="stock-line">
+   <span>اورانیوم</span>
+   <strong id="uranium">0</strong>
+  </div>
+  <div class="stock-line">
+   <span>فرمانروا</span>
+   <strong id="ruler">—</strong>
+  </div>
+
+  <div class="notice" id="countryNotice">
+   اطلاعات کشور از پایگاه داده دریافت می‌شود.
+  </div>
+ </div>
+
+ <div class="hq-card" id="openHQ">
+  <div class="hq-icon">⚙️</div>
+  <h3>ستاد کل فرماندهی</h3>
+  <p>مدیریت نیروهای هوایی، زرهی، دریایی و پشتیبانی</p>
+ </div>
+
+ <div class="hq-card" id="openArsenal">
+  <div class="hq-icon">⚒️</div>
+  <h3>زرادخانه</h3>
+  <p>مدیریت ذخایر مهمات و ثبت سفارش تولید</p>
+ </div>
+
+ <div class="toolbar">
+  <button class="btn btn-quiet" id="refreshState" type="button">↻ به‌روزرسانی اطلاعات کشور</button>
+ </div>
+</section>
+
+<!-- ستاد کل -->
+<section id="hqPage" class="page">
+ <div class="banner">
+  <h2>ستاد کل فرماندهی</h2>
+  <p id="hqSubtitle">فرماندهی نیروهای مسلح کشور</p>
+ </div>
+
+ <button class="back-button" id="backHQ" type="button">← بازگشت به مدیریت کشور</button>
+
+ <div class="tabs">
+  <button class="tab active" data-unit-category="air" type="button">نیروی هوایی</button>
+  <button class="tab" data-unit-category="armor" type="button">نیروی زرهی</button>
+  <button class="tab" data-unit-category="navy" type="button">نیروی دریایی</button>
+  <button class="tab" data-unit-category="support" type="button">پشتیبانی دوربرد</button>
+ </div>
+
+ <div id="unitList" class="unit-grid"></div>
+
+ <div class="notice" id="categoryInfo">واحدهای نظامی کشور</div>
+</section>
+
+<!-- زرادخانه -->
+<section id="arsenalPage" class="page">
+ <div class="banner">
+  <h2>زرادخانه کشور</h2>
+  <p id="arsenalSubtitle">مرکز ذخایر مهمات و سفارش تولید</p>
+ </div>
+
+ <button class="back-button" id="backArsenal" type="button">← بازگشت به مدیریت کشور</button>
+
+ <div class="tabs">
+  <button class="tab active" data-ammo-category="air" type="button">مهمات هوایی</button>
+  <button class="tab" data-ammo-category="ground" type="button">مهمات زمینی</button>
+  <button class="tab" data-ammo-category="navy" type="button">مهمات دریایی</button>
+  <button class="tab" data-ammo-category="nuclear" type="button">هسته‌ای</button>
+ </div>
+
+ <div id="arsenalList" class="ammo-grid"></div>
+
+ <div class="queue-title">صف سفارش‌های تولید</div>
+ <div id="orderQueue"></div>
+</section>
+
+<!-- پنجره سفارش -->
+<div class="modal" id="orderModal">
  <div class="modal-box">
-  <div class="modal-head">
-   <h3>💳 درخواست کشور ویژه</h3>
-   <button id="closePurchase" class="btn btn-quiet">بستن ✕</button>
+  <div class="modal-title" id="modalTitle">ثبت سفارش تولید</div>
+  <div class="modal-info" id="modalInfo"></div>
+
+  <label class="quantity-label" for="packageCount">تعداد بسته‌های موردنظر</label>
+  <input class="quantity-input" id="packageCount" type="number" min="1" max="1000" value="1">
+
+  <div class="calculation" id="calculation"></div>
+
+  <div class="modal-actions">
+   <button class="confirm-button" id="confirmOrder" type="button">تأیید سفارش</button>
+   <button class="close-button" id="closeOrder" type="button">انصراف</button>
   </div>
-  <div id="purchaseCountryName" class="notice"></div>
+ </div>
+</div>
+
+<!-- پنجره کشور ویژه -->
+<div class="modal" id="purchaseModal">
+ <div class="modal-box">
+  <div class="modal-title">💳 درخواست کشور ویژه</div>
+  <div class="modal-info" id="purchaseCountryName"></div>
+
   <div class="notice">
    اطلاعات محرمانه بانکی، رمز کارت، CVV2 یا رمز پویا را وارد نکن.
-   برای پرداخت فقط از روش رسمی اعلام‌شده توسط مدیر بازی استفاده کن.
+   فقط توضیحات درخواست را ثبت کن.
   </div>
-  <label class="form-label" for="receiptText">متن رسید یا توضیح درخواست</label>
-  <textarea id="receiptText" class="receipt" maxlength="1500" placeholder="توضیح درخواست را وارد کن..."></textarea>
+
+  <label class="form-label" for="receiptText">توضیح درخواست</label>
+  <textarea class="receipt" id="receiptText" maxlength="1500" placeholder="توضیحات خود را بنویس..."></textarea>
+
   <div class="modal-actions">
-   <button id="cancelPurchase" class="btn btn-quiet">انصراف</button>
-   <button id="sendPurchase" class="btn btn-gold">ارسال درخواست</button>
+   <button class="close-button" id="closePurchase" type="button">انصراف</button>
+   <button class="confirm-button" id="sendPurchase" type="button">ارسال درخواست</button>
   </div>
  </div>
 </div>
 
 <footer>WORLD AT ARMS © 2026 • STRATEGIC COMMAND NETWORK</footer>
+</div>
 
 <script>
 "use strict";
 
-/* تنظیمات اتصال */
+/* =========================================================
+   تنظیمات اتصال
+========================================================= */
+
 const SUPABASE_URL = "https://hgaliwladnrtfdkwbtzz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
 
 const CLAIM_URL = `${SUPABASE_URL}/functions/v1/dynamic-action`;
 const PURCHASE_URL = `${SUPABASE_URL}/functions/v1/dynamic-task`;
+const COMMAND_URL = `${SUPABASE_URL}/functions/v1/country-command`;
 
 const tg = window.Telegram?.WebApp ?? null;
 
@@ -309,15 +704,25 @@ if(tg){
  tg.expand();
 }
 
+/* =========================================================
+   وضعیت برنامه
+========================================================= */
+
 const state = {
+ player:null,
  worlds:[],
  countries:[],
  activeWorld:null,
- purchaseCountryId:null,
- player:null,
  myCountry:null,
+ snapshot:null,
+ currentView:"loadingPage",
+ currentUnitCategory:"air",
+ currentAmmoCategory:"air",
+ currentItem:null,
+ purchaseCountryId:null,
  claiming:false,
  purchasing:false,
+ commanding:false,
  refreshing:false
 };
 
@@ -325,6 +730,10 @@ const $ = id => document.getElementById(id);
 
 function fa(value){
  return Number(value || 0).toLocaleString("fa-IR");
+}
+
+function money(value){
+ return "$" + Number(value || 0).toLocaleString("en-US");
 }
 
 function escapeHTML(value){
@@ -337,18 +746,31 @@ function escapeHTML(value){
  })[char]);
 }
 
-function setBox(id,message,error=false){
- const box=$(id);
- box.className=`state-box${error?" error":""}`;
- box.textContent=message;
-}
-
 function errorMessage(error){
  if(error instanceof TypeError){
   return "ارتباط با سرور برقرار نشد. اینترنت یا دسترسی تابع را بررسی کن.";
  }
  return error?.message || "خطای نامشخص رخ داد.";
 }
+
+function setBox(id,message,error=false){
+ const box=$(id);
+ box.className=`state-box${error?" error":""}`;
+ box.textContent=message;
+}
+
+function showPage(pageId){
+ document.querySelectorAll(".page").forEach(page=>{
+  page.classList.toggle("active",page.id===pageId);
+ });
+
+ state.currentView=pageId;
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* =========================================================
+   ارتباط با Supabase REST
+========================================================= */
 
 async function readResponse(response){
  const raw=await response.text();
@@ -397,29 +819,37 @@ async function postFunction(url,payload){
  return readResponse(response);
 }
 
-function isPremium(country){
- return country.is_premium===true || country.is_locked===true;
-}
+/* =========================================================
+   ارتباط امن با تابع فرماندهی کشور
+========================================================= */
 
-function isTaken(country){
- return Boolean(country.player_telegram_id);
-}
+async function countryCommand(action,extra={}){
+ if(!tg?.initData){
+  throw new Error("اطلاعات ورود تلگرام در دسترس نیست. مینی‌اپ را دوباره باز کن.");
+ }
 
-/* نمایش و مخفی‌سازی صفحات */
-function showOnly(viewId){
- const views=[
-  "homeView",
-  "countryView",
-  "managementView",
-  "loadingView"
- ];
+ if(!state.myCountry?.id){
+  throw new Error("کشور انتخاب‌شده مشخص نیست.");
+ }
 
- views.forEach(id=>{
-  $(id).classList.toggle("hidden",id!==viewId);
+ const result=await postFunction(COMMAND_URL,{
+  initData:tg.initData,
+  action,
+  country_id:state.myCountry.id,
+  ...extra
  });
+
+ if(result?.success!==true){
+  throw new Error(result?.error || "عملیات توسط سرور تأیید نشد.");
+ }
+
+ return result;
 }
 
-/* بررسی کشور قبلی بازیکن */
+/* =========================================================
+   اطلاعات بازیکن و کشور
+========================================================= */
+
 async function findMyCountry(){
  if(!state.player?.id){
   throw new Error("شناسه کاربر تلگرام پیدا نشد.");
@@ -428,86 +858,96 @@ async function findMyCountry(){
  const telegramId=encodeURIComponent(String(state.player.id));
 
  const countries=await dbGet(
-  `countries?select=id,name,world_id,player_telegram_id,player_telegram_username&player_telegram_id=eq.${telegramId}&limit=1`
+  `countries?select=id,name,world_id,player_telegram_id,player_telegram_username,flag_emoji,political_system,ruler&player_telegram_id=eq.${telegramId}&limit=1`
  );
 
- return countries.length ? countries[0] : null;
+ return countries.length?countries[0]:null;
 }
 
-/* ورود به مدیریت کشور */
 async function openManagement(country){
  state.myCountry=country;
+ state.snapshot=null;
 
- showOnly("managementView");
+ showPage("managementPage");
 
- $("managementCountryName").textContent=country.name || "کشور شما";
-
- const username=state.player?.username
-  ? "@"+state.player.username
-  : (state.player?.first_name || "بازیکن");
-
- $("managementPlayer").textContent=username;
- $("managementWorld").textContent="در حال دریافت...";
+ $("countryName").textContent=country.name || "کشور شما";
+ $("countryFlag").textContent=country.flag_emoji || "🏳️";
+ $("countryWorld").textContent="در حال دریافت اطلاعات جهان...";
+ $("countryNotice").textContent="در حال دریافت اطلاعات اقتصادی و نظامی کشور...";
 
  try{
-  const worldId=encodeURIComponent(country.world_id);
-
-  const worlds=await dbGet(
-   `worlds?select=id,name&id=eq.${worldId}&limit=1`
-  );
-
-  $("managementWorld").textContent=
-   worlds[0]?.name || "جهان شما";
-
+  await refreshCountryState();
  }catch(error){
-  console.error("World name:",error);
-  $("managementWorld").textContent="جهان شما";
+  console.error("OPEN MANAGEMENT:",error);
+  $("countryNotice").textContent="دریافت اطلاعات کشور ناموفق بود: "+errorMessage(error);
+ }
+
+}
+
+/* =========================================================
+   دریافت وضعیت کامل کشور از سرور
+========================================================= */
+
+async function refreshCountryState(){
+ if(state.commanding)return;
+
+ state.commanding=true;
+
+ try{
+  const result=await countryCommand("state");
+
+  state.snapshot=result;
+
+  if(result.country){
+   state.myCountry={
+    ...state.myCountry,
+    ...result.country
+   };
+  }
+
+  renderManagement();
+  renderUnits(state.currentUnitCategory);
+  renderArsenal(state.currentAmmoCategory);
+  renderQueue();
+
+ }finally{
+  state.commanding=false;
  }
 }
 
-/* شروع برنامه و تشخیص مالکیت */
-async function init(){
- showOnly("loadingView");
+function renderManagement(){
+ const data=state.snapshot?.country;
+ if(!data)return;
 
- try{
-  if(!tg?.initData || !tg?.initDataUnsafe?.user){
-   throw new Error("بازی را فقط از داخل مینی‌اپ تلگرام باز کنید.");
-  }
+ $("countryName").textContent=data.name || "کشور شما";
+ $("countryFlag").textContent=data.flag_emoji || "🏳️";
+ $("countryWorld").textContent=data.world_name || "جهان شما";
+ $("politicalSystem").textContent=data.political_system || "نامشخص";
 
-  state.player=tg.initDataUnsafe.user;
+ $("balance").textContent=money(data.balance);
+ $("dailyIncome").textContent=money(data.daily_income);
 
-  // اول بررسی می‌کنیم بازیکن قبلاً کشور گرفته یا نه
-  const country=await findMyCountry();
+ $("iron").textContent=fa(data.iron);
+ $("oil").textContent=fa(data.oil);
+ $("uranium").textContent=fa(data.uranium);
+ $("manpower").textContent=fa(data.manpower);
+ $("electricity").textContent=fa(data.electricity);
+ $("armyPower").textContent=fa(data.army_power);
 
-  if(country){
-   await openManagement(country);
-   return;
-  }
+ $("season").textContent=data.season || "نامشخص";
+ $("ruler").textContent=data.ruler || state.player?.first_name || "—";
 
-  // فقط بازیکن بدون کشور اجازه دیدن فهرست جهان‌ها را دارد
-  showOnly("homeView");
-  await loadWorlds();
+ $("hqSubtitle").textContent=`فرماندهی نیروهای مسلح • ${data.name}`;
+ $("arsenalSubtitle").textContent=`ذخایر و سفارش‌های تولید • ${data.name}`;
 
- }catch(error){
-  console.error("INIT ERROR:",error);
-  showOnly("homeView");
-  setBox(
-   "worldList",
-   "ورود ناموفق بود: "+errorMessage(error),
-   true
-  );
- }
+ $("countryNotice").textContent=
+  "اطلاعات این کشور از پایگاه داده اصلی دریافت شده و تغییرات سفارش‌ها در سرور ثبت می‌شود.";
 }
 
-function updateStats(){
- $("worldCount").textContent=fa(state.worlds.length);
- $("countryCount").textContent=fa(state.countries.length);
- $("freeCount").textContent=fa(
-  state.countries.filter(c=>!isTaken(c)).length
- );
-}
+/* =========================================================
+   انتخاب جهان
+========================================================= */
 
-/* دریافت جهان‌ها */
 async function loadWorlds(){
  setBox("worldList","در حال دریافت جهان‌ها...");
 
@@ -520,25 +960,15 @@ async function loadWorlds(){
    "countries?select=id,world_id,player_telegram_id"
   );
 
-  $("worldCount").textContent=fa(state.worlds.length);
-  $("countryCount").textContent=fa(rows.length);
-  $("freeCount").textContent=fa(
-   rows.filter(c=>!c.player_telegram_id).length
-  );
-
   renderWorlds(rows);
 
  }catch(error){
-  console.error("loadWorlds:",error);
-  setBox(
-   "worldList",
-   "دریافت جهان‌ها ناموفق بود: "+errorMessage(error),
-   true
-  );
+  console.error("LOAD WORLDS:",error);
+  setBox("worldList","دریافت جهان‌ها ناموفق بود: "+errorMessage(error),true);
  }
 }
 
-function renderWorlds(rows=[]){
+function renderWorlds(countryRows=[]){
  const box=$("worldList");
 
  if(!state.worlds.length){
@@ -549,7 +979,7 @@ function renderWorlds(rows=[]){
  box.className="world-list";
 
  box.innerHTML=state.worlds.map(world=>{
-  const list=rows.filter(c=>c.world_id===world.id);
+  const list=countryRows.filter(c=>c.world_id===world.id);
   const free=list.filter(c=>!c.player_telegram_id).length;
 
   return `
@@ -562,46 +992,47 @@ function renderWorlds(rows=[]){
       ${fa(list.length)} کشور • ${fa(free)} کشور آزاد
      </div>
     </div>
-    <button class="btn btn-primary" data-world-id="${escapeHTML(world.id)}">
+    <button class="btn btn-primary" data-world="${escapeHTML(world.id)}" type="button">
      ورود ←
     </button>
    </article>
   `;
  }).join("");
 
- box.querySelectorAll("[data-world-id]").forEach(button=>{
+ box.querySelectorAll("[data-world]").forEach(button=>{
   button.addEventListener("click",()=>{
-   openWorld(button.dataset.worldId);
+   openWorld(button.dataset.world);
   });
  });
 }
 
-/* ورود به جهان */
 async function openWorld(worldId){
  const world=state.worlds.find(item=>item.id===worldId);
  if(!world)return;
 
  state.activeWorld=world;
 
- $("homeView").classList.add("hidden");
- $("countryView").classList.remove("hidden");
-
  $("worldTitle").textContent="🌍 "+world.name;
-
- $("worldDescription").textContent=
-  world.description||"کشور مورد نظر خود را انتخاب کن.";
-
- $("worldDescription").classList.toggle(
-  "hidden",
-  !world.description
- );
-
+ $("worldDescription").textContent=world.description || "کشور موردنظر خود را انتخاب کن.";
+ $("worldDescription").classList.toggle("hidden",!world.description);
  $("countrySearch").value="";
 
+ showPage("countryPage");
  await loadCountries();
 }
 
-/* دریافت کشورها */
+/* =========================================================
+   انتخاب کشور
+========================================================= */
+
+function isTaken(country){
+ return Boolean(country.player_telegram_id);
+}
+
+function isPremium(country){
+ return country.is_premium===true || country.is_locked===true;
+}
+
 async function loadCountries(){
  if(!state.activeWorld || state.refreshing)return;
 
@@ -612,20 +1043,14 @@ async function loadCountries(){
   const worldId=encodeURIComponent(state.activeWorld.id);
 
   state.countries=await dbGet(
-   `countries?select=id,world_id,name,player_telegram_id,player_telegram_username,is_premium,price,is_locked&world_id=eq.${worldId}&order=name.asc`
+   `countries?select=id,world_id,name,player_telegram_id,player_telegram_username,is_premium,price,is_locked,flag_emoji&world_id=eq.${worldId}&order=name.asc`
   );
 
   renderCountries();
-  updateStats();
 
  }catch(error){
-  console.error("loadCountries:",error);
-
-  setBox(
-   "countryList",
-   "دریافت کشورها ناموفق بود: "+errorMessage(error),
-   true
-  );
+  console.error("LOAD COUNTRIES:",error);
+  setBox("countryList","دریافت کشورها ناموفق بود: "+errorMessage(error),true);
 
  }finally{
   state.refreshing=false;
@@ -640,9 +1065,7 @@ function renderCountries(){
   .toLocaleLowerCase("fa");
 
  const filtered=state.countries.filter(country=>
-  String(country.name||"")
-   .toLocaleLowerCase("fa")
-   .includes(query)
+  String(country.name||"").toLocaleLowerCase("fa").includes(query)
  );
 
  if(!filtered.length){
@@ -656,15 +1079,10 @@ function renderCountries(){
   const taken=isTaken(country);
   const premium=isPremium(country);
 
-  const owner=country.player_telegram_username
-   ? "@"+country.player_telegram_username
-   : "بازیکن ثبت‌شده";
-
   let status="● آزاد";
   let statusClass="";
-
   let action=`
-   <button class="btn btn-primary" data-claim="${escapeHTML(country.id)}">
+   <button class="btn btn-primary" data-claim="${escapeHTML(country.id)}" type="button">
     ⚑ انتخاب کشور
    </button>
   `;
@@ -672,20 +1090,14 @@ function renderCountries(){
   if(taken){
    status="● تصاحب‌شده";
    statusClass="taken";
-
-   action=`
-    <button class="btn btn-quiet" disabled>
-     در اختیار بازیکن
-    </button>
-   `;
+   action=`<button class="btn btn-quiet" disabled type="button">در اختیار بازیکن</button>`;
 
   }else if(premium){
    status="● ویژه";
    statusClass="premium";
-
    action=`
-    <button class="btn btn-gold" data-purchase="${escapeHTML(country.id)}">
-     ثبت درخواست کشور ویژه
+    <button class="btn btn-gold" data-purchase="${escapeHTML(country.id)}" type="button">
+     درخواست کشور ویژه
     </button>
    `;
   }
@@ -693,22 +1105,20 @@ function renderCountries(){
   return `
    <article class="country-card">
     <div class="country-title">
-     <span class="flag">🏳️</span>
+     <span class="flag">${escapeHTML(country.flag_emoji||"🏳️")}</span>
      <span class="country-name">${escapeHTML(country.name)}</span>
     </div>
 
-    <div class="country-status ${statusClass}">
-     ${status}
-    </div>
+    <div class="country-status ${statusClass}">${status}</div>
 
-    ${taken
-     ? `<div class="country-owner">${escapeHTML(owner)}</div>`
-     : ""
+    ${taken && country.player_telegram_username
+      ? `<div class="country-owner">@${escapeHTML(country.player_telegram_username)}</div>`
+      : ""
     }
 
     ${premium&&!taken
-     ? `<div class="country-owner">قیمت: ${fa(country.price||0)} تومان</div>`
-     : ""
+      ? `<div class="country-owner">قیمت: ${fa(country.price||0)} تومان</div>`
+      : ""
     }
 
     ${action}
@@ -717,30 +1127,20 @@ function renderCountries(){
  }).join("");
 
  box.querySelectorAll("[data-claim]").forEach(button=>{
-  button.addEventListener("click",()=>{
-   claimCountry(button.dataset.claim);
-  });
+  button.addEventListener("click",()=>claimCountry(button.dataset.claim));
  });
 
  box.querySelectorAll("[data-purchase]").forEach(button=>{
-  button.addEventListener("click",()=>{
-   openPurchase(button.dataset.purchase);
-  });
+  button.addEventListener("click",()=>openPurchase(button.dataset.purchase));
  });
 }
 
-/* انتخاب کشور */
 async function claimCountry(countryId){
  if(state.claiming)return;
 
- if(!tg?.initData){
-  alert("برای انتخاب کشور، بازی را از داخل مینی‌اپ تلگرام باز کن.");
-  return;
- }
-
  const country=state.countries.find(item=>item.id===countryId);
 
- if(!country||isTaken(country)){
+ if(!country || isTaken(country)){
   alert("این کشور دیگر آزاد نیست.");
   await loadCountries();
   return;
@@ -757,47 +1157,42 @@ async function claimCountry(countryId){
 
  try{
   const result=await postFunction(CLAIM_URL,{
-   initData:tg.initData,
+   initData:tg?.initData,
    world_id:state.activeWorld.id,
    country_id:countryId
   });
 
   if(result?.success!==true){
-   throw new Error(
-    result?.error||"سرور انتخاب کشور را تأیید نکرد."
-   );
+   throw new Error(result?.error || "سرور انتخاب کشور را تأیید نکرد.");
   }
 
-  // پس از انتخاب، مالکیت را دوباره از دیتابیس می‌خوانیم
   const myCountry=await findMyCountry();
 
   if(!myCountry){
-   throw new Error(
-    "انتخاب ثبت شد، اما اطلاعات مالکیت هنوز در دسترس نیست. بازی را دوباره باز کن."
-   );
+   throw new Error("کشور ثبت شد، اما اطلاعات مالکیت هنوز دریافت نشده است. بازی را دوباره باز کن.");
   }
 
-  alert("کشور با موفقیت انتخاب شد! ⚔️");
+  alert("کشور با موفقیت انتخاب شد!");
 
   await openManagement(myCountry);
 
  }catch(error){
-  console.error("claimCountry:",error);
-
-  alert(
-   "انتخاب کشور انجام نشد:\n"+errorMessage(error)
-  );
+  console.error("CLAIM COUNTRY:",error);
+  alert("انتخاب کشور انجام نشد:\n"+errorMessage(error));
 
  }finally{
   state.claiming=false;
  }
 }
 
-/* درخواست کشور ویژه */
+/* =========================================================
+   درخواست کشور ویژه
+========================================================= */
+
 function openPurchase(countryId){
  const country=state.countries.find(item=>item.id===countryId);
 
- if(!country||isTaken(country)||!isPremium(country))return;
+ if(!country || isTaken(country) || !isPremium(country))return;
 
  state.purchaseCountryId=countryId;
 
@@ -805,48 +1200,34 @@ function openPurchase(countryId){
   `کشور انتخابی: ${country.name} | مبلغ: ${fa(country.price||0)} تومان`;
 
  $("receiptText").value="";
- $("purchaseModal").classList.remove("hidden");
+ $("purchaseModal").classList.add("show");
 }
 
 function closePurchase(){
  if(state.purchasing)return;
 
- $("purchaseModal").classList.add("hidden");
+ $("purchaseModal").classList.remove("show");
  state.purchaseCountryId=null;
 }
 
 async function sendPurchase(){
  if(state.purchasing)return;
 
- if(!tg?.initData){
-  alert("برای ثبت درخواست، بازی را از داخل مینی‌اپ تلگرام باز کن.");
-  return;
- }
-
- if(!state.activeWorld||!state.purchaseCountryId){
-  alert("جهان یا کشور انتخابی مشخص نیست.");
-  return;
- }
-
  const country=state.countries.find(
   item=>item.id===state.purchaseCountryId
  );
 
- if(!country||isTaken(country)||!isPremium(country)){
-  alert("این کشور دیگر برای درخواست در دسترس نیست.");
-  closePurchase();
-  await loadCountries();
+ if(!country || !state.activeWorld){
+  alert("کشور یا جهان انتخابی مشخص نیست.");
   return;
  }
 
  const receipt=$("receiptText").value.trim();
 
- if(receipt.length<5||receipt.length>1500){
+ if(receipt.length<5 || receipt.length>1500){
   alert("توضیح درخواست باید بین ۵ تا ۱۵۰۰ نویسه باشد.");
   return;
  }
-
- if(!confirm(`درخواست کشور «${country.name}» ثبت شود؟`))return;
 
  state.purchasing=true;
  $("sendPurchase").disabled=true;
@@ -855,32 +1236,25 @@ async function sendPurchase(){
  try{
   const result=await postFunction(PURCHASE_URL,{
    action:"purchase",
-   initData:tg.initData,
+   initData:tg?.initData,
    world_id:state.activeWorld.id,
    country_id:state.purchaseCountryId,
    receipt_text:receipt
   });
 
   if(result?.success!==true && result?.ok!==true){
-   throw new Error(
-    result?.error||result?.message||"ثبت درخواست ناموفق بود."
-   );
+   throw new Error(result?.error || "ثبت درخواست ناموفق بود.");
   }
 
   alert("درخواست با موفقیت ثبت شد.");
-
-  $("purchaseModal").classList.add("hidden");
-  $("receiptText").value="";
+  $("purchaseModal").classList.remove("show");
   state.purchaseCountryId=null;
 
   await loadCountries();
 
  }catch(error){
-  console.error("sendPurchase:",error);
-
-  alert(
-   "ثبت درخواست انجام نشد:\n"+errorMessage(error)
-  );
+  console.error("PURCHASE:",error);
+  alert("ثبت درخواست انجام نشد:\n"+errorMessage(error));
 
  }finally{
   state.purchasing=false;
@@ -889,25 +1263,406 @@ async function sendPurchase(){
  }
 }
 
-/* ناوبری */
-function goHome(){
- state.activeWorld=null;
- state.countries=[];
+/* =========================================================
+   فهرست واحدهای نظامی
+========================================================= */
 
- $("countryView").classList.add("hidden");
- $("homeView").classList.remove("hidden");
+const units={
+ air:[
+  {key:"fighter",name:"جنگنده",iron:50,oil:20,people:50,price:10000,time:30,attack:30,defense:40},
+  {key:"bomber",name:"بمب‌افکن",iron:100,oil:50,people:100,price:15000,time:45,attack:40,defense:10}
+ ],
+ armor:[
+  {key:"infantry",name:"پیاده‌نظام",iron:10,oil:1,people:2,price:200,time:2,attack:5,defense:3},
+  {key:"tank",name:"تانک",iron:40,oil:120,people:10,price:5000,time:30,attack:30,defense:25},
+  {key:"artillery",name:"توپخانه",iron:15,oil:10,people:5,price:3000,time:25,attack:35,defense:20},
+  {key:"anti_air",name:"ضد هوایی",iron:10,oil:5,people:3,price:2000,time:35,attack:5,defense:50}
+ ],
+ navy:[
+  {key:"warship",name:"ناو دریایی",iron:1000,oil:500,people:1000,price:50000,time:120,attack:60,defense:40},
+  {key:"submarine",name:"زیردریایی",iron:200,oil:250,people:200,price:14000,time:60,attack:50,defense:25},
+  {key:"transport",name:"ناو ترابری",iron:100,oil:150,people:110,price:8000,time:60,attack:0,defense:0},
+  {key:"carrier",name:"ناو هواپیمابر",iron:5000,oil:3000,people:4500,price:1000000,time:3600,attack:20,defense:15}
+ ],
+ support:[
+  {key:"rocket",name:"راکت",iron:20,oil:15,people:18,price:1000,time:40,attack:30,defense:0},
+  {key:"drone",name:"پهپاد",iron:60,oil:20,people:100,price:10000,time:60,attack:100,defense:0},
+  {key:"ballistic_missile",name:"موشک بالستیک",iron:3000,oil:5000,people:2500,price:100000,time:1800,attack:300,defense:0}
+ ]
+};
 
- loadWorlds();
+const unitCategoryNames={
+ air:"نیروی هوایی",
+ armor:"نیروی زرهی",
+ navy:"نیروی دریایی",
+ support:"پشتیبانی دوربرد"
+};
+
+function renderUnits(category){
+ state.currentUnitCategory=category;
+
+ document.querySelectorAll("[data-unit-category]").forEach(tab=>{
+  tab.classList.toggle("active",tab.dataset.unitCategory===category);
+ });
+
+ const list=$("unitList");
+ const owned=state.snapshot?.units || [];
+
+ list.innerHTML=units[category].map(unit=>{
+  const existing=owned.find(item=>item.unit_key===unit.key);
+  const quantity=existing?.quantity || 0;
+
+  return `
+   <article class="unit-card">
+    <div class="unit-name">${escapeHTML(unit.name)}</div>
+
+    <div class="unit-info">
+     موجودی فعلی: <b>${fa(quantity)}</b><br>
+     آهن موردنیاز: <b>${fa(unit.iron)}</b><br>
+     نفت موردنیاز: <b>${fa(unit.oil)}</b><br>
+     نیروی انسانی: <b>${fa(unit.people)}</b><br>
+     هزینه: <b>${money(unit.price)}</b><br>
+     زمان تولید: <b>${formatDuration(unit.time)}</b><br>
+     حمله: <b>${fa(unit.attack)}</b><br>
+     دفاع: <b>${fa(unit.defense)}</b>
+    </div>
+
+    <button class="order-button" data-unit-order="${unit.key}" type="button">
+     سفارش ساخت
+    </button>
+   </article>
+  `;
+ }).join("");
+
+ list.querySelectorAll("[data-unit-order]").forEach(button=>{
+  button.addEventListener("click",()=>{
+   const item=units[category].find(x=>x.key===button.dataset.unitOrder);
+   if(item)openOrder({...item,kind:"unit"});
+  });
+ });
+
+ $("categoryInfo").textContent=
+  `بخش ${unitCategoryNames[category]} انتخاب شده است. موجودی یگان‌ها از پایگاه داده خوانده می‌شود.`;
 }
 
-$("backButton").addEventListener("click",goHome);
+/* =========================================================
+   فهرست مهمات زرادخانه
+========================================================= */
+
+const ammunition={
+ air:[
+  {key:"air_shell",name:"گلوله توپ جنگنده",batch:10000,iron:200,oil:100,uranium:0,price:5000,time:300},
+  {key:"air_bomb",name:"بمب هواپیما",batch:100,iron:500,oil:200,uranium:0,price:6000,time:300}
+ ],
+ ground:[
+  {key:"ground_shell",name:"گلوله توپ زمینی",batch:1000,iron:400,oil:150,uranium:0,price:5500,time:300},
+  {key:"small_arms",name:"فشنگ اسلحه",batch:10000,iron:200,oil:100,uranium:0,price:2000,time:300}
+ ],
+ navy:[
+  {key:"torpedo",name:"اژدر دریایی",batch:100,iron:100,oil:50,uranium:0,price:3000,time:300}
+ ],
+ nuclear:[
+  {key:"fat_man",name:"بمب فتمن",batch:1,iron:4000,oil:0,uranium:3000,price:20000000,time:18000},
+  {key:"little_boy",name:"بمب لیتل بوی",batch:1,iron:2500,oil:0,uranium:5000,price:10000000,time:18000}
+ ]
+};
+
+const ammoCategoryNames={
+ air:"مهمات هوایی",
+ ground:"مهمات زمینی",
+ navy:"مهمات دریایی",
+ nuclear:"مهمات هسته‌ای"
+};
+
+function renderArsenal(category){
+ state.currentAmmoCategory=category;
+
+ document.querySelectorAll("[data-ammo-category]").forEach(tab=>{
+  tab.classList.toggle("active",tab.dataset.ammoCategory===category);
+ });
+
+ const list=$("arsenalList");
+ const country=state.snapshot?.country;
+ const stock=state.snapshot?.ammunition || [];
+
+ if(category==="nuclear" && !country?.nuclear_infrastructure){
+  list.innerHTML=`
+   <div class="locked">
+    <strong>زیرساخت هسته‌ای فعال نیست</strong>
+    دسترسی به این بخش به فعال‌سازی زیرساخت هسته‌ای کشور توسط سامانه بازی نیاز دارد.
+   </div>
+  `;
+  renderQueue();
+  return;
+ }
+
+ list.innerHTML=ammunition[category].map(item=>{
+  const existing=stock.find(x=>x.ammo_key===item.key);
+  const quantity=existing?.quantity || 0;
+
+  return `
+   <article class="ammo-card">
+    <div class="ammo-name">${escapeHTML(item.name)}</div>
+
+    <div class="ammo-info">
+     موجودی فعلی: <b>${fa(quantity)}</b><br>
+     تعداد هر بسته: <b>${fa(item.batch)}</b><br>
+     آهن موردنیاز: <b>${fa(item.iron)}</b><br>
+     نفت موردنیاز: <b>${fa(item.oil)}</b><br>
+     اورانیوم موردنیاز: <b>${fa(item.uranium)}</b><br>
+     هزینه هر بسته: <b>${money(item.price)}</b><br>
+     زمان تولید هر بسته: <b>${formatDuration(item.time)}</b>
+    </div>
+
+    <button class="ammo-order" data-ammo-order="${item.key}" type="button">
+     ثبت سفارش تولید
+    </button>
+   </article>
+  `;
+ }).join("");
+
+ list.querySelectorAll("[data-ammo-order]").forEach(button=>{
+  button.addEventListener("click",()=>{
+   const item=ammunition[category].find(x=>x.key===button.dataset.ammoOrder);
+   if(item)openOrder({...item,kind:"ammo"});
+  });
+ });
+
+ renderQueue();
+}
+
+/* =========================================================
+   محاسبه سفارش و پنجره سفارش
+========================================================= */
+
+function formatDuration(seconds){
+ seconds=Math.max(0,Math.floor(Number(seconds)||0));
+
+ const hours=Math.floor(seconds/3600);
+ const minutes=Math.floor((seconds%3600)/60);
+ const secs=seconds%60;
+
+ if(hours>0)return `${fa(hours)} ساعت و ${fa(minutes)} دقیقه`;
+ if(minutes>0)return `${fa(minutes)} دقیقه و ${fa(secs)} ثانیه`;
+
+ return `${fa(secs)} ثانیه`;
+}
+
+function openOrder(item){
+ state.currentItem=item;
+
+ $("packageCount").value=1;
+ $("modalTitle").textContent="سفارش تولید "+item.name;
+
+ $("modalInfo").innerHTML=`
+  تعداد هر بسته: ${fa(item.batch||1)}<br>
+  هزینه هر بسته: ${money(item.price)}<br>
+  زمان تولید هر بسته: ${formatDuration(item.time)}
+ `;
+
+ updateCalculation();
+ $("orderModal").classList.add("show");
+}
+
+function updateCalculation(){
+ const item=state.currentItem;
+ if(!item)return;
+
+ let count=parseInt($("packageCount").value,10);
+
+ if(!Number.isFinite(count)||count<1)count=1;
+ if(count>1000)count=1000;
+
+ const totalPrice=item.price*count;
+ const totalTime=item.time*count;
+ const totalIron=item.iron*count;
+ const totalOil=(item.oil||0)*count;
+ const totalUranium=(item.uranium||0)*count;
+ const totalPeople=(item.people||0)*count;
+ const totalOutput=(item.batch||1)*count;
+
+ $("calculation").innerHTML=`
+  تعداد بسته‌ها: <strong>${fa(count)}</strong><br>
+  مجموع تولید: <strong>${fa(totalOutput)}</strong><br>
+  آهن موردنیاز: <strong>${fa(totalIron)}</strong><br>
+  نفت موردنیاز: <strong>${fa(totalOil)}</strong><br>
+  اورانیوم موردنیاز: <strong>${fa(totalUranium)}</strong><br>
+  نیروی انسانی: <strong>${fa(totalPeople)}</strong><br>
+  هزینه نهایی: <strong>${money(totalPrice)}</strong><br>
+  زمان کل تولید: <strong>${formatDuration(totalTime)}</strong>
+ `;
+}
+
+async function confirmProduction(){
+ const item=state.currentItem;
+ if(!item || state.commanding)return;
+
+ let count=parseInt($("packageCount").value,10);
+
+ if(!Number.isInteger(count)||count<1||count>1000){
+  alert("تعداد بسته‌ها باید بین ۱ تا ۱۰۰۰ باشد.");
+  return;
+ }
+
+ if(!confirm(`سفارش تولید ${item.name} با تعداد ${count} بسته ثبت شود؟`))return;
+
+ $("confirmOrder").disabled=true;
+ $("confirmOrder").textContent="در حال ثبت...";
+
+ try{
+  await countryCommand("queue",{
+   item_key:item.key,
+   quantity:count
+  });
+
+  $("orderModal").classList.remove("show");
+  state.currentItem=null;
+
+  await refreshCountryState();
+
+  alert("سفارش با موفقیت در صف تولید ثبت شد.");
+
+ }catch(error){
+  console.error("QUEUE ORDER:",error);
+  alert("ثبت سفارش ناموفق بود:\n"+errorMessage(error));
+
+ }finally{
+  $("confirmOrder").disabled=false;
+  $("confirmOrder").textContent="تأیید سفارش";
+ }
+}
+
+/* =========================================================
+   صف تولید و لغو سفارش
+========================================================= */
+
+function renderQueue(){
+ const box=$("orderQueue");
+ const orders=state.snapshot?.orders || [];
+
+ if(!orders.length){
+  box.innerHTML=`<div class="empty-queue">هنوز هیچ سفارشی ثبت نشده است.</div>`;
+  return;
+ }
+
+ box.innerHTML=orders.map(order=>{
+  const remaining=Math.max(
+   0,
+   Math.ceil((new Date(order.completes_at).getTime()-Date.now())/1000)
+  );
+
+  const statusText=
+   order.status==="completed" ? "تولید تکمیل شد" :
+   order.status==="cancelled" ? "لغو شده" :
+   order.status==="queued" ? "در صف تولید" :
+   "در حال تولید";
+
+  const canCancel=
+   order.status==="queued" &&
+   new Date(order.starts_at).getTime()>Date.now();
+
+  return `
+   <article class="queue-card">
+    <strong>${escapeHTML(order.item_name)}</strong><br>
+    تعداد بسته‌ها: ${fa(order.quantity)}<br>
+    مجموع تولید: ${fa(order.total_output)}<br>
+    هزینه: ${money(order.money_cost)}<br>
+    وضعیت: <strong>${statusText}</strong><br>
+    زمان باقی‌مانده: <strong>${order.status==="completed"?"تکمیل‌شده":formatDuration(remaining)}</strong>
+
+    ${canCancel
+     ? `<div class="queue-actions">
+         <button class="btn btn-danger btn-small" data-cancel-order="${escapeHTML(order.id)}" type="button">
+          لغو سفارش
+         </button>
+        </div>`
+     : ""
+    }
+   </article>
+  `;
+ }).join("");
+
+ box.querySelectorAll("[data-cancel-order]").forEach(button=>{
+  button.addEventListener("click",()=>{
+   cancelOrder(button.dataset.cancelOrder);
+  });
+ });
+}
+
+async function cancelOrder(orderId){
+ if(!confirm("این سفارش لغو شود؟ منابع آن در صورت امکان به خزانه بازگردانده می‌شود."))return;
+
+ try{
+  await countryCommand("cancel",{order_id:orderId});
+  await refreshCountryState();
+  alert("سفارش لغو شد.");
+
+ }catch(error){
+  console.error("CANCEL ORDER:",error);
+  alert("لغو سفارش انجام نشد:\n"+errorMessage(error));
+ }
+}
+
+/* =========================================================
+   اتصال دکمه‌ها
+========================================================= */
+
+$("backWorld").addEventListener("click",()=>{
+ state.activeWorld=null;
+ showPage("worldPage");
+ loadWorlds();
+});
 
 $("countrySearch").addEventListener("input",renderCountries);
+$("refreshCountries").addEventListener("click",loadCountries);
 
-$("refreshButton").addEventListener("click",loadCountries);
+$("openHQ").addEventListener("click",()=>{
+ showPage("hqPage");
+ renderUnits(state.currentUnitCategory);
+});
+
+$("openArsenal").addEventListener("click",()=>{
+ showPage("arsenalPage");
+ renderArsenal(state.currentAmmoCategory);
+});
+
+$("backHQ").addEventListener("click",()=>{
+ showPage("managementPage");
+});
+
+$("backArsenal").addEventListener("click",()=>{
+ showPage("managementPage");
+});
+
+document.querySelectorAll("[data-unit-category]").forEach(tab=>{
+ tab.addEventListener("click",()=>{
+  renderUnits(tab.dataset.unitCategory);
+ });
+});
+
+document.querySelectorAll("[data-ammo-category]").forEach(tab=>{
+ tab.addEventListener("click",()=>{
+  renderArsenal(tab.dataset.ammoCategory);
+ });
+});
+
+$("packageCount").addEventListener("input",updateCalculation);
+
+$("closeOrder").addEventListener("click",()=>{
+ $("orderModal").classList.remove("show");
+ state.currentItem=null;
+});
+
+$("confirmOrder").addEventListener("click",confirmProduction);
+
+$("orderModal").addEventListener("click",event=>{
+ if(event.target===$("orderModal")){
+  $("orderModal").classList.remove("show");
+  state.currentItem=null;
+ }
+});
 
 $("closePurchase").addEventListener("click",closePurchase);
-$("cancelPurchase").addEventListener("click",closePurchase);
 $("sendPurchase").addEventListener("click",sendPurchase);
 
 $("purchaseModal").addEventListener("click",event=>{
@@ -916,19 +1671,109 @@ $("purchaseModal").addEventListener("click",event=>{
  }
 });
 
-/* شروع برنامه */
-init();
+$("refreshState").addEventListener("click",async()=>{
+ try{
+  await refreshCountryState();
+  alert("اطلاعات کشور به‌روزرسانی شد.");
+ }catch(error){
+  alert(errorMessage(error));
+ }
+});
 
-/* به‌روزرسانی خودکار فقط در صفحه انتخاب */
+/* =========================================================
+   شمارش معکوس فصل
+========================================================= */
+
+function updateSeasonTimer(){
+ const end=state.snapshot?.country?.season_ends_at;
+
+ if(!end){
+  $("seasonTimer").textContent="--:--:--";
+  return;
+ }
+
+ const seconds=Math.max(
+  0,
+  Math.floor((new Date(end).getTime()-Date.now())/1000)
+ );
+
+ const h=Math.floor(seconds/3600);
+ const m=Math.floor((seconds%3600)/60);
+ const s=seconds%60;
+
+ $("seasonTimer").textContent=
+  [h,m,s].map(x=>String(x).padStart(2,"0")).join(":");
+}
+
+/* =========================================================
+   شروع بازی
+========================================================= */
+
+async function init(){
+ showPage("loadingPage");
+
+ try{
+  if(!tg?.initData || !tg?.initDataUnsafe?.user){
+   throw new Error("بازی را فقط از داخل مینی‌اپ تلگرام باز کن.");
+  }
+
+  state.player=tg.initDataUnsafe.user;
+
+  const existingCountry=await findMyCountry();
+
+  if(existingCountry){
+   await openManagement(existingCountry);
+   return;
+  }
+
+  showPage("worldPage");
+  await loadWorlds();
+
+ }catch(error){
+  console.error("INIT ERROR:",error);
+
+  showPage("worldPage");
+  setBox("worldList","ورود به بازی ناموفق بود: "+errorMessage(error),true);
+ }
+}
+
+/* =========================================================
+   به‌روزرسانی خودکار
+========================================================= */
+
 setInterval(()=>{
- if(state.myCountry)return;
+ updateSeasonTimer();
+ renderQueue();
+},1000);
 
- if(state.activeWorld&&!state.claiming&&!state.purchasing){
-  loadCountries();
- }else if(!state.activeWorld){
+setInterval(async()=>{
+ if(state.myCountry){
+  if(
+   !state.commanding &&
+   !state.claiming &&
+   !state.purchasing &&
+   ["managementPage","hqPage","arsenalPage"].includes(state.currentView)
+  ){
+   try{
+    await refreshCountryState();
+   }catch(error){
+    console.warn("AUTO REFRESH:",error);
+   }
+  }
+  return;
+ }
+
+ if(state.activeWorld){
+  if(!state.refreshing && !state.claiming && !state.purchasing){
+   loadCountries();
+  }
+ }else if(state.currentView==="worldPage"){
   loadWorlds();
  }
-},30000);
+},15000);
+
+/* شروع برنامه */
+init();
 
 </script>
 </body>
