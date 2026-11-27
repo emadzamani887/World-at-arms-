@@ -4,464 +4,654 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#eaf4ff">
-<title>WORLD AT ARMS | Admin Center</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>WORLD AT ARMS | Command Center</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
 <style>
 :root{
- --bg:#f1f7ff;--panel:#fff;--blue:#6c9fe8;--blue2:#4c83d2;
- --blue3:#e5f0ff;--navy:#263e60;--text:#344968;
- --muted:#91a2ba;--line:#e6edf7;--green:#4dbb96;
- --red:#e77f91;--yellow:#e6b85d;--shadow:0 8px 28px rgba(62,105,159,.08);
- --radius:18px;
+ --bg:#f1f7ff;
+ --surface:#ffffff;
+ --surface2:#f7faff;
+ --blue:#6c9ff5;
+ --blue2:#4383e9;
+ --blue3:#dceaff;
+ --navy:#263c60;
+ --text:#253858;
+ --muted:#8798b2;
+ --line:#e7eef8;
+ --green:#42b98a;
+ --red:#e77c8b;
+ --orange:#e9ad61;
+ --purple:#9b8be8;
+ --shadow:0 12px 35px rgba(68,111,170,.08);
+ --radius:22px;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Vazirmatn,sans-serif}
-button,input,textarea,select{font:inherit}
+body{
+ margin:0;
+ background:var(--bg);
+ color:var(--text);
+ font-family:'Vazirmatn',Tahoma,sans-serif;
+ font-size:14px;
+}
+button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 .app{min-height:100vh;display:flex}
 .sidebar{
- width:255px;background:#fff;border-left:1px solid var(--line);
- position:fixed;right:0;top:0;bottom:0;z-index:20;
- display:flex;flex-direction:column;padding:22px 15px;
- transition:.25s;overflow-y:auto
+ width:255px;position:fixed;right:0;top:0;bottom:0;
+ background:rgba(255,255,255,.92);
+ border-left:1px solid var(--line);
+ padding:24px 17px;z-index:20;
+ display:flex;flex-direction:column;overflow-y:auto;
 }
-.brand{display:flex;align-items:center;gap:12px;padding:4px 8px 24px}
-.logo{
- width:43px;height:43px;border-radius:15px;
- background:linear-gradient(145deg,#8db8f5,#5288d9);
- color:white;display:grid;place-items:center;font-size:22px;
- box-shadow:0 6px 15px #8db8f555
+.brand{display:flex;align-items:center;gap:12px;padding:5px 8px 26px}
+.brand-logo{
+ width:47px;height:47px;border-radius:16px;
+ display:grid;place-items:center;
+ color:#fff;font-size:23px;font-weight:900;
+ background:linear-gradient(145deg,#8fc0ff,#568ce9);
+ box-shadow:0 8px 18px #8bb9f455;
 }
-.brand strong{display:block;color:var(--navy);font-size:15px;font-weight:900}
-.brand small{font-size:10px;color:var(--muted);letter-spacing:1.2px}
-.nav-label{font-size:10px;color:#a6b4c8;padding:15px 12px 8px;font-weight:800}
-.nav{display:grid;gap:5px}
-.nav button{
- border:0;background:transparent;color:#7e91aa;width:100%;
- text-align:right;padding:11px 13px;border-radius:12px;
- display:flex;align-items:center;gap:12px;font-size:12px;font-weight:600;
- transition:.2s
+.brand h1{font-size:15px;margin:0;font-weight:900;letter-spacing:.3px}
+.brand p{font-size:10px;color:var(--muted);margin:3px 0 0}
+.nav-label{font-size:10px;font-weight:800;color:#a6b4c9;padding:14px 12px 8px}
+.nav-link{
+ width:100%;border:0;background:transparent;color:#71829e;
+ display:flex;align-items:center;gap:12px;text-align:right;
+ padding:12px 13px;border-radius:14px;margin:3px 0;
+ transition:.2s;font-weight:600;
 }
-.nav button:hover{background:#f3f8ff;color:var(--blue2)}
-.nav button.active{background:var(--blue3);color:#4d83ce;font-weight:800}
-.nav .ico{width:21px;text-align:center;font-size:16px}
-.side-bottom{margin-top:auto}
-.status-card{background:#f3f8ff;border:1px solid #e4effd;padding:14px;border-radius:15px}
-.status-head{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--yellow)}
-.status-card p{font-size:10px;color:var(--muted);line-height:1.8;margin:8px 0 0}
-.main{margin-right:255px;width:calc(100% - 255px);padding:25px 30px 45px;min-width:0}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:25px}
+.nav-link .ico{width:24px;text-align:center;font-size:17px}
+.nav-link:hover{background:#f1f6ff;color:var(--blue2);transform:translateX(-2px)}
+.nav-link.active{background:linear-gradient(100deg,#e7f1ff,#f1f7ff);color:#3978d6;font-weight:800}
+.sidebar-bottom{margin-top:auto}
+.server-mini{
+ padding:15px;border-radius:18px;background:linear-gradient(145deg,#edf5ff,#f8fbff);
+ border:1px solid #e1edfc;margin-top:18px;
+}
+.server-mini-head{display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--orange);margin-left:5px}
+.dot.online{background:var(--green);box-shadow:0 0 0 4px #42b98a20}
+.server-mini p{font-size:10px;color:var(--muted);margin:9px 0 0;line-height:1.9}
+.main{width:calc(100% - 255px);margin-right:255px;padding:25px 30px 45px;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:27px}
 .top-left{display:flex;align-items:center;gap:12px}
-.menu-btn{display:none}
-.page-title{font-size:20px;font-weight:900;color:var(--navy);margin:0}
-.page-sub{font-size:11px;color:var(--muted);margin-top:4px}
-.top-actions{display:flex;align-items:center;gap:10px}
-.clock,.soft-btn{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 13px;font-size:11px;color:#71849f}
-.soft-btn:hover{border-color:#b9d3f5;color:var(--blue2)}
-.avatar{width:37px;height:37px;border-radius:13px;background:#dceaff;color:#5288d9;display:grid;place-items:center;font-weight:900}
-.section{display:none;animation:appear .25s ease}
-.section.active{display:block}
-@keyframes appear{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.welcome{
- background:linear-gradient(115deg,#dcecff,#eef6ff 65%,#e4f2ff);
- border:1px solid #dceaff;border-radius:22px;padding:25px 27px;
- display:flex;align-items:center;justify-content:space-between;gap:15px;
- margin-bottom:22px;overflow:hidden
-}
-.welcome h2{margin:0 0 8px;color:#315b91;font-size:19px;font-weight:900}
-.welcome p{margin:0;color:#6e8eb8;font-size:11px;line-height:2}
-.welcome-mark{font-size:58px;opacity:.55}
-.grid{display:grid;gap:15px}
-.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:20px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);min-width:0}
-.stat{display:flex;align-items:center;gap:13px}
-.stat-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:#edf5ff;font-size:20px}
-.stat small{display:block;color:var(--muted);font-size:10px}
-.stat strong{display:block;color:var(--navy);font-size:23px;margin-top:3px}
-.two{grid-template-columns:1.35fr 1fr}
-.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
-.card-head h3{margin:0;font-size:13px;color:var(--navy);font-weight:900}
-.card-head span{font-size:10px;color:var(--muted)}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:11px}
-th{text-align:right;color:#9aaac0;font-weight:600;background:#f8fbff}
-td,th{padding:12px 11px;border-bottom:1px solid #edf1f7}
-td{color:#5d708c}
-tr:last-child td{border-bottom:0}
-.empty{text-align:center;color:#a4b1c2;padding:25px!important}
-.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:20px;font-size:10px;background:#f0f4fa;color:#8192a9}
-.badge.green{background:#e8f8f1;color:#48a985}
-.badge.red{background:#fff0f2;color:#d66f82}
-.badge.gold{background:#fff7e6;color:#c69a42}
-.badge.blue{background:#edf4ff;color:#5989cc}
-.activity-list{display:grid;gap:13px}
-.activity{display:flex;align-items:center;gap:11px}
-.activity-icon{width:34px;height:34px;display:grid;place-items:center;background:#f0f6ff;border-radius:11px}
-.activity-content{flex:1;min-width:0}
-.activity-content strong{font-size:11px;color:var(--navy);display:block}
-.activity-content p{font-size:10px;color:var(--muted);margin:4px 0 0;white-space:normal;overflow-wrap:anywhere}
-.page-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 18px}
-.page-heading h2{font-size:17px;color:var(--navy);margin:0}
+.page-heading h2{font-size:21px;margin:0;font-weight:900}
 .page-heading p{font-size:11px;color:var(--muted);margin:5px 0 0}
-.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px}
-.input,.select,.textarea{
- background:#fff;border:1px solid var(--line);border-radius:11px;
- padding:10px 12px;color:var(--text);outline:none;font-size:11px;min-width:0
+.top-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{
+ width:42px;height:42px;border:1px solid var(--line);border-radius:14px;
+ background:#fff;color:#6d83a4;display:grid;place-items:center;font-size:17px;
+ box-shadow:0 4px 12px #5477a00b;
 }
-.input:focus,.select:focus,.textarea:focus{border-color:#8eb6ee;box-shadow:0 0 0 3px #dceaff}
-.search{flex:1;min-width:150px}
-.btn{border:0;border-radius:11px;padding:10px 15px;font-size:11px;font-weight:800;transition:.2s}
-.btn-primary{background:var(--blue);color:white;box-shadow:0 4px 12px #6c9fe833}
-.btn-primary:hover{background:var(--blue2);transform:translateY(-1px)}
-.btn-light{background:#edf4ff;color:#5a8bd0}
-.btn-danger{background:#fff0f2;color:#d66f82}
+.profile{
+ display:flex;align-items:center;gap:10px;background:#fff;
+ border:1px solid var(--line);border-radius:15px;padding:7px 12px;
+}
+.avatar{width:32px;height:32px;border-radius:11px;background:#e4efff;color:#548be0;display:grid;place-items:center;font-weight:900}
+.profile strong{font-size:11px;display:block}
+.profile small{font-size:9px;color:var(--muted)}
+.page-section{display:none;animation:fade .25s ease}
+.page-section.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.welcome{
+ position:relative;overflow:hidden;padding:27px 29px;border-radius:26px;
+ background:linear-gradient(115deg,#dcecff,#eef6ff 60%,#e8f0ff);
+ border:1px solid #dceaff;margin-bottom:21px;
+}
+.welcome:after{
+ content:"";position:absolute;width:210px;height:210px;border-radius:50%;
+ background:#fff6;left:8%;top:-105px;
+}
+.welcome h2{font-size:21px;margin:0 0 7px;font-weight:900;position:relative;z-index:1}
+.welcome p{font-size:12px;color:#7188aa;margin:0;position:relative;z-index:1}
+.welcome-tag{display:inline-flex;align-items:center;gap:6px;margin-top:17px;padding:7px 12px;background:#ffffffa8;border:1px solid #fff;border-radius:30px;font-size:10px;color:#5481bd;position:relative;z-index:1}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:20px}
+.stat-card{
+ background:#fff;border:1px solid var(--line);border-radius:21px;padding:19px;
+ box-shadow:var(--shadow);min-width:0;transition:.2s;
+}
+.stat-card:hover{transform:translateY(-3px);box-shadow:0 15px 35px #507cb51a}
+.stat-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px;font-weight:700}
+.stat-icon{width:39px;height:39px;border-radius:14px;display:grid;place-items:center;font-size:18px}
+.ic-blue{background:#e8f1ff;color:#6598eb}
+.ic-green{background:#e5f8f0;color:#4ab58b}
+.ic-purple{background:#f0edff;color:#9989e5}
+.ic-orange{background:#fff3e5;color:#e5a450}
+.stat-number{font-size:27px;font-weight:900;color:var(--navy);margin-top:13px;direction:ltr;text-align:right}
+.stat-foot{font-size:10px;color:#a1aec1;margin-top:5px}
+.content-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,1fr);gap:17px;margin-bottom:18px}
+.card{
+ background:#fff;border:1px solid var(--line);border-radius:22px;
+ padding:20px;box-shadow:var(--shadow);min-width:0;margin-bottom:17px;
+}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:17px}
+.card-head h3{font-size:13px;font-weight:900;margin:0}
+.card-head p{font-size:10px;color:var(--muted);margin:4px 0 0}
+.btn{
+ border:0;border-radius:12px;padding:9px 14px;font-size:11px;
+ font-weight:800;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn:hover{transform:translateY(-1px);filter:brightness(.98)}
+.btn-primary{background:linear-gradient(120deg,#79aaf6,#548de9);color:#fff;box-shadow:0 5px 13px #6598e933}
+.btn-soft{background:#edf4ff;color:#5488d7}
+.btn-light{background:#f4f7fb;color:#73839b}
+.btn-danger{background:#fff0f1;color:#d96e7b}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.info-box{background:#f1f7ff;border:1px solid #deebfc;border-radius:13px;padding:13px 15px;color:#6f89aa;font-size:11px;line-height:2;margin-bottom:15px}
-.notice{background:#fff8e9;border:1px solid #f5e8c9;color:#a7894f}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.form-field{display:grid;gap:6px}
-.form-field label{font-size:10px;color:#8798ae}
-.form-field input,.form-field textarea,.form-field select{width:100%}
-.section-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
-.setting-row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);gap:10px}
-.setting-row:last-child{border:0}
-.setting-row strong{display:block;font-size:11px;color:var(--navy)}
-.setting-row small{display:block;font-size:10px;color:var(--muted);margin-top:4px}
-.toast{
- position:fixed;bottom:22px;left:22px;z-index:99;
- background:#304b70;color:#fff;padding:13px 18px;border-radius:13px;
- font-size:11px;box-shadow:var(--shadow);opacity:0;pointer-events:none;
- transform:translateY(10px);transition:.25s;max-width:90vw
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;white-space:nowrap}
+th{text-align:right;font-size:10px;color:#9aa9bd;font-weight:800;padding:11px 10px;background:#f8faff}
+th:first-child{border-radius:0 10px 10px 0}
+th:last-child{border-radius:10px 0 0 10px}
+td{font-size:11px;padding:13px 10px;border-bottom:1px solid #f0f3f8;color:#526681}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#fafcff}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:30px;font-size:9px;font-weight:800}
+.badge.green{background:#e6f8f0;color:#38a77b}
+.badge.red{background:#fff0f1;color:#d96c7b}
+.badge.gold{background:#fff5e8;color:#d99a43}
+.badge.blue{background:#eaf2ff;color:#5789d7}
+.badge.gray{background:#f0f3f7;color:#8492a7}
+.activity-list{display:flex;flex-direction:column;gap:0}
+.activity{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f0f3f8}
+.activity:last-child{border:0}
+.activity-icon{width:34px;height:34px;border-radius:12px;background:#edf4ff;color:#6897e4;display:grid;place-items:center;flex-shrink:0}
+.activity-content{min-width:0}
+.activity-content strong{font-size:11px;display:block}
+.activity-content p{font-size:10px;color:#8797ad;margin:4px 0;white-space:normal;line-height:1.8}
+.activity-content small{font-size:9px;color:#a6b2c2}
+.connection-card{background:linear-gradient(130deg,#f0f7ff,#fff);border:1px solid #e2edfb;border-radius:18px;padding:16px}
+.connection-line{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800}
+.connection-card p{font-size:10px;line-height:1.9;color:var(--muted);margin:9px 0 0}
+.empty-state{text-align:center;padding:35px 15px;color:var(--muted);font-size:11px}
+.empty-state .empty-icon{font-size:28px;margin-bottom:9px}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px}
+.field{
+ width:100%;border:1px solid #e5edf7;background:#fbfdff;
+ border-radius:12px;padding:11px 13px;outline:none;color:var(--text);font-size:11px;
 }
-.toast.show{opacity:1;transform:none}
-footer{text-align:center;color:#aab8ca;font-size:9px;margin-top:35px}
-.mobile-overlay{display:none}
-@media(max-width:1050px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}}
-@media(max-width:720px){
- .sidebar{transform:translateX(105%);width:270px;box-shadow:none}
- body.menu-open .sidebar{transform:translateX(0);box-shadow:0 0 50px #243d5b22}
- body.menu-open .mobile-overlay{display:block;position:fixed;inset:0;background:#1e355355;z-index:19}
- .main{margin:0;width:100%;padding:18px 14px 35px}
- .menu-btn{display:block;border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 12px;color:var(--navy)}
- .page-title{font-size:16px}.page-sub{font-size:10px}
- .clock{display:none}.welcome{padding:19px}.welcome h2{font-size:16px}
- .welcome-mark{font-size:42px}.stats{gap:9px}.card{padding:14px}
- .stat{gap:9px}.stat-icon{width:37px;height:37px}
- .stat strong{font-size:19px}.section-grid,.form-grid{grid-template-columns:1fr}
- .page-heading{align-items:flex-start;flex-direction:column}
+.field:focus{border-color:#9bbdf0;box-shadow:0 0 0 3px #8bb4ed20}
+.search-field{max-width:280px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.form-group label{display:block;font-size:10px;font-weight:800;color:#788ba7;margin-bottom:7px}
+.notice{padding:13px 15px;background:#fff8ed;border:1px solid #f8ebd5;border-radius:14px;color:#b48645;font-size:10px;line-height:1.9}
+.toast{
+ position:fixed;bottom:22px;left:22px;z-index:100;
+ background:#263c60;color:white;padding:13px 18px;border-radius:13px;
+ box-shadow:0 10px 30px #1e345533;font-size:11px;
+ opacity:0;transform:translateY(12px);pointer-events:none;transition:.25s;
+ max-width:90vw;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.mobile-menu{display:none}
+.footer{text-align:center;color:#a5b2c4;font-size:9px;padding:25px 0 0}
+@media(max-width:1100px){
+ .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .main{padding:22px}
+}
+@media(max-width:760px){
+ .sidebar{transform:translateX(105%);transition:.25s;width:270px;box-shadow:-15px 0 40px #263c6020}
+ .sidebar.open{transform:translateX(0)}
+ .main{width:100%;margin:0;padding:17px 14px 35px}
+ .mobile-menu{display:grid}
+ .topbar{margin-bottom:19px}
+ .page-heading h2{font-size:17px}
+ .profile{padding:5px 8px}
+ .profile small{display:none}
+ .content-grid{grid-template-columns:1fr}
+ .welcome{padding:22px}
+ .welcome h2{font-size:18px}
+ .stats-grid{gap:10px}
+ .stat-card{padding:14px}
+ .stat-number{font-size:22px}
+ .card{padding:15px}
+}
+@media(max-width:380px){
+ .stats-grid{grid-template-columns:1fr 1fr}
+ .stat-number{font-size:20px}
+ .top-actions{gap:5px}
+ .profile strong{font-size:9px}
 }
 </style>
 </head>
 <body>
-<div class="mobile-overlay" onclick="toggleMenu(false)"></div>
 <div class="app">
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
  <div class="brand">
-  <div class="logo">⚔</div>
-  <div><strong>WORLD AT ARMS</strong><small>ADMIN COMMAND CENTER</small></div>
+  <div class="brand-logo">W</div>
+  <div><h1>WORLD AT ARMS</h1><p>COMMAND CENTER · ADMIN</p></div>
  </div>
  <div class="nav-label">مدیریت اصلی</div>
- <nav class="nav" id="mainNav">
-  <button class="active" data-page="dashboard"><span class="ico">▦</span>داشبورد</button>
-  <button data-page="worlds"><span class="ico">🌐</span>جهان‌ها</button>
-  <button data-page="countries"><span class="ico">🗺</span>کشورها</button>
-  <button data-page="players"><span class="ico">👥</span>بازیکنان</button>
-  <div class="nav-label">عملیات بازی</div>
-  <button data-page="economy"><span class="ico">💰</span>اقتصاد و موجودی</button>
-  <button data-page="messages"><span class="ico">✉</span>پیام‌رسانی</button>
-  <button data-page="warnings"><span class="ico">⚠</span>اخطارها و نظارت</button>
-  <button data-page="events"><span class="ico">🎯</span>رویدادها</button>
-  <div class="nav-label">سیستم</div>
-  <button data-page="logs"><span class="ico">▤</span>گزارش فعالیت‌ها</button>
-  <button data-page="admins"><span class="ico">🛡</span>مدیران</button>
-  <button data-page="settings"><span class="ico">⚙</span>تنظیمات</button>
- </nav>
- <div class="side-bottom">
-  <div class="status-card">
-   <div class="status-head"><span class="dot" id="statusDot"></span><span>وضعیت پایگاه داده</span></div>
-   <p id="sideStatus">در حال بررسی اتصال...</p>
+ <button class="nav-link active" data-page="dashboard"><span class="ico">⌂</span>داشبورد</button>
+ <button class="nav-link" data-page="worlds"><span class="ico">◎</span>جهان‌ها</button>
+ <button class="nav-link" data-page="countries"><span class="ico">♜</span>کشورها</button>
+ <button class="nav-link" data-page="players"><span class="ico">♙</span>بازیکنان</button>
+ <div class="nav-label">کنترل بازی</div>
+ <button class="nav-link" data-page="economy"><span class="ico">◈</span>اقتصاد و خزانه</button>
+ <button class="nav-link" data-page="messages"><span class="ico">✉</span>پیام‌ها</button>
+ <button class="nav-link" data-page="resolutions"><span class="ico">▤</span>قطعنامه‌ها</button>
+ <button class="nav-link" data-page="warnings"><span class="ico">⚑</span>هشدارها</button>
+ <div class="nav-label">سیستم</div>
+ <button class="nav-link" data-page="events"><span class="ico">✧</span>رویدادها</button>
+ <button class="nav-link" data-page="logs"><span class="ico">◷</span>گزارش فعالیت</button>
+ <button class="nav-link" data-page="admins"><span class="ico">♧</span>مدیران</button>
+ <button class="nav-link" data-page="settings"><span class="ico">⚙</span>تنظیمات</button>
+ <div class="sidebar-bottom">
+  <div class="server-mini">
+   <div class="server-mini-head"><span>وضعیت سرور</span><span id="sideStatus" class="dot"></span></div>
+   <p id="sideStatusText">در حال بررسی اتصال...</p>
   </div>
  </div>
 </aside>
+
 <main class="main">
  <header class="topbar">
   <div class="top-left">
-   <button class="menu-btn" onclick="toggleMenu()">☰</button>
-   <div><h1 class="page-title" id="pageTitle">داشبورد اصلی</h1><div class="page-sub">مرکز فرماندهی و مدیریت جهان‌ها</div></div>
+   <button class="icon-btn mobile-menu" id="menuToggle">☰</button>
+   <div class="page-heading"><h2 id="pageTitle">داشبورد مدیریتی</h2><p id="pageSubtitle">مرکز فرماندهی و نظارت بر جهان بازی</p></div>
   </div>
   <div class="top-actions">
-   <span class="clock" id="clock">--:--:--</span>
-   <button class="soft-btn" onclick="refreshAll()">↻ بروزرسانی</button>
-   <div class="avatar">A</div>
+   <button class="icon-btn" id="refreshButton" title="بروزرسانی">↻</button>
+   <div class="profile"><div class="avatar">A</div><div><strong>مدیریت کل</strong><small>WORLD AT ARMS</small></div></div>
   </div>
  </header>
- <section class="section active" id="dashboard">
-  <div class="welcome">
-   <div><h2>به مرکز فرماندهی خوش آمدید</h2><p>مدیریت و نظارت بر دنیای WORLD AT ARMS<br>وضعیت اطلاعات بازی را از یک نقطه بررسی کنید.</p></div>
-   <div class="welcome-mark">🌍</div>
-  </div>
-  <div class="grid stats">
-   <div class="card stat"><div class="stat-icon">🌐</div><div><small>تعداد جهان‌ها</small><strong id="worldCount">—</strong></div></div>
-   <div class="card stat"><div class="stat-icon">🗺</div><div><small>تعداد کشورها</small><strong id="countryCount">—</strong></div></div>
-   <div class="card stat"><div class="stat-icon">📋</div><div><small>گزارش‌های ثبت‌شده</small><strong id="logCount">—</strong></div></div>
-   <div class="card stat"><div class="stat-icon">👤</div><div><small>بازیکنان شناسایی‌شده</small><strong id="playerCount">—</strong></div></div>
-  </div>
-  <div class="grid two">
-   <div class="card">
-    <div class="card-head"><h3>جهان‌های ثبت‌شده</h3><span>آخرین اطلاعات</span></div>
-    <div class="table-wrap"><table><thead><tr><th>نام جهان</th><th>وضعیت</th><th>تاریخ ایجاد</th></tr></thead><tbody id="dashWorlds"><tr><td colspan="3" class="empty">در انتظار دریافت اطلاعات</td></tr></tbody></table></div>
-   </div>
-   <div class="card">
-    <div class="card-head"><h3>آخرین فعالیت‌ها</h3><span>گزارش سیستم</span></div>
-    <div class="activity-list" id="dashLogs"><div class="empty">در انتظار دریافت اطلاعات</div></div>
-   </div>
-  </div>
-  <div class="card" style="margin-top:15px">
-   <div class="card-head"><h3>سلامت اتصال</h3><span id="connectionBadge" class="badge gold">در حال بررسی</span></div>
-   <div class="activity"><div class="activity-icon">▤</div><div class="activity-content"><strong>پایگاه داده Supabase</strong><p id="connectionMessage">در حال آزمایش ارتباط با سرور...</p></div></div>
-  </div>
- </section>
  
- <!-- WORLDS -->
- <section class="page-section" id="page-worlds">
-  <div class="page-title"><div><h2>مدیریت جهان‌ها</h2><p>مشاهده و مدیریت جهان‌های بازی</p></div></div>
-  <div class="card">
-   <div class="card-head"><h3>فهرست جهان‌ها</h3><button class="btn btn-primary" onclick="loadWorlds()">↻ بروزرسانی</button></div>
-   <div class="table-wrap"><table><thead><tr><th>نام جهان</th><th>وضعیت</th><th>شناسه</th><th>تاریخ ایجاد</th></tr></thead><tbody id="worldsTable"><tr><td colspan="4">در انتظار اتصال...</td></tr></tbody></table></div>
-  </div>
- </section>
+<!-- DASHBOARD -->
+<section class="page-section active" id="page-dashboard">
+ <div class="welcome">
+  <h2>به مرکز فرماندهی خوش آمدید</h2>
+  <p>تمام جهان‌ها، کشورها و فعالیت‌های WORLD AT ARMS را از اینجا زیر نظر بگیر.</p>
+  <span class="welcome-tag">✦ پنل مدیریت مرکزی · نسخه جدید</span>
+ </div>
 
- <!-- COUNTRIES -->
- <section class="page-section" id="page-countries">
-  <div class="page-title"><div><h2>مدیریت کشورها</h2><p>فهرست کشورها و اطلاعات حاکمان</p></div></div>
-  <div class="card">
-   <div class="card-head"><h3>کشورهای ثبت‌شده</h3><button class="btn btn-primary" onclick="loadCountries()">↻ بروزرسانی</button></div>
-   <div class="filters"><input id="countrySearch" placeholder="جستجوی کشور یا حاکم..." oninput="filterCountries()"></div>
-   <div class="table-wrap"><table><thead><tr><th>کشور</th><th>حاکم</th><th>شناسه تلگرام</th><th>موجودی</th><th>وضعیت</th></tr></thead><tbody id="countriesTable"><tr><td colspan="5">در انتظار اتصال...</td></tr></tbody></table></div>
+ <div class="stats-grid">
+  <div class="stat-card">
+   <div class="stat-head"><span>جهان‌های ثبت‌شده</span><span class="stat-icon ic-blue">◎</span></div>
+   <div class="stat-number" id="totalWorlds">—</div>
+   <div class="stat-foot">تعداد جهان‌ها در پایگاه داده</div>
   </div>
- </section>
+  <div class="stat-card">
+   <div class="stat-head"><span>کشورهای ثبت‌شده</span><span class="stat-icon ic-purple">♜</span></div>
+   <div class="stat-number" id="totalCountries">—</div>
+   <div class="stat-foot">تمام کشورهای بازی</div>
+  </div>
+  <div class="stat-card">
+   <div class="stat-head"><span>بازیکنان فعال</span><span class="stat-icon ic-green">♙</span></div>
+   <div class="stat-number" id="totalPlayers">—</div>
+   <div class="stat-foot">بازیکنان دارای شناسه تلگرام</div>
+  </div>
+  <div class="stat-card">
+   <div class="stat-head"><span>مجموع خزانه</span><span class="stat-icon ic-orange">◈</span></div>
+   <div class="stat-number" id="totalBalance">—</div>
+   <div class="stat-foot">مجموع موجودی کشورها</div>
+  </div>
+ </div>
 
- <!-- PLAYERS -->
- <section class="page-section" id="page-players">
-  <div class="page-title"><div><h2>بازیکنان</h2><p>اطلاعات بازیکنان ثبت‌شده در کشورها</p></div></div>
+ <div class="content-grid">
   <div class="card">
-   <div class="card-head"><h3>فهرست بازیکنان</h3><button class="btn btn-primary" onclick="loadCountries()">↻ بروزرسانی</button></div>
-   <div class="table-wrap"><table><thead><tr><th>نام کاربری</th><th>شناسه تلگرام</th><th>کشور</th><th>موجودی</th></tr></thead><tbody id="playersTable"><tr><td colspan="4">در انتظار اتصال...</td></tr></tbody></table></div>
+   <div class="card-head"><div><h3>آخرین فعالیت‌ها</h3><p>جدیدترین گزارش‌های ثبت‌شده</p></div><button class="btn btn-soft" onclick="navigateTo('logs')">مشاهده همه ←</button></div>
+   <div class="activity-list" id="dashboardActivity"><div class="empty-state">در انتظار دریافت اطلاعات...</div></div>
   </div>
- </section>
+  <div class="card">
+   <div class="card-head"><div><h3>وضعیت سامانه</h3><p>بررسی اتصال سرویس‌ها</p></div><span class="badge blue">LIVE</span></div>
+   <div class="connection-card">
+    <div class="connection-line"><span>پایگاه داده Supabase</span><span id="connectionBadge" class="badge gold">در حال بررسی</span></div>
+    <p id="connectionMessage">در حال بررسی اتصال به سرور...</p>
+   </div>
+   <div style="margin-top:13px" class="connection-card">
+    <div class="connection-line"><span>بارگذاری اطلاعات</span><span id="dataBadge" class="badge gray">منتظر</span></div>
+    <p id="dataMessage">اطلاعات هنوز دریافت نشده است.</p>
+   </div>
+   <button class="btn btn-primary" style="width:100%;margin-top:14px" onclick="refreshAll()">↻ بروزرسانی کامل پنل</button>
+  </div>
+ </div>
 
- <!-- ECONOMY -->
- <section class="page-section" id="page-economy">
-  <div class="page-title"><div><h2>اقتصاد بازی</h2><p>نمای کلی موجودی و تراکنش‌ها</p></div></div>
-  <div class="stats-grid">
-   <div class="stat-card"><div class="stat-top"><span>مجموع موجودی</span><span class="stat-icon">◈</span></div><div class="stat-value" id="totalBalance">—</div><div class="stat-note">مجموع موجودی کشورها</div></div>
-   <div class="stat-card"><div class="stat-top"><span>کشورهای دارای موجودی</span><span class="stat-icon">◎</span></div><div class="stat-value" id="fundedCountries">—</div><div class="stat-note">کشورهای با موجودی بیشتر از صفر</div></div>
-  </div>
-  <div class="card">
-   <div class="card-head"><h3>آخرین تراکنش‌ها</h3><button class="btn btn-primary" onclick="loadTransactions()">↻ بروزرسانی</button></div>
-   <div class="table-wrap"><table><thead><tr><th>کشور</th><th>مبلغ</th><th>نوع</th><th>تاریخ</th></tr></thead><tbody id="transactionsTable"><tr><td colspan="4">اطلاعات تراکنش هنوز بارگذاری نشده است.</td></tr></tbody></table></div>
-  </div>
-  <div class="notice">عملیات تغییر موجودی تا زمان راه‌اندازی احراز هویت امن مدیران غیرفعال است.</div>
- </section>
+ <div class="card">
+  <div class="card-head"><div><h3>نمای کلی کشورها</h3><p>آخرین کشورهای ثبت‌شده</p></div><button class="btn btn-soft" onclick="navigateTo('countries')">مدیریت کشورها ←</button></div>
+  <div class="table-wrap"><table><thead><tr><th>کشور</th><th>حاکم</th><th>شناسه تلگرام</th><th>موجودی</th><th>وضعیت</th></tr></thead><tbody id="dashboardCountries"><tr><td colspan="5">در انتظار اطلاعات...</td></tr></tbody></table></div>
+ </div>
+</section>
 
- <!-- MESSAGES -->
- <section class="page-section" id="page-messages">
-  <div class="page-title"><div><h2>پیام‌ها</h2><p>پیام‌های ثبت‌شده در سامانه</p></div></div>
-  <div class="card">
-   <div class="card-head"><h3>پیام‌های بازی</h3><button class="btn btn-primary" onclick="loadMessages()">↻ بروزرسانی</button></div>
-   <div class="table-wrap"><table><thead><tr><th>اطلاعات</th><th>جزئیات</th></tr></thead><tbody id="messagesTable"><tr><td colspan="2">برای نمایش پیام‌ها، ساختار جدول باید بررسی شود.</td></tr></tbody></table></div>
-  </div>
-  <div class="notice">ارسال پیام از پنل فعلاً غیرفعال است تا دسترسی امن سمت سرور تنظیم شود.</div>
- </section>
+<!-- WORLDS -->
+<section class="page-section" id="page-worlds">
+ <div class="card">
+  <div class="card-head"><div><h3>مدیریت جهان‌ها</h3><p>فهرست جهان‌های ایجادشده در بازی</p></div><button class="btn btn-primary" onclick="loadWorlds()">↻ بروزرسانی</button></div>
+  <div class="filters"><input class="field search-field" id="worldSearch" placeholder="جستجوی نام جهان..." oninput="filterWorlds()"></div>
+  <div class="table-wrap"><table><thead><tr><th>نام جهان</th><th>توضیحات</th><th>وضعیت</th><th>تاریخ ایجاد</th></tr></thead><tbody id="worldsTable"><tr><td colspan="4">در انتظار اطلاعات...</td></tr></tbody></table></div>
+ </div>
+ <div class="notice">ساخت، حذف و ویرایش جهان‌ها پس از راه‌اندازی عملیات امن سمت سرور فعال خواهد شد.</div>
+</section>
 
- <!-- WARNINGS -->
- <section class="page-section" id="page-warnings">
-  <div class="page-title"><div><h2>هشدارها</h2><p>وضعیت هشدارهای مدیریتی</p></div></div>
-  <div class="card">
-   <div class="empty-state"><div class="empty-icon">♧</div><h3>مرکز هشدارها</h3><p>پس از اتصال جدول هشدارها، موارد ثبت‌شده در این بخش نمایش داده می‌شوند.</p></div>
+<!-- COUNTRIES -->
+<section class="page-section" id="page-countries">
+ <div class="card">
+  <div class="card-head"><div><h3>مدیریت کشورها</h3><p>مشاهده کشورها، حاکمان و وضعیت آن‌ها</p></div><button class="btn btn-primary" onclick="loadCountries()">↻ بروزرسانی</button></div>
+  <div class="filters">
+   <input class="field search-field" id="countrySearch" placeholder="نام کشور، حاکم یا شناسه..." oninput="filterCountries()">
+   <select class="field" style="max-width:160px" id="countryStatusFilter" onchange="filterCountries()">
+    <option value="all">تمام وضعیت‌ها</option><option value="active">فعال</option><option value="locked">قفل‌شده</option>
+   </select>
   </div>
- </section>
+  <div class="table-wrap"><table><thead><tr><th>کشور</th><th>حاکم</th><th>نام کاربری</th><th>شناسه تلگرام</th><th>موجودی</th><th>وضعیت</th></tr></thead><tbody id="countriesTable"><tr><td colspan="6">در انتظار اطلاعات...</td></tr></tbody></table></div>
+ </div>
+ <div class="notice">اطلاعات این بخش از جدول countries خوانده می‌شود. تغییر حاکم، قفل‌کردن و حذف کشور در مرحله اتصال امن سرور فعال می‌شود.</div>
+</section>
 
- <!-- EVENTS -->
- <section class="page-section" id="page-events">
-  <div class="page-title"><div><h2>رویدادها</h2><p>رویدادهای ثبت‌شده در جهان بازی</p></div></div>
-  <div class="card">
-   <div class="card-head"><h3>آخرین رویدادها</h3><button class="btn btn-primary" onclick="loadLogs()">↻ بروزرسانی</button></div>
-   <div class="activity-list" id="eventsList"><div class="empty-state">در انتظار دریافت اطلاعات...</div></div>
-  </div>
- </section>
+<!-- PLAYERS -->
+<section class="page-section" id="page-players">
+ <div class="card">
+  <div class="card-head"><div><h3>مرکز بازیکنان</h3><p>بازیکنان شناسایی‌شده در جهان‌ها</p></div><button class="btn btn-primary" onclick="loadCountries()">↻ بروزرسانی</button></div>
+  <div class="filters"><input class="field search-field" id="playerSearch" placeholder="جستجوی بازیکن یا شناسه..." oninput="filterPlayers()"></div>
+  <div class="table-wrap"><table><thead><tr><th>نام کاربری</th><th>حاکم</th><th>کشور</th><th>شناسه تلگرام</th><th>موجودی کشور</th></tr></thead><tbody id="playersTable"><tr><td colspan="5">در انتظار اطلاعات...</td></tr></tbody></table></div>
+ </div>
+ <div class="notice">ابزارهای بن، رفع بن و انتقال کشور پس از تنظیم دسترسی مدیریتی امن فعال می‌شوند.</div>
+</section>
 
- <!-- LOGS -->
- <section class="page-section" id="page-logs">
-  <div class="page-title"><div><h2>گزارش فعالیت‌ها</h2><p>سوابق ثبت‌شده در پایگاه داده</p></div></div>
-  <div class="card">
-   <div class="card-head"><h3>گزارش‌های اخیر</h3><button class="btn btn-primary" onclick="loadLogs()">↻ بروزرسانی</button></div>
-   <div class="activity-list" id="logsList"><div class="empty-state">در انتظار دریافت اطلاعات...</div></div>
-  </div>
- </section>
+<!-- ECONOMY -->
+<section class="page-section" id="page-economy">
+ <div class="stats-grid">
+  <div class="stat-card"><div class="stat-head"><span>مجموع خزانه</span><span class="stat-icon ic-orange">◈</span></div><div class="stat-number" id="economyBalance">—</div><div class="stat-foot">موجودی همه کشورها</div></div>
+  <div class="stat-card"><div class="stat-head"><span>کشورهای دارای موجودی</span><span class="stat-icon ic-green">◎</span></div><div class="stat-number" id="fundedCountries">—</div><div class="stat-foot">بیشتر از صفر</div></div>
+ </div>
+ <div class="card">
+  <div class="card-head"><div><h3>خزانه کشورها</h3><p>بررسی موجودی مالی کشورها</p></div><button class="btn btn-primary" onclick="loadCountries()">↻ بروزرسانی</button></div>
+  <div class="filters"><input class="field search-field" id="economySearch" placeholder="جستجوی کشور..." oninput="filterEconomy()"></div>
+  <div class="table-wrap"><table><thead><tr><th>کشور</th><th>حاکم</th><th>موجودی</th><th>وضعیت</th></tr></thead><tbody id="economyTable"><tr><td colspan="4">در انتظار اطلاعات...</td></tr></tbody></table></div>
+ </div>
+ <div class="notice">افزایش و کاهش موجودی و انتقال پول بعد از پیاده‌سازی تابع امن سرور فعال می‌شود.</div>
+</section>
 
- <!-- ADMINS -->
- <section class="page-section" id="page-admins">
-  <div class="page-title"><div><h2>مدیران</h2><p>وضعیت دسترسی مدیران سامانه</p></div></div>
-  <div class="card">
-   <div class="card-head"><h3>مدیران ثبت‌شده</h3></div>
-   <div class="empty-state"><div class="empty-icon">♙</div><h3>نیازمند تنظیم دسترسی</h3><p>برای نمایش و مدیریت مدیران، ابتدا باید سیستم احراز هویت امن و نقش‌های مدیریتی در سرور تنظیم شود.</p></div>
+<!-- MESSAGES -->
+<section class="page-section" id="page-messages">
+ <div class="card">
+  <div class="card-head"><div><h3>مرکز پیام‌رسانی</h3><p>بخش آماده برای مدیریت پیام‌های بازی</p></div></div>
+  <div class="empty-state"><div class="empty-icon">✉</div><h3>مدیریت پیام‌ها</h3><p>برای نمایش پیام‌های موجود باید ساختار دقیق جدول game_messages بررسی شود.</p></div>
+ </div>
+ <div class="card">
+  <div class="card-head"><h3>ارسال پیام جدید</h3><span class="badge gold">در انتظار اتصال امن</span></div>
+  <div class="form-grid">
+   <div class="form-group"><label>نوع پیام</label><select class="field" id="messageType" disabled><option>پیام همگانی</option><option>پیام به یک جهان</option><option>پیام خصوصی</option></select></div>
+   <div class="form-group"><label>شناسه مقصد</label><input class="field" placeholder="شناسه جهان یا بازیکن" disabled></div>
+   <div class="form-group" style="grid-column:1/-1"><label>متن پیام</label><textarea class="field" rows="4" placeholder="متن پیام..." disabled></textarea></div>
   </div>
- </section>
+  <button class="btn btn-light" disabled style="margin-top:12px">ارسال پیام</button>
+ </div>
+</section>
 
- <!-- SETTINGS -->
- <section class="page-section" id="page-settings">
-  <div class="page-title"><div><h2>تنظیمات پنل</h2><p>اطلاعات اتصال و وضعیت سامانه</p></div></div>
-  <div class="card">
-   <div class="card-head"><h3>اتصال پایگاه داده</h3><span class="badge gold" id="settingsConnection">در حال بررسی</span></div>
-   <div class="setting-row"><div><strong>پروژه Supabase</strong><p>اتصال از طریق کلید عمومی امن</p></div><span class="badge blue">Supabase</span></div>
-   <div class="setting-row"><div><strong>آدرس پروژه</strong><p id="projectAddress">در حال بارگذاری...</p></div></div>
-   <div class="setting-row"><div><strong>آخرین بروزرسانی</strong><p id="lastUpdated">—</p></div></div>
-   <div class="setting-row"><div><strong>نسخه پنل</strong><p>WORLD AT ARMS Admin 1.0</p></div></div>
-  </div>
-  <div class="card">
-   <div class="card-head"><h3>امنیت</h3></div>
-   <div class="notice">کلید عمومی فقط برای اتصال مرورگر استفاده می‌شود. کلید محرمانه سرویس نباید داخل این فایل قرار بگیرد.</div>
-  </div>
- </section>
+<!-- RESOLUTIONS -->
+<section class="page-section" id="page-resolutions">
+ <div class="card">
+  <div class="card-head"><div><h3>مرکز قطعنامه‌ها</h3><p>فضای مدیریت قطعنامه‌های جهان‌ها</p></div></div>
+  <div class="empty-state"><div class="empty-icon">▤</div><h3>ساختار جدول مشخص نشده است</h3><p>پس از بررسی جدول مربوط به قطعنامه‌ها، فهرست و ابزارهای مدیریت اینجا قرار می‌گیرند.</p></div>
+ </div>
+</section>
 
- </main>
- <footer class="footer">WORLD AT ARMS · پنل مدیریت · نسخه 1.0</footer>
+<!-- WARNINGS -->
+<section class="page-section" id="page-warnings">
+ <div class="card">
+  <div class="card-head"><div><h3>مرکز هشدارها</h3><p>هشدارهای مدیریتی و سیستمی</p></div></div>
+  <div class="empty-state"><div class="empty-icon">⚑</div><h3>بخش هشدارها آماده توسعه است</h3><p>پس از مشخص‌شدن جدول هشدارها، داده‌های واقعی این بخش نمایش داده می‌شوند.</p></div>
+ </div>
+</section>
+
+<!-- EVENTS -->
+<section class="page-section" id="page-events">
+ <div class="card">
+  <div class="card-head"><div><h3>رویدادهای جهان</h3><p>آخرین رویدادهای ثبت‌شده</p></div><button class="btn btn-primary" onclick="loadLogs()">↻ بروزرسانی</button></div>
+  <div class="activity-list" id="eventsList"><div class="empty-state">در انتظار اطلاعات...</div></div>
+ </div>
+</section>
+
+<!-- LOGS -->
+<section class="page-section" id="page-logs">
+ <div class="card">
+  <div class="card-head"><div><h3>گزارش فعالیت‌ها</h3><p>سوابق ثبت‌شده در سامانه</p></div><button class="btn btn-primary" onclick="loadLogs()">↻ بروزرسانی</button></div>
+  <div class="filters"><input class="field search-field" id="logSearch" placeholder="جستجو در گزارش‌ها..." oninput="filterLogs()"></div>
+  <div class="activity-list" id="logsList"><div class="empty-state">در انتظار اطلاعات...</div></div>
+ </div>
+</section>
+
+<!-- ADMINS -->
+<section class="page-section" id="page-admins">
+ <div class="card">
+  <div class="card-head"><div><h3>مدیریت مدیران</h3><p>سطوح دسترسی و حساب‌های مدیریتی</p></div></div>
+  <div class="empty-state"><div class="empty-icon">♧</div><h3>مدیریت دسترسی‌ها</h3><p>برای امنیت بازی، افزودن و حذف مدیران باید از طریق احراز هویت و نقش‌های سمت سرور انجام شود.</p></div>
+ </div>
+</section>
+
+<!-- SETTINGS -->
+<section class="page-section" id="page-settings">
+ <div class="card">
+  <div class="card-head"><div><h3>تنظیمات سامانه</h3><p>وضعیت اتصال و مشخصات پنل</p></div><span class="badge blue">نسخه 2.0</span></div>
+  <div class="connection-card">
+   <div class="connection-line"><span>اتصال Supabase</span><span id="settingsConnection" class="badge gold">در حال بررسی</span></div>
+   <p id="settingsMessage">در حال بررسی وضعیت اتصال...</p>
+  </div>
+  <div style="margin-top:17px" class="form-group"><label>آدرس پروژه</label><input class="field" id="projectAddress" readonly></div>
+  <div style="margin-top:13px" class="form-group"><label>آخرین بروزرسانی</label><input class="field" id="lastUpdated" readonly value="—"></div>
+  <div style="margin-top:13px" class="form-group"><label>نسخه پنل</label><input class="field" readonly value="WORLD AT ARMS Command Center 2.0"></div>
+ </div>
+ <div class="card">
+  <div class="card-head"><h3>امنیت اطلاعات</h3><span class="badge green">کلید عمومی</span></div>
+  <div class="notice">این پنل از کلید عمومی Supabase استفاده می‌کند. کلید محرمانه سرویس نباید در فایل HTML یا مخزن عمومی GitHub قرار بگیرد.</div>
+ </div>
+</section>
+
+<footer class="footer">WORLD AT ARMS · COMMAND CENTER · ساخته‌شده برای مدیریت جهان بازی</footer>
+</main>
 </div>
+<div class="toast" id="toast"></div>
 
-<div id="toast" class="toast"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
- 
+/* =====================================
+   WORLD AT ARMS - SUPABASE CONNECTION
+===================================== */
+
 const SUPABASE_URL = "https://hgaliwladnrtfdkwbtzz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
 
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-window.supabaseClient = db;
 
 let worldsData = [];
 let countriesData = [];
 let logsData = [];
+let connected = false;
 
 const $ = id => document.getElementById(id);
 
 function safe(value) {
- return String(value ?? "—").replace(/[&<>"']/g, char => ({
+ return String(value ?? "—").replace(/[&<>"']/g, c => ({
   "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- }[char]));
+ }[c]));
 }
 
-function numberFormat(value) {
+function fmt(value) {
  return Number(value || 0).toLocaleString("fa-IR");
 }
 
-function dateFormat(value) {
+function dateFmt(value) {
  if (!value) return "—";
- const date = new Date(value);
- return isNaN(date) ? "—" : date.toLocaleString("fa-IR");
+ const d = new Date(value);
+ return isNaN(d.getTime()) ? "—" : d.toLocaleString("fa-IR");
 }
 
-function showToast(message, type = "info") {
- const toast = $("toast");
- if (!toast) return;
- toast.textContent = message;
- toast.className = "toast show " + type;
- clearTimeout(window.toastTimer);
- window.toastTimer = setTimeout(() => {
-  toast.className = "toast";
- }, 3500);
+function toast(message) {
+ const el = $("toast");
+ el.textContent = message;
+ el.classList.add("show");
+ clearTimeout(window.toastTimeout);
+ window.toastTimeout = setTimeout(() => el.classList.remove("show"), 3000);
+}
+
+function setText(id, value) {
+ const el = $(id);
+ if (el) el.textContent = value;
+}
+
+function tableMessage(id, message, columns) {
+ const el = $(id);
+ if (el) el.innerHTML =
+  `<tr><td colspan="${columns}">${safe(message)}</td></tr>`;
 }
 
 function setConnection(ok, message) {
+ connected = ok;
+
  const badge = $("connectionBadge");
  const settings = $("settingsConnection");
- const text = $("connectionMessage");
+ const dot = $("sideStatus");
 
  if (badge) {
-  badge.textContent = ok ? "متصل" : "نیازمند بررسی";
+  badge.textContent = ok ? "متصل" : "خطا در اتصال";
   badge.className = "badge " + (ok ? "green" : "red");
  }
+
  if (settings) {
-  settings.textContent = ok ? "متصل" : "نیازمند بررسی";
+  settings.textContent = ok ? "متصل" : "ناموفق";
   settings.className = "badge " + (ok ? "green" : "red");
  }
- if (text) text.textContent = message;
- if ($("projectAddress")) $("projectAddress").textContent = SUPABASE_URL;
- if ($("lastUpdated")) $("lastUpdated").textContent = dateFormat(new Date());
-}
 
-function setTableMessage(id, message, colspan = 1) {
- const target = $(id);
- if (target) target.innerHTML =
-  `<tr><td colspan="${colspan}">${safe(message)}</td></tr>`;
+ if (dot) dot.className = "dot " + (ok ? "online" : "");
+
+ setText("connectionMessage", message);
+ setText("settingsMessage", message);
+ setText("sideStatusText", ok ? "ارتباط با پایگاه داده برقرار است." : "اتصال یا دسترسی به جدول نیازمند بررسی است.");
+ setText("projectAddress", SUPABASE_URL);
+ setText("lastUpdated", dateFmt(new Date()));
 }
 
 async function testConnection() {
  try {
-  const { data, error } = await db
-   .from("worlds")
-   .select("id")
-   .limit(1);
+  const { error } = await db.from("worlds").select("id").limit(1);
 
   if (error) {
-   setConnection(false, "درخواست به Supabase رسید، اما خواندن جدول worlds مجاز نیست یا خطا دارد: " + error.message);
+   setConnection(false, "پاسخ سرور دریافت شد اما خواندن جدول worlds با خطا مواجه شد: " + error.message);
    return false;
   }
 
-  setConnection(true, "اتصال برقرار شد و جدول worlds قابل خواندن است.");
+  setConnection(true, "اتصال موفق است. جدول جهان‌ها قابل خواندن است.");
   return true;
  } catch (error) {
-  setConnection(false, "خطا در برقراری ارتباط: " + error.message);
+  setConnection(false, "خطای ارتباط: " + error.message);
   return false;
  }
 }
 
+/* NAVIGATION */
+
+const pageInfo = {
+ dashboard:["داشبورد مدیریتی","مرکز فرماندهی و نظارت بر جهان بازی"],
+ worlds:["مدیریت جهان‌ها","مشاهده جهان‌های ثبت‌شده"],
+ countries:["مدیریت کشورها","کشورها، حاکمان و وضعیت آن‌ها"],
+ players:["مدیریت بازیکنان","فهرست بازیکنان و اطلاعات آن‌ها"],
+ economy:["اقتصاد و خزانه","بررسی موجودی مالی کشورها"],
+ messages:["مرکز پیام‌رسانی","مدیریت ارتباطات بازی"],
+ resolutions:["مدیریت قطعنامه‌ها","قطعنامه‌های جهان‌ها"],
+ warnings:["مرکز هشدارها","هشدارهای مدیریتی و سیستمی"],
+ events:["رویدادهای بازی","آخرین رویدادهای ثبت‌شده"],
+ logs:["گزارش فعالیت‌ها","سوابق فعالیت‌های سامانه"],
+ admins:["مدیریت مدیران","دسترسی‌های مدیریتی"],
+ settings:["تنظیمات سامانه","مشخصات اتصال و نسخه پنل"]
+};
+
+function navigateTo(page) {
+ if (!pageInfo[page]) return;
+
+ document.querySelectorAll(".page-section").forEach(section => {
+  section.classList.toggle("active", section.id === "page-" + page);
+ });
+
+ document.querySelectorAll(".nav-link").forEach(link => {
+  link.classList.toggle("active", link.dataset.page === page);
+ });
+
+ setText("pageTitle", pageInfo[page][0]);
+ setText("pageSubtitle", pageInfo[page][1]);
+
+ $("sidebar")?.classList.remove("open");
+
+ if (page === "worlds") loadWorlds();
+ if (page === "countries" || page === "players" || page === "economy") loadCountries();
+ if (page === "logs" || page === "events") loadLogs();
+}
+
+document.querySelectorAll(".nav-link").forEach(link => {
+ link.addEventListener("click", () => navigateTo(link.dataset.page));
+});
+
+$("menuToggle")?.addEventListener("click", () => {
+ $("sidebar").classList.toggle("open");
+});
+
+$("refreshButton")?.addEventListener("click", refreshAll);
+
+/* WORLDS */
+
 async function loadWorlds() {
- setTableMessage("worldsTable", "در حال دریافت اطلاعات...", 4);
+ tableMessage("worldsTable", "در حال دریافت اطلاعات...", 4);
 
  const { data, error } = await db
   .from("worlds")
   .select("id,name,description,status,created_at")
-  .order("created_at", { ascending: false });
+  .order("created_at", { ascending:false });
 
  if (error) {
-  setTableMessage("worldsTable", "خطا: " + error.message, 4);
+  tableMessage("worldsTable", "خطا: " + error.message, 4);
   return;
  }
 
  worldsData = data || [];
-
- if (!worldsData.length) {
-  setTableMessage("worldsTable", "هنوز جهانی ثبت نشده است.", 4);
-  return;
- }
-
- $("worldsTable").innerHTML = worldsData.map(world => `
-  <tr>
-   <td><strong>${safe(world.name)}</strong></td>
-   <td><span class="badge blue">${safe(world.status)}</span></td>
-   <td>${safe(world.id)}</td>
-   <td>${safe(dateFormat(world.created_at))}</td>
-  </tr>
- `).join("");
-
+ renderWorlds(worldsData);
  updateStats();
 }
 
+function renderWorlds(items) {
+ const target = $("worldsTable");
+ if (!target) return;
+
+ if (!items.length) {
+  tableMessage("worldsTable", "جهانی ثبت نشده است.", 4);
+  return;
+ }
+
+ target.innerHTML = items.map(w => `
+  <tr>
+   <td><strong>${safe(w.name)}</strong></td>
+   <td>${safe(w.description || "—")}</td>
+   <td><span class="badge ${String(w.status).toLowerCase().includes("active") ? "green" : "blue"}">${safe(w.status)}</span></td>
+   <td>${safe(dateFmt(w.created_at))}</td>
+  </tr>
+ `).join("");
+}
+
+function filterWorlds() {
+ const q = ($("worldSearch")?.value || "").trim().toLowerCase();
+ renderWorlds(worldsData.filter(w =>
+  String(w.name || "").toLowerCase().includes(q) ||
+  String(w.description || "").toLowerCase().includes(q)
+ ));
+}
+
+/* COUNTRIES */
+
 async function loadCountries() {
- setTableMessage("countriesTable", "در حال دریافت اطلاعات...", 5);
- setTableMessage("playersTable", "در حال دریافت اطلاعات...", 4);
+ tableMessage("countriesTable", "در حال دریافت اطلاعات...", 6);
+ tableMessage("playersTable", "در حال دریافت اطلاعات...", 5);
+ tableMessage("economyTable", "در حال دریافت اطلاعات...", 4);
+ tableMessage("dashboardCountries", "در حال دریافت اطلاعات...", 5);
 
  const { data, error } = await db
   .from("countries")
   .select("id,world_id,name,ruler,player_telegram_id,player_telegram_username,balance,is_locked,created_at")
-  .order("created_at", { ascending: false });
+  .order("created_at", { ascending:false });
 
  if (error) {
-  setTableMessage("countriesTable", "خطا: " + error.message, 5);
-  setTableMessage("playersTable", "خطا: " + error.message, 4);
+  tableMessage("countriesTable", "خطا: " + error.message, 6);
+  tableMessage("playersTable", "خطا: " + error.message, 5);
+  tableMessage("economyTable", "خطا: " + error.message, 4);
+  tableMessage("dashboardCountries", "خطا: " + error.message, 5);
   return;
  }
 
@@ -469,7 +659,15 @@ async function loadCountries() {
 
  renderCountries(countriesData);
  renderPlayers(countriesData);
+ renderEconomy(countriesData);
+ renderDashboardCountries(countriesData);
  updateStats();
+}
+
+function countryStatus(c) {
+ return c.is_locked
+  ? '<span class="badge red">قفل‌شده</span>'
+  : '<span class="badge green">فعال</span>';
 }
 
 function renderCountries(items) {
@@ -477,163 +675,238 @@ function renderCountries(items) {
  if (!target) return;
 
  if (!items.length) {
-  setTableMessage("countriesTable", "کشوری ثبت نشده است.", 5);
+  tableMessage("countriesTable", "کشوری پیدا نشد.", 6);
   return;
  }
 
- target.innerHTML = items.map(country => `
+ target.innerHTML = items.map(c => `
   <tr>
-   <td><strong>${safe(country.name)}</strong></td>
-   <td>${safe(country.ruler)}</td>
-   <td>${safe(country.player_telegram_id)}</td>
-   <td>${numberFormat(country.balance)}</td>
-   <td><span class="badge ${country.is_locked ? "red" : "green"}">${country.is_locked ? "قفل‌شده" : "فعال"}</span></td>
+   <td><strong>${safe(c.name)}</strong></td>
+   <td>${safe(c.ruler)}</td>
+   <td>${safe(c.player_telegram_username)}</td>
+   <td>${safe(c.player_telegram_id)}</td>
+   <td>${fmt(c.balance)}</td>
+   <td>${countryStatus(c)}</td>
   </tr>
  `).join("");
+}
+
+function filterCountries() {
+ const q = ($("countrySearch")?.value || "").trim().toLowerCase();
+ const status = $("countryStatusFilter")?.value || "all";
+
+ const filtered = countriesData.filter(c => {
+  const text = [
+   c.name,c.ruler,c.player_telegram_username,c.player_telegram_id
+  ].join(" ").toLowerCase();
+
+  const matchesText = text.includes(q);
+  const matchesStatus = status === "all" ||
+   (status === "locked" ? c.is_locked : !c.is_locked);
+
+  return matchesText && matchesStatus;
+ });
+
+ renderCountries(filtered);
 }
 
 function renderPlayers(items) {
  const target = $("playersTable");
  if (!target) return;
 
- const players = items.filter(item =>
-  item.player_telegram_id || item.player_telegram_username
+ const players = items.filter(c =>
+  c.player_telegram_id || c.player_telegram_username
  );
 
  if (!players.length) {
-  setTableMessage("playersTable", "بازیکنی ثبت نشده است.", 4);
+  tableMessage("playersTable", "بازیکنی ثبت نشده است.", 5);
   return;
  }
 
- target.innerHTML = players.map(country => `
+ target.innerHTML = players.map(c => `
   <tr>
-   <td>${safe(country.player_telegram_username || country.ruler)}</td>
-   <td>${safe(country.player_telegram_id)}</td>
-   <td>${safe(country.name)}</td>
-   <td>${numberFormat(country.balance)}</td>
+   <td>${safe(c.player_telegram_username)}</td>
+   <td>${safe(c.ruler)}</td>
+   <td>${safe(c.name)}</td>
+   <td>${safe(c.player_telegram_id)}</td>
+   <td>${fmt(c.balance)}</td>
   </tr>
  `).join("");
 }
 
-function filterCountries() {
- const query = ($("countrySearch")?.value || "").trim().toLowerCase();
+function filterPlayers() {
+ const q = ($("playerSearch")?.value || "").trim().toLowerCase();
 
- const filtered = countriesData.filter(country =>
-  String(country.name || "").toLowerCase().includes(query) ||
-  String(country.ruler || "").toLowerCase().includes(query) ||
-  String(country.player_telegram_username || "").toLowerCase().includes(query) ||
-  String(country.player_telegram_id || "").includes(query)
- );
-
- renderCountries(filtered);
+ renderPlayers(countriesData.filter(c =>
+  [
+   c.player_telegram_username,c.ruler,c.name,c.player_telegram_id
+  ].join(" ").toLowerCase().includes(q)
+ ));
 }
 
+function renderEconomy(items) {
+ const target = $("economyTable");
+ if (!target) return;
+
+ if (!items.length) {
+  tableMessage("economyTable", "اطلاعاتی وجود ندارد.", 4);
+  return;
+ }
+
+ target.innerHTML = items.map(c => `
+  <tr>
+   <td><strong>${safe(c.name)}</strong></td>
+   <td>${safe(c.ruler)}</td>
+   <td>${fmt(c.balance)}</td>
+   <td>${countryStatus(c)}</td>
+  </tr>
+ `).join("");
+}
+
+function filterEconomy() {
+ const q = ($("economySearch")?.value || "").trim().toLowerCase();
+ renderEconomy(countriesData.filter(c =>
+  String(c.name || "").toLowerCase().includes(q) ||
+  String(c.ruler || "").toLowerCase().includes(q)
+ ));
+}
+
+function renderDashboardCountries(items) {
+ const target = $("dashboardCountries");
+ if (!target) return;
+
+ if (!items.length) {
+  tableMessage("dashboardCountries", "کشوری ثبت نشده است.", 5);
+  return;
+ }
+
+ target.innerHTML = items.slice(0,6).map(c => `
+  <tr>
+   <td><strong>${safe(c.name)}</strong></td>
+   <td>${safe(c.ruler)}</td>
+   <td>${safe(c.player_telegram_id)}</td>
+   <td>${fmt(c.balance)}</td>
+   <td>${countryStatus(c)}</td>
+  </tr>
+ `).join("");
+}
+
+/* ACTIVITY LOGS */
+
 async function loadLogs() {
- setTableMessage("logsList", "در حال دریافت گزارش‌ها...", 1);
+ const targets = ["logsList","eventsList","dashboardActivity"];
+ targets.forEach(id => {
+  if ($(id)) $(id).innerHTML = '<div class="empty-state">در حال دریافت گزارش‌ها...</div>';
+ });
 
  const { data, error } = await db
   .from("activity_logs")
   .select("id,event_type,description,world_name,country_name,player_telegram_username,created_at")
-  .order("created_at", { ascending: false })
+  .order("created_at", { ascending:false })
   .limit(50);
 
  if (error) {
-  $("logsList").innerHTML =
-   `<div class="empty-state">خطا در دریافت گزارش‌ها: ${safe(error.message)}</div>`;
-  $("eventsList").innerHTML =
-   `<div class="empty-state">خطا در دریافت رویدادها: ${safe(error.message)}</div>`;
+  targets.forEach(id => {
+   if ($(id)) $(id).innerHTML =
+    `<div class="empty-state">خطا در دریافت گزارش‌ها: ${safe(error.message)}</div>`;
+  });
   return;
  }
 
  logsData = data || [];
+ renderLogs(logsData);
+}
 
- const html = logsData.length ? logsData.map(log => `
+function renderLogs(items) {
+ const html = items.length ? items.map(log => `
   <div class="activity">
-   <div class="activity-icon">◈</div>
+   <div class="activity-icon">✧</div>
    <div class="activity-content">
     <strong>${safe(log.event_type || "رویداد")}</strong>
     <p>${safe(log.description)}</p>
-    <small>${safe(log.world_name)} · ${safe(log.country_name)} · ${safe(log.player_telegram_username)} · ${safe(dateFormat(log.created_at))}</small>
+    <small>${safe(log.world_name)} · ${safe(log.country_name)} · ${safe(log.player_telegram_username)} · ${safe(dateFmt(log.created_at))}</small>
    </div>
   </div>
- `).join("") : `<div class="empty-state">گزارشی ثبت نشده است.</div>`;
+ `).join("") : '<div class="empty-state">گزارشی ثبت نشده است.</div>';
 
- if ($("logsList")) $("logsList").innerHTML = html;
- if ($("eventsList")) $("eventsList").innerHTML = html;
-}
-
-async function loadTransactions() {
- setTableMessage("transactionsTable", "ساختار جدول تراکنش‌ها هنوز بررسی نشده است؛ برای جلوگیری از نمایش اطلاعات اشتباه، این بخش فعلاً غیرفعال است.", 4);
-}
-
-async function loadMessages() {
- setTableMessage("messagesTable", "ساختار جدول پیام‌ها هنوز بررسی نشده است؛ این بخش پس از بررسی دیتابیس فعال می‌شود.", 2);
-}
-
-function updateStats() {
- const totalCountries = countriesData.length;
- const totalBalance = countriesData.reduce(
-  (sum, country) => sum + Number(country.balance || 0), 0
- );
- const funded = countriesData.filter(
-  country => Number(country.balance || 0) > 0
- ).length;
-
- if ($("totalCountries")) $("totalCountries").textContent = numberFormat(totalCountries);
- if ($("totalBalance")) $("totalBalance").textContent = numberFormat(totalBalance);
- if ($("fundedCountries")) $("fundedCountries").textContent = numberFormat(funded);
- if ($("totalWorlds")) $("totalWorlds").textContent = numberFormat(worldsData.length);
-}
-
-function setupNavigation() {
- const links = document.querySelectorAll("[data-page]");
- const sections = document.querySelectorAll(".page-section");
-
- links.forEach(link => {
-  link.addEventListener("click", event => {
-   event.preventDefault();
-
-   const page = link.dataset.page;
-   sections.forEach(section => {
-    section.classList.toggle("active", section.id === "page-" + page);
-   });
-
-   links.forEach(item => item.classList.toggle("active", item === link));
-
-   const title = link.textContent.trim();
-   if ($("pageTitle")) $("pageTitle").textContent = title;
-  });
+ ["logsList","eventsList","dashboardActivity"].forEach(id => {
+  if ($(id)) $(id).innerHTML = html;
  });
 }
 
+function filterLogs() {
+ const q = ($("logSearch")?.value || "").trim().toLowerCase();
+
+ renderLogs(logsData.filter(log =>
+  [
+   log.event_type,log.description,log.world_name,
+   log.country_name,log.player_telegram_username
+  ].join(" ").toLowerCase().includes(q)
+ ));
+}
+
+/* DASHBOARD STATS */
+
+function updateStats() {
+ const total = countriesData.reduce(
+  (sum,c) => sum + Number(c.balance || 0),0
+ );
+ const players = countriesData.filter(c =>
+  c.player_telegram_id || c.player_telegram_username
+ ).length;
+ const funded = countriesData.filter(c =>
+  Number(c.balance || 0) > 0
+ ).length;
+
+ setText("totalWorlds",fmt(worldsData.length));
+ setText("totalCountries",fmt(countriesData.length));
+ setText("totalPlayers",fmt(players));
+ setText("totalBalance",fmt(total));
+ setText("economyBalance",fmt(total));
+ setText("fundedCountries",fmt(funded));
+}
+
+/* REFRESH */
+
 async function refreshAll() {
- await testConnection();
- await Promise.all([
+ setText("dataBadge","در حال دریافت");
+ setText("dataMessage","در حال خواندن اطلاعات از پایگاه داده...");
+
+ const ok = await testConnection();
+
+ if (!ok) {
+  setText("dataBadge","ناموفق");
+  setText("dataMessage","اتصال یا مجوز خواندن اطلاعات نیازمند بررسی است.");
+  toast("اتصال یا دسترسی دیتابیس با مشکل مواجه شد.");
+  return;
+ }
+
+ const results = await Promise.allSettled([
   loadWorlds(),
   loadCountries(),
   loadLogs()
  ]);
+
+ const failed = results.filter(r => r.status === "rejected").length;
+
+ setText("dataBadge",failed ? "برخی خطاها" : "بروزرسانی شد");
+ setText("dataMessage",failed ? "بعضی بخش‌ها بارگذاری نشدند." : "اطلاعات با موفقیت دریافت شد.");
+ setText("lastUpdated",dateFmt(new Date()));
+
+ toast(failed ? "بروزرسانی با بعضی خطاها انجام شد." : "اطلاعات پنل بروزرسانی شد.");
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
- setupNavigation();
+/* START */
 
- if (typeof window.supabase === "undefined") {
-  setConnection(false, "کتابخانه Supabase بارگذاری نشده است. اتصال اینترنت را بررسی کنید.");
+document.addEventListener("DOMContentLoaded", async () => {
+ if (!window.supabase) {
+  setConnection(false,"کتابخانه Supabase بارگذاری نشده است.");
   return;
  }
 
  await refreshAll();
- loadTransactions();
- loadMessages();
 });
 
-window.loadWorlds = loadWorlds;
-window.loadCountries = loadCountries;
-window.loadLogs = loadLogs;
-window.loadTransactions = loadTransactions;
-window.loadMessages = loadMessages;
-window.filterCountries = filterCountries;
 </script>
 </body>
 </html>
