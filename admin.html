@@ -700,6 +700,43 @@ function updateClock(){
 updateClock();
 setInterval(updateClock,1000);
 </script>
+  
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://hgaliwladnrtfdkwbtzz.supabase.co';
+
+const SUPABASE_KEY = 'sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb';
+
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+window.supabaseClient = db;
+
+async function testConnection() {
+  const { data, error } = await db
+    .from('worlds')
+    .select('id')
+    .limit(1);
+
+  if (error) {
+    console.error('Supabase:', error.message);
+    document.dispatchEvent(new CustomEvent('waa-db-status', {
+      detail: { connected: false, error: error.message }
+    }));
+    return;
+  }
+
+  console.log('WORLD AT ARMS: DATABASE CONNECTED');
+
+  document.dispatchEvent(new CustomEvent('waa-db-status', {
+    detail: { connected: true }
+  }));
+}
+
+testConnection();
+</script>
+ </body>
+  
 </body>
  </html>
  
