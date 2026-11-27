@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="theme-color" content="#090e12">
 <title>WORLD AT ARMS</title>
+
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
@@ -21,7 +22,9 @@
  --gold:#e5bd69;
  --muted:#81939c;
 }
+
 *{box-sizing:border-box}
+
 body{
  margin:0;
  background:var(--bg);
@@ -32,8 +35,10 @@ body{
  radial-gradient(ellipse at 90% 0%,#153a3233,transparent 45%),
  radial-gradient(ellipse at 0% 50%,#15344222,transparent 45%);
 }
+
 button,input,textarea{font-family:inherit}
 button{cursor:pointer}
+
 header{
  padding:19px 17px 15px;
  border-bottom:1px solid var(--line);
@@ -43,185 +48,351 @@ header{
  z-index:5;
  backdrop-filter:blur(15px);
 }
-.topline{display:flex;align-items:center;justify-content:space-between}
+
+.topline{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+}
+
 .brand{display:flex;align-items:center;gap:11px}
+
 .logo{
- width:43px;height:43px;border-radius:13px;
+ width:43px;
+ height:43px;
+ border-radius:13px;
  background:linear-gradient(145deg,#2c775b,#12382d);
- display:grid;place-items:center;font-size:23px;
+ display:grid;
+ place-items:center;
+ font-size:23px;
  border:1px solid #53d9a377;
  box-shadow:0 0 25px #42e0a122;
 }
+
 .brand h1{font-size:16px;margin:0;font-weight:900}
 .brand small{display:block;color:var(--green);font-size:9px;letter-spacing:2px}
+
 .status{
- color:var(--green);font-size:10px;
- border:1px solid #42e0a144;border-radius:30px;
- padding:6px 10px;background:#42e0a111;
+ color:var(--green);
+ font-size:10px;
+ border:1px solid #42e0a144;
+ border-radius:30px;
+ padding:6px 10px;
+ background:#42e0a111;
 }
+
 main{max-width:760px;margin:auto;padding:17px}
+
 .hero{
- position:relative;overflow:hidden;
+ position:relative;
+ overflow:hidden;
  background:linear-gradient(120deg,#172e2a,#111b23 65%,#14232a);
- border:1px solid #31534b;border-radius:22px;
- padding:22px 19px;margin:8px 0 18px;
+ border:1px solid #31534b;
+ border-radius:22px;
+ padding:22px 19px;
+ margin:8px 0 18px;
 }
+
 .hero:after{
- content:"WORLD";position:absolute;left:-10px;bottom:-27px;
- font-size:76px;font-weight:900;color:#ffffff08;
+ content:"WORLD";
+ position:absolute;
+ left:-10px;
+ bottom:-27px;
+ font-size:76px;
+ font-weight:900;
+ color:#ffffff08;
  pointer-events:none;
 }
+
 .eyebrow{color:var(--green);font-size:10px;letter-spacing:2px}
 .hero h2{font-size:24px;margin:9px 0 5px;font-weight:900}
 .hero p{font-size:12px;color:#a8bab9;margin:0;line-height:2}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0 22px}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:9px;
+ margin:16px 0 22px;
+}
+
 .stat{
- background:var(--panel);border:1px solid var(--line);
- border-radius:15px;padding:13px 8px;text-align:center;
+ background:var(--panel);
+ border:1px solid var(--line);
+ border-radius:15px;
+ padding:13px 8px;
+ text-align:center;
 }
-.stat b{font-size:22px;display:block;color:var(--green)}
+
+.stat b{
+ font-size:22px;
+ display:block;
+ color:var(--green);
+}
+
 .stat span{font-size:10px;color:var(--muted)}
+
 .section-head{
- display:flex;align-items:center;
- justify-content:space-between;margin:20px 2px 12px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ margin:20px 2px 12px;
 }
+
 .section-head h3{font-size:15px;margin:0}
 .section-head span{font-size:10px;color:var(--muted)}
+
 .world-card,.country-card{
  background:linear-gradient(140deg,#17232a,#11191f);
- border:1px solid var(--line);border-radius:17px;
- padding:15px;margin-bottom:11px;
+ border:1px solid var(--line);
+ border-radius:17px;
+ padding:15px;
+ margin-bottom:11px;
 }
+
 .world-card{display:flex;align-items:center;gap:13px}
+
 .world-icon{
- width:47px;height:47px;border-radius:13px;
- display:grid;place-items:center;background:#20382f;
- font-size:23px;flex-shrink:0;
+ width:47px;
+ height:47px;
+ border-radius:13px;
+ display:grid;
+ place-items:center;
+ background:#20382f;
+ font-size:23px;
+ flex-shrink:0;
 }
+
 .world-info{flex:1;min-width:0}
 .world-info h4{margin:0 0 4px;font-size:14px}
 .world-info p{margin:0;color:var(--muted);font-size:10px}
 .world-count{color:var(--green);font-size:10px;margin-top:5px}
-.action{
- border:0;border-radius:11px;padding:10px 13px;
- background:var(--green);color:#07150f;
- font-size:11px;font-weight:900;
+
+.action,.gold-action{
+ border:0;
+ border-radius:11px;
+ padding:10px 13px;
+ font-size:11px;
+ font-weight:900;
 }
-.gold-action{
- border:0;border-radius:11px;padding:10px 13px;
- background:var(--gold);color:#211708;
- font-size:11px;font-weight:900;
-}
+
+.action{background:var(--green);color:#07150f}
+.gold-action{background:var(--gold);color:#211708}
+
 .back{
- border:1px solid var(--line);border-radius:10px;
- background:var(--panel2);color:#d8e6e5;padding:9px 13px;
+ border:1px solid var(--line);
+ border-radius:10px;
+ background:var(--panel2);
+ color:#d8e6e5;
+ padding:9px 13px;
  font-size:11px;
 }
+
 .toolbar{display:flex;gap:8px;margin:13px 0}
+
 .search{
- width:100%;min-width:0;background:var(--panel);
- border:1px solid var(--line);border-radius:11px;
- padding:11px;color:white;font:inherit;font-size:12px;outline:none;
+ width:100%;
+ min-width:0;
+ background:var(--panel);
+ border:1px solid var(--line);
+ border-radius:11px;
+ padding:11px;
+ color:white;
+ font:inherit;
+ font-size:12px;
+ outline:none;
 }
+
 .search:focus{border-color:var(--green)}
-.countries{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+
+.countries{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:10px;
+}
+
 .country-card{padding:13px;margin:0;min-width:0}
 .country-top{display:flex;align-items:center;gap:8px}
 .flag{font-size:23px}
 .country-name{font-size:12px;font-weight:800;line-height:1.6}
+
 .country-status{font-size:9px;margin-top:8px;color:var(--green)}
 .country-status.taken{color:var(--red)}
 .country-status.premium{color:var(--gold)}
+
 .country-owner{
- font-size:9px;color:var(--muted);margin-top:4px;
+ font-size:9px;
+ color:var(--muted);
+ margin-top:4px;
  overflow-wrap:anywhere;
 }
+
 .country-card button{width:100%;margin-top:11px}
+
 .country-card button:disabled{
- background:#3a252b;color:#ff8792;cursor:not-allowed;
+ background:#3a252b;
+ color:#ff8792;
+ cursor:not-allowed;
  border:1px solid #713a44;
 }
+
 .empty,.loading,.error{
- background:var(--panel);border:1px solid var(--line);
- border-radius:15px;padding:22px;text-align:center;
- color:var(--muted);font-size:12px;line-height:2;
-}
-.notice{
- background:#392d1822;border:1px solid #b78e3944;
- color:#dfc58d;padding:12px;border-radius:12px;
- font-size:10px;line-height:2;margin:13px 0;
-}
-.hidden{display:none!important}
-footer{
- text-align:center;color:#56666d;font-size:9px;
- padding:30px 10px 20px;letter-spacing:1px;
+ background:var(--panel);
+ border:1px solid var(--line);
+ border-radius:15px;
+ padding:22px;
+ text-align:center;
+ color:var(--muted);
+ font-size:12px;
+ line-height:2;
 }
 
-/* Purchase window */
-.modal{
- position:fixed;inset:0;background:#000c;
- z-index:30;display:flex;align-items:center;
- justify-content:center;padding:15px;
+.notice{
+ background:#392d1822;
+ border:1px solid #b78e3944;
+ color:#dfc58d;
+ padding:12px;
+ border-radius:12px;
+ font-size:10px;
+ line-height:2;
+ margin:13px 0;
 }
+
+.hidden{display:none!important}
+
+footer{
+ text-align:center;
+ color:#56666d;
+ font-size:9px;
+ padding:30px 10px 20px;
+ letter-spacing:1px;
+}
+
+/* Purchase modal */
+
+.modal{
+ position:fixed;
+ inset:0;
+ background:#000c;
+ z-index:30;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:15px;
+}
+
 .modal-box{
- width:100%;max-width:440px;max-height:90vh;
- overflow:auto;background:#111a20;
- border:1px solid #31534b;border-radius:20px;
+ width:100%;
+ max-width:440px;
+ max-height:90vh;
+ overflow:auto;
+ background:#111a20;
+ border:1px solid #31534b;
+ border-radius:20px;
  padding:19px;
  box-shadow:0 15px 70px #0009;
 }
+
 .modal-head{
- display:flex;align-items:center;
- justify-content:space-between;margin-bottom:14px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ margin-bottom:14px;
 }
+
 .modal-head h3{margin:0;font-size:17px}
+
 .close-btn{
- border:1px solid var(--line);background:#17232a;
- color:white;border-radius:9px;padding:7px 11px;
+ border:1px solid var(--line);
+ background:#17232a;
+ color:white;
+ border-radius:9px;
+ padding:7px 11px;
 }
+
 .purchase-price{
- text-align:center;padding:14px;
+ text-align:center;
+ padding:14px;
  border:1px solid #b78e3955;
- background:#392d1822;border-radius:13px;
+ background:#392d1822;
+ border-radius:13px;
  margin-bottom:13px;
 }
-.purchase-price small{display:block;color:var(--muted);font-size:10px}
-.purchase-price strong{display:block;color:var(--gold);font-size:22px;margin-top:4px}
-.bank-info{
- background:#172a27;border:1px solid #42e0a155;
- padding:14px;border-radius:13px;margin:12px 0;
- line-height:2.1;font-size:12px;
+
+.purchase-price small{
+ display:block;
+ color:var(--muted);
+ font-size:10px;
 }
+
+.purchase-price strong{
+ display:block;
+ color:var(--gold);
+ font-size:22px;
+ margin-top:4px;
+}
+
+.bank-info{
+ background:#172a27;
+ border:1px solid #42e0a155;
+ padding:14px;
+ border-radius:13px;
+ margin:12px 0;
+ line-height:2.1;
+ font-size:12px;
+}
+
 .bank-label{font-size:10px;color:var(--muted)}
+
 .card-number{
- direction:ltr;text-align:center;
- font-size:19px;font-weight:900;
- letter-spacing:1px;color:var(--green);
+ direction:ltr;
+ text-align:center;
+ font-size:17px;
+ font-weight:900;
+ letter-spacing:1px;
+ color:var(--green);
  overflow-wrap:anywhere;
 }
+
 .owner-name{text-align:center;font-size:14px;font-weight:800}
 .copy-btn{width:100%;margin-top:10px}
-.form-label{display:block;font-size:11px;margin:13px 0 7px}
-.receipt-input{
- width:100%;min-height:110px;resize:vertical;
- background:#090e12;border:1px solid var(--line);
- border-radius:11px;padding:12px;color:white;
- font:inherit;font-size:12px;outline:none;
+
+.form-label{
+ display:block;
+ font-size:11px;
+ margin:13px 0 7px;
 }
+
+.receipt-input{
+ width:100%;
+ min-height:110px;
+ resize:vertical;
+ background:#090e12;
+ border:1px solid var(--line);
+ border-radius:11px;
+ padding:12px;
+ color:white;
+ font:inherit;
+ font-size:12px;
+ outline:none;
+}
+
 .receipt-input:focus{border-color:var(--green)}
+
 .modal-actions{display:flex;gap:8px;margin-top:12px}
 .modal-actions button{flex:1}
 button:disabled{opacity:.55;cursor:not-allowed}
+
 @media(max-width:390px){
  main{padding:12px}
  .countries{grid-template-columns:1fr}
  .hero h2{font-size:22px}
- .card-number{font-size:17px}
+ .card-number{font-size:15px}
 }
 </style>
 </head>
 
 <body>
+
 <header>
  <div class="topline">
   <div class="brand">
@@ -236,6 +407,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
 </header>
 
 <main>
+
  <section class="hero">
   <div class="eyebrow">COMMAND CENTER • 1936</div>
   <h2>فرماندهی جهان در دستان توست</h2>
@@ -243,9 +415,18 @@ button:disabled{opacity:.55;cursor:not-allowed}
  </section>
 
  <div class="stats">
-  <div class="stat"><b id="worldCount">۰</b><span>جهان فعال</span></div>
-  <div class="stat"><b id="countryCount">۰</b><span>کشور موجود</span></div>
-  <div class="stat"><b id="freeCount">۰</b><span>کشور آزاد</span></div>
+  <div class="stat">
+   <b id="worldCount">۰</b>
+   <span>جهان فعال</span>
+  </div>
+  <div class="stat">
+   <b id="countryCount">۰</b>
+   <span>کشور موجود</span>
+  </div>
+  <div class="stat">
+   <b id="freeCount">۰</b>
+   <span>کشور آزاد</span>
+  </div>
  </div>
 
  <section id="homeView">
@@ -261,22 +442,30 @@ button:disabled{opacity:.55;cursor:not-allowed}
    <h3 id="worldTitle">کشورهای جهان</h3>
    <button class="back" onclick="goHome()">← بازگشت</button>
   </div>
+
   <div id="worldDescription" class="notice hidden"></div>
+
   <div class="toolbar">
    <input id="countrySearch" class="search"
-    placeholder="جستجوی کشور..." oninput="renderCountries()">
+    placeholder="جستجوی کشور..."
+    oninput="renderCountries()">
   </div>
+
   <div id="countryList" class="loading">در حال دریافت کشورها...</div>
+
   <div class="notice">
    هر بازیکن می‌تواند در هر جهان فقط یک کشور انتخاب کند.
    کشورهای ویژه فقط از طریق درخواست خرید قابل دریافت هستند.
   </div>
  </section>
+
 </main>
 
 <!-- Purchase modal -->
+
 <div id="purchaseModal" class="modal hidden">
  <div class="modal-box">
+
   <div class="modal-head">
    <h3>💳 خرید کشور ویژه</h3>
    <button class="close-btn" onclick="closePurchase()">✕</button>
@@ -286,14 +475,16 @@ button:disabled{opacity:.55;cursor:not-allowed}
 
   <div class="purchase-price">
    <small>مبلغ پرداخت</small>
-   <strong id="purchasePrice">۵۰۰٬۰۰۰ تومان</strong>
+   <strong id="purchasePrice">۵۰٬۰۰۰ تومان</strong>
   </div>
 
   <div class="bank-info">
    <div class="bank-label">شماره کارت</div>
-   <div class="card-number">6219 8619 5712 0990</div>
+   <div class="card-number" id="cardNumberDisplay">شماره کارت مورد تأیید صاحب حساب</div>
+
    <div class="bank-label" style="text-align:center;margin-top:9px">به نام</div>
-   <div class="owner-name">احسان طبخی</div>
+   <div class="owner-name" id="cardOwnerDisplay">نام صاحب حساب</div>
+
    <button class="action copy-btn" onclick="copyCard()">
     کپی شماره کارت
    </button>
@@ -302,6 +493,7 @@ button:disabled{opacity:.55;cursor:not-allowed}
   <label class="form-label" for="receiptText">
    متن پیامک واریز بانکی
   </label>
+
   <textarea id="receiptText" class="receipt-input"
    maxlength="1500"
    placeholder="متن پیامک واریز را اینجا وارد کن..."></textarea>
@@ -317,42 +509,75 @@ button:disabled{opacity:.55;cursor:not-allowed}
    <button class="gold-action" id="sendPurchaseBtn"
     onclick="sendPurchase()">ارسال درخواست خرید</button>
   </div>
+
  </div>
 </div>
 
-<footer>WORLD AT ARMS © 2026 • STRATEGIC COMMAND NETWORK</footer>
+<footer>
+ WORLD AT ARMS © 2026 • STRATEGIC COMMAND NETWORK
+</footer>
 
 <script>
 "use strict";
 
+/* =========================
+   CONFIGURATION
+========================= */
+
 const SUPABASE_URL = "https://hgaliwladnrtfdkwbtzz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
 
-const CLAIM_URL = SUPABASE_URL + "/functions/v1/claim-country";
-const PURCHASE_URL = SUPABASE_URL + "/functions/v1/waa-bot";
+const SUPABASE_KEY =
+ "sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
 
-const CARD_NUMBER = "6219861957120990";
+const CLAIM_URL =
+ SUPABASE_URL + "/functions/v1/claim-country";
 
-const tg = window.Telegram?.WebApp;
+const PURCHASE_URL =
+ SUPABASE_URL + "/functions/v1/waa-bot";
+
+/*
+  اطلاعات حساب دریافت وجه را فقط با اجازه صاحب حساب
+  و با نظارت سرپرست در این بخش تنظیم کن.
+*/
+const CARD_NUMBER = "";
+const CARD_OWNER = "";
+
+/* =========================
+   TELEGRAM
+========================= */
+
+const tg = window.Telegram?.WebApp || null;
+
 if(tg){
  tg.ready();
  tg.expand();
 }
 
+/* =========================
+   APP STATE
+========================= */
+
 let worlds = [];
 let countries = [];
+
 let activeWorld = null;
+
 let busy = false;
 let purchaseBusy = false;
+
 let purchaseCountryId = null;
+
+/* =========================
+   BASIC HELPERS
+========================= */
 
 const headers = {
  "apikey": SUPABASE_KEY,
  "Authorization": "Bearer " + SUPABASE_KEY
 };
 
-function fa(n){
- return Number(n || 0).toLocaleString("fa-IR");
+function fa(number){
+ return Number(number || 0).toLocaleString("fa-IR");
 }
 
 function esc(value){
@@ -366,29 +591,48 @@ function esc(value){
 }
 
 function isPremium(country){
- return country.is_premium === true || country.is_locked === true;
+ return country.is_premium === true ||
+        country.is_locked === true;
 }
+
+function getPrice(country){
+ return Number(country.price || 50000);
+}
+
+/* =========================
+   SUPABASE REST API
+========================= */
 
 async function api(path,options={}){
- const res = await fetch(SUPABASE_URL + "/rest/v1/" + path,{
-  ...options,
-  headers:{
-   ...headers,
-   "Content-Type":"application/json",
-   ...(options.headers || {})
+ const response = await fetch(
+  SUPABASE_URL + "/rest/v1/" + path,
+  {
+   ...options,
+   headers:{
+    ...headers,
+    "Content-Type":"application/json",
+    ...(options.headers || {})
+   }
   }
- });
+ );
 
- if(!res.ok){
-  const msg = await res.text();
-  throw new Error(msg || "Database request failed");
+ if(!response.ok){
+  const message = await response.text();
+  throw new Error(message || "Database request failed");
  }
 
- return res.status === 204 ? null : res.json();
+ return response.status === 204
+  ? null
+  : response.json();
 }
+
+/* =========================
+   LOAD WORLDS
+========================= */
 
 async function loadWorlds(){
  const box = document.getElementById("worldList");
+
  box.className = "loading";
  box.textContent = "در حال دریافت جهان‌ها...";
 
@@ -397,15 +641,18 @@ async function loadWorlds(){
    "worlds?select=id,name,description,status,created_at&status=eq.active&order=created_at.desc"
   );
 
-  document.getElementById("worldCount").textContent = fa(worlds.length);
-
-  const all = await api(
+  const allCountries = await api(
    "countries?select=id,world_id,player_telegram_id"
   );
 
-  document.getElementById("countryCount").textContent = fa(all.length);
+  document.getElementById("worldCount").textContent =
+   fa(worlds.length);
+
+  document.getElementById("countryCount").textContent =
+   fa(allCountries.length);
+
   document.getElementById("freeCount").textContent =
-   fa(all.filter(c=>!c.player_telegram_id).length);
+   fa(allCountries.filter(c=>!c.player_telegram_id).length);
 
   if(!worlds.length){
    box.className = "empty";
@@ -415,54 +662,82 @@ async function loadWorlds(){
 
   box.className = "";
 
-  box.innerHTML = worlds.map(w=>{
-   const list = all.filter(c=>c.world_id === w.id);
-   const free = list.filter(c=>!c.player_telegram_id).length;
+  box.innerHTML = worlds.map(world=>{
+   const list = allCountries.filter(
+    c=>c.world_id === world.id
+   );
+
+   const free = list.filter(
+    c=>!c.player_telegram_id
+   ).length;
 
    return `
     <div class="world-card">
      <div class="world-icon">🌍</div>
+
      <div class="world-info">
-      <h4>${esc(w.name)}</h4>
-      <p>${esc(w.description || "سناریوی استراتژیک")}</p>
+      <h4>${esc(world.name)}</h4>
+      <p>${esc(world.description || "سناریوی استراتژیک")}</p>
+
       <div class="world-count">
        ${fa(list.length)} کشور • ${fa(free)} کشور آزاد
       </div>
      </div>
-     <button class="action" onclick="openWorld('${w.id}')">
+
+     <button class="action"
+      onclick="openWorld('${world.id}')">
       ورود ←
      </button>
     </div>
    `;
   }).join("");
 
- }catch(e){
+ }catch(error){
+  console.error("Load worlds:",error);
+
   box.className = "error";
-  box.textContent = "خطا در دریافت اطلاعات جهان‌ها. دسترسی دیتابیس را بررسی کن.";
-  console.error(e);
+  box.textContent =
+   "خطا در دریافت اطلاعات جهان‌ها. دسترسی دیتابیس را بررسی کن.";
  }
 }
 
+/* =========================
+   OPEN WORLD
+========================= */
+
 async function openWorld(id){
- activeWorld = worlds.find(w=>w.id === id);
+ activeWorld = worlds.find(world=>world.id === id);
+
  if(!activeWorld)return;
 
  document.getElementById("homeView").classList.add("hidden");
  document.getElementById("countryView").classList.remove("hidden");
- document.getElementById("worldTitle").textContent = "🌍 " + activeWorld.name;
 
- const desc = document.getElementById("worldDescription");
- desc.textContent = activeWorld.description || "کشور مورد نظر خود را انتخاب کن.";
- desc.classList.remove("hidden");
+ document.getElementById("worldTitle").textContent =
+  "🌍 " + activeWorld.name;
+
+ const description =
+  document.getElementById("worldDescription");
+
+ description.textContent =
+  activeWorld.description || "کشور مورد نظر خود را انتخاب کن.";
+
+ description.classList.remove("hidden");
 
  document.getElementById("countrySearch").value = "";
+
  await loadCountries();
 }
+
+/* =========================
+   LOAD COUNTRIES
+========================= */
 
 async function loadCountries(){
  if(!activeWorld)return;
 
  const box = document.getElementById("countryList");
+
  box.className = "loading";
  box.textContent = "در حال دریافت فهرست کشورها...";
 
@@ -479,24 +754,34 @@ async function loadCountries(){
    "countries?select=id,player_telegram_id"
   );
 
-  document.getElementById("countryCount").textContent = fa(all.length);
+  document.getElementById("countryCount").textContent =
+   fa(all.length);
+
   document.getElementById("freeCount").textContent =
    fa(all.filter(c=>!c.player_telegram_id).length);
 
- }catch(e){
+ }catch(error){
+  console.error("Load countries:",error);
+
   box.className = "error";
-  box.textContent = "خطا در دریافت کشورها. دسترسی SELECT جدول countries را بررسی کن.";
-  console.error(e);
+  box.textContent =
+   "خطا در دریافت کشورها. دسترسی SELECT جدول countries را بررسی کن.";
  }
 }
 
+/* =========================
+   RENDER COUNTRIES
+========================= */
+
 function renderCountries(){
  const box = document.getElementById("countryList");
- const q = (document.getElementById("countrySearch").value || "")
-  .trim().toLowerCase();
 
- const filtered = countries.filter(c=>
-  String(c.name || "").toLowerCase().includes(q)
+ const search = (
+  document.getElementById("countrySearch").value || ""
+ ).trim().toLowerCase();
+
+ const filtered = countries.filter(country=>
+  String(country.name || "").toLowerCase().includes(search)
  );
 
  if(!filtered.length){
@@ -507,31 +792,33 @@ function renderCountries(){
 
  box.className = "countries";
 
- box.innerHTML = filtered.map(c=>{
-  const taken = !!c.player_telegram_id;
-  const premium = isPremium(c);
+ box.innerHTML = filtered.map(country=>{
+  const taken = !!country.player_telegram_id;
+  const premium = isPremium(country);
 
-  const owner = c.player_telegram_username
-   ? "@" + c.player_telegram_username
+  const owner = country.player_telegram_username
+   ? "@" + country.player_telegram_username
    : (taken ? "بازیکن ثبت‌شده" : "");
 
   let button = "";
 
   if(taken){
    button = `
-    <button class="back" disabled>تصاحب شده</button>
+    <button class="back" disabled>
+     تصاحب شده
+    </button>
    `;
   }else if(premium){
    button = `
     <button class="gold-action"
-     onclick="openPurchase('${c.id}')">
+     onclick="openPurchase('${country.id}')">
      💳 خرید کشور ویژه
     </button>
    `;
   }else{
    button = `
     <button class="action"
-     onclick="claimCountry('${c.id}')">
+     onclick="claimCountry('${country.id}')">
      ⚑ انتخاب کشور
     </button>
    `;
@@ -539,26 +826,46 @@ function renderCountries(){
 
   return `
    <article class="country-card">
+
     <div class="country-top">
      <span class="flag">🏳️</span>
-     <span class="country-name">${esc(c.name)}</span>
+     <span class="country-name">${esc(country.name)}</span>
     </div>
 
-    <div class="country-status ${taken?"taken":premium?"premium":""}">
-     ${taken?"● تصاحب‌شده":premium?"● ویژه • نیازمند خرید":"● آزاد"}
+    <div class="country-status ${
+     taken ? "taken" : premium ? "premium" : ""
+    }">
+     ${
+      taken
+       ? "● تصاحب‌شده"
+       : premium
+        ? "● ویژه • نیازمند خرید"
+        : "● آزاد"
+     }
     </div>
 
-    ${taken?`<div class="country-owner">${esc(owner)}</div>`:""}
+    ${
+     taken
+      ? `<div class="country-owner">${esc(owner)}</div>`
+      : ""
+    }
 
-    ${premium && !taken
-      ? `<div class="country-owner">قیمت: ${fa(c.price || 500000)} تومان</div>`
-      : ""}
+    ${
+     premium && !taken
+      ? `<div class="country-owner">قیمت: ${fa(getPrice(country))} تومان</div>`
+      : ""
+    }
 
     ${button}
+
    </article>
   `;
  }).join("");
 }
+
+/* =========================
+   CLAIM NORMAL COUNTRY
+========================= */
 
 async function claimCountry(countryId){
  if(busy)return;
@@ -568,7 +875,9 @@ async function claimCountry(countryId){
   return;
  }
 
- const country = countries.find(c=>c.id === countryId);
+ const country = countries.find(
+  c=>c.id === countryId
+ );
 
  if(!country || country.player_telegram_id)return;
 
@@ -577,17 +886,18 @@ async function claimCountry(countryId){
   return;
  }
 
- const ok = confirm(
-  "آیا مطمئنی می‌خواهی کشور " + country.name +
+ const confirmed = confirm(
+  "آیا مطمئنی می‌خواهی کشور " +
+  country.name +
   " را انتخاب کنی؟ این انتخاب قابل بازگشت نیست."
  );
 
- if(!ok)return;
+ if(!confirmed)return;
 
  busy = true;
 
  try{
-  const res = await fetch(CLAIM_URL,{
+  const response = await fetch(CLAIM_URL,{
    method:"POST",
    headers:{
     "Content-Type":"application/json",
@@ -600,38 +910,57 @@ async function claimCountry(countryId){
    })
   });
 
-  const result = await res.json();
+  const result = await response.json().catch(()=>({}));
 
-  if(!res.ok || !result.success){
-   alert(result.error || "انتخاب کشور انجام نشد. ممکن است قبلاً انتخاب شده باشد.");
-  }else{
-   alert("کشور با موفقیت انتخاب شد! ⚔️");
-   await loadCountries();
-   await loadWorlds();
+  if(!response.ok || result.success !== true){
+   throw new Error(
+    result.error || "انتخاب کشور انجام نشد."
+   );
   }
 
- }catch(e){
-  console.error(e);
-  alert("ارتباط با سرور برقرار نشد.");
+  alert("کشور با موفقیت انتخاب شد! ⚔️");
+
+  await loadCountries();
+  await loadWorlds();
+
+ }catch(error){
+  console.error("Claim country:",error);
+  alert(error.message || "ارتباط با سرور برقرار نشد.");
+
  }finally{
   busy = false;
  }
 }
 
-function openPurchase(id){
- const c = countries.find(x=>x.id === id);
+/* =========================
+   PURCHASE MODAL
+========================= */
 
- if(!c || c.player_telegram_id || !isPremium(c))return;
+function openPurchase(id){
+ const country = countries.find(
+  c=>c.id === id
+ );
+
+ if(!country || country.player_telegram_id || !isPremium(country)){
+  return;
+ }
 
  purchaseCountryId = id;
 
  document.getElementById("purchaseCountryName").textContent =
-  "کشور انتخابی: " + c.name;
+  "کشور انتخابی: " + country.name;
 
  document.getElementById("purchasePrice").textContent =
-  fa(c.price || 500000) + " تومان";
+  fa(getPrice(country)) + " تومان";
 
  document.getElementById("receiptText").value = "";
+
+ document.getElementById("cardNumberDisplay").textContent =
+  CARD_NUMBER || "شماره کارت هنوز تنظیم نشده است";
+
+ document.getElementById("cardOwnerDisplay").textContent =
+  CARD_OWNER || "نام صاحب حساب";
+
  document.getElementById("purchaseModal").classList.remove("hidden");
 }
 
@@ -639,10 +968,20 @@ function closePurchase(){
  if(purchaseBusy)return;
 
  document.getElementById("purchaseModal").classList.add("hidden");
+
  purchaseCountryId = null;
 }
 
+/* =========================
+   COPY CARD
+========================= */
+
 async function copyCard(){
+ if(!CARD_NUMBER){
+  alert("شماره کارت هنوز توسط صاحب حساب تنظیم نشده است.");
+  return;
+ }
+
  try{
   if(navigator.clipboard && window.isSecureContext){
    await navigator.clipboard.writeText(CARD_NUMBER);
@@ -656,10 +995,16 @@ async function copyCard(){
   }
 
   alert("شماره کارت کپی شد.");
- }catch(e){
+
+ }catch(error){
+  console.error("Copy card:",error);
   alert("کپی خودکار ممکن نشد. شماره را دستی کپی کن.");
  }
 }
+
+/* =========================
+   SEND PURCHASE REQUEST
+========================= */
 
 async function sendPurchase(){
  if(purchaseBusy)return;
@@ -674,7 +1019,9 @@ async function sendPurchase(){
   return;
  }
 
- const country = countries.find(c=>c.id === purchaseCountryId);
+ const country = countries.find(
+  c=>c.id === purchaseCountryId
+ );
 
  if(!country || country.player_telegram_id || !isPremium(country)){
   alert("این کشور دیگر برای خرید در دسترس نیست.");
@@ -695,22 +1042,21 @@ async function sendPurchase(){
   return;
  }
 
- const ok = confirm(
-  "درخواست خرید " + country.name +
-  " با مبلغ " + fa(country.price || 500000) +
-  " تومان ارسال شود؟"
- );
+ const price = getPrice(country);
 
- if(!ok)return;
+ if(!confirm(
+  "درخواست خرید " + country.name +
+  " با مبلغ " + fa(price) + " تومان ارسال شود؟"
+ )) return;
 
  purchaseBusy = true;
 
- const btn = document.getElementById("sendPurchaseBtn");
- btn.disabled = true;
- btn.textContent = "در حال ارسال...";
+ const button = document.getElementById("sendPurchaseBtn");
+ button.disabled = true;
+ button.textContent = "در حال ارسال...";
 
  try{
-  const res = await fetch(PURCHASE_URL,{
+  const response = await fetch(PURCHASE_URL,{
    method:"POST",
    headers:{
     "Content-Type":"application/json",
@@ -725,156 +1071,51 @@ async function sendPurchase(){
    })
   });
 
-  const data = await res.json().catch(()=>({}));
+  const responseText = await response.text();
 
-  if(!res.ok || !data.success){
+  let data = {};
+  try{
+   data = JSON.parse(responseText);
+  }catch{
+   throw new Error("پاسخ سرور قابل خواندن نیست.");
+  }
+
+  if(!response.ok || (
+   data.success !== true && data.ok !== true
+  )){
    throw new Error(
-    data.error || "سرور درخواست خرید را نپذیرفت."
+    data.error || data.message ||
+    "خطای سرور: " + response.status
    );
   }
 
-  alert("درخواست خرید با موفقیت ثبت شد و برای مدیر ارسال گردید.");
+  alert("درخواست خرید با موفقیت ارسال شد.");
+
   document.getElementById("purchaseModal").classList.add("hidden");
+  document.getElementById("receiptText").value = "";
   purchaseCountryId = null;
 
- }catch(e){
-  console.error(e);
-  alert(e.message || "ارتباط با سرور برقرار نشد.");
- }finally{
-  purchaseBusy = false;
-  btn.disabled = false;
-  btn.textContent = "ارسال درخواست خرید";
- }
-}
-
-function openPurchase(id){
- const c = countries.find(x=>x.id === id);
-
- if(!c || c.player_telegram_id || !isPremium(c))return;
-
- purchaseCountryId = id;
-
- document.getElementById("purchaseCountryName").textContent =
-  "کشور انتخابی: " + c.name;
-
- document.getElementById("purchasePrice").textContent =
-  fa(c.price || 500000) + " تومان";
-
- document.getElementById("receiptText").value = "";
- document.getElementById("purchaseModal").classList.remove("hidden");
-}
-
-function closePurchase(){
- if(purchaseBusy)return;
-
- document.getElementById("purchaseModal").classList.add("hidden");
- purchaseCountryId = null;
-}
-
-async function copyCard(){
- try{
-  if(navigator.clipboard && window.isSecureContext){
-   await navigator.clipboard.writeText(CARD_NUMBER);
-  }else{
-   const temp = document.createElement("textarea");
-   temp.value = CARD_NUMBER;
-   document.body.appendChild(temp);
-   temp.select();
-   document.execCommand("copy");
-   temp.remove();
-  }
-
-  alert("شماره کارت کپی شد.");
- }catch(e){
-  alert("کپی خودکار ممکن نشد. شماره را دستی کپی کن.");
- }
-}
-
-async function sendPurchase(){
- if(purchaseBusy)return;
-
- if(!tg || !tg.initData){
-  alert("برای ثبت درخواست، بازی را از داخل تلگرام باز کن.");
-  return;
- }
-
- if(!activeWorld || !purchaseCountryId){
-  alert("جهان یا کشور انتخابی مشخص نیست.");
-  return;
- }
-
- const country = countries.find(c=>c.id === purchaseCountryId);
-
- if(!country || country.player_telegram_id || !isPremium(country)){
-  alert("این کشور دیگر برای خرید در دسترس نیست.");
-  closePurchase();
   await loadCountries();
-  return;
- }
+  await loadWorlds();
 
- const receipt = document.getElementById("receiptText").value.trim();
+ }catch(error){
+  console.error("Purchase error:",error);
 
- if(receipt.length < 5){
-  alert("متن پیامک واریز را وارد کن.");
-  return;
- }
+  alert(error instanceof TypeError
+   ? "ارتباط با سرور برقرار نشد. تنظیمات CORS را بررسی می‌کنیم."
+   : error.message
+  );
 
- if(receipt.length > 1500){
-  alert("متن واردشده بیش از حد طولانی است.");
-  return;
- }
-
- const ok = confirm(
-  "درخواست خرید " + country.name +
-  " با مبلغ " + fa(country.price || 500000) +
-  " تومان ارسال شود؟"
- );
-
- if(!ok)return;
-
- purchaseBusy = true;
-
- const btn = document.getElementById("sendPurchaseBtn");
- btn.disabled = true;
- btn.textContent = "در حال ارسال...";
-
- try{
-  const res = await fetch(PURCHASE_URL,{
-   method:"POST",
-   headers:{
-    "Content-Type":"application/json",
-    "apikey":SUPABASE_KEY
-   },
-   body:JSON.stringify({
-    action:"purchase",
-    initData:tg.initData,
-    world_id:activeWorld.id,
-    country_id:purchaseCountryId,
-    receipt_text:receipt
-   })
-  });
-
-  const data = await res.json().catch(()=>({}));
-
-  if(!res.ok || !data.success){
-   throw new Error(
-    data.error || "سرور درخواست خرید را نپذیرفت."
-   );
-  }
-
-  alert("درخواست خرید با موفقیت ثبت شد و برای مدیر ارسال گردید.");
-  document.getElementById("purchaseModal").classList.add("hidden");
-  purchaseCountryId = null;
-
- }catch(e){
-  console.error(e);
-  alert(e.message || "ارتباط با سرور برقرار نشد.");
  }finally{
   purchaseBusy = false;
-  btn.disabled = false;
-  btn.textContent = "ارسال درخواست خرید";
+  button.disabled = false;
+  button.textContent = "ارسال درخواست خرید";
  }
 }
+
+/* =========================
+   NAVIGATION
+========================= */
 
 function goHome(){
  activeWorld = null;
@@ -885,9 +1126,19 @@ function goHome(){
  loadWorlds();
 }
 
-document.getElementById("purchaseModal").addEventListener("click",e=>{
- if(e.target.id === "purchaseModal")closePurchase();
+/* =========================
+   MODAL EVENTS
+========================= */
+
+document.getElementById("purchaseModal").addEventListener("click",event=>{
+ if(event.target.id === "purchaseModal"){
+  closePurchase();
+ }
 });
+
+/* =========================
+   START APPLICATION
+========================= */
 
 loadWorlds();
 
@@ -898,6 +1149,8 @@ setInterval(()=>{
   loadWorlds();
  }
 },10000);
+
 </script>
+
 </body>
 </html>
