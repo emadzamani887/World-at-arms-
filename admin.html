@@ -846,13 +846,42 @@ function renderOrders(){
   عملیات تأیید و رد عمداً غیرفعال است.
 */
 
-async function reviewOrder(id,decision){
- alert(
-  "نمایش سفارش‌ها فعال است؛ اما برای تأیید یا رد امن، "+
-  "باید امضای تابع admin_review_purchase بررسی شود."
- );
-}
 
+async function reviewOrder(id,decision){
+ if(!confirm(
+  decision==="approved"?
+  "از تأیید این سفارش مطمئنی؟":
+  "از رد این سفارش مطمئنی؟"
+ ))return;
+
+ const {data,error}=await db.rpc(
+  "admin_review_purchase",
+  {
+   p_request_id:id,
+   p_decision:decision
+  }
+ );
+
+ if(error){
+  alert("خطا: "+error.message);
+  return;
+ }
+
+ if(data===false){
+  alert("عملیات انجام نشد.");
+  return;
+ }
+
+ alert(
+  decision==="approved"?
+  "سفارش تأیید شد.":
+  "سفارش رد شد."
+ );
+
+ await loadData();
+ await loadOrders();
+ }
+ 
 /* =========================
    SEARCH EVENTS
 ========================= */
