@@ -2,427 +2,753 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WORLD AT ARMS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101610">
+<title>WORLD AT ARMS | 1936</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap');
+
+:root{
+ --bg:#101610;
+ --panel:#192219;
+ --panel2:#202b20;
+ --gold:#d4b36b;
+ --gold2:#f0d99c;
+ --green:#83a76e;
+ --muted:#9ba994;
+ --border:rgba(212,179,107,.22);
+}
+
 *{box-sizing:border-box}
 
 body{
  margin:0;
- min-height:100vh;
- background:#050d1c;
- color:white;
- font-family:Tahoma,Arial,sans-serif;
- overflow-x:hidden;
-}
-
-.background{
- position:fixed;
- inset:0;
- z-index:-2;
- overflow:hidden;
  background:
- radial-gradient(ellipse at 50% 45%,#173b64 0%,transparent 55%),
- radial-gradient(ellipse at 10% 10%,#102b4b 0%,transparent 40%),
- linear-gradient(145deg,#030814,#08182b 55%,#020711);
+ radial-gradient(ellipse at 50% -10%,#34452c 0%,transparent 48%),
+ linear-gradient(180deg,#121a13,#0b100c);
+ color:#e8ebdf;
+ font-family:'Vazirmatn',Tahoma,sans-serif;
+ min-height:100vh;
 }
 
-.background:before{
- content:"";
- position:absolute;
- inset:-50%;
- background-image:
- radial-gradient(2px 2px at 20% 30%,#fff 98%,transparent),
- radial-gradient(1px 1px at 70% 20%,#b5dfff 98%,transparent),
- radial-gradient(2px 2px at 40% 80%,#fff 98%,transparent),
- radial-gradient(1px 1px at 85% 65%,#a7d8ff 98%,transparent),
- radial-gradient(1px 1px at 15% 75%,#fff 98%,transparent);
- background-size:250px 250px;
- animation:stars 90s linear infinite;
- opacity:.8;
+button{font-family:inherit;cursor:pointer}
+button:active{transform:scale(.97)}
+
+.topbar{
+ height:65px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:0 6%;
+ background:rgba(12,18,13,.9);
+ border-bottom:1px solid var(--border);
+ position:relative;
+ z-index:2;
 }
 
-@keyframes stars{
- from{transform:translateY(0)}
- to{transform:translateY(250px)}
+.brand{
+ color:var(--gold);
+ font-weight:900;
+ font-size:19px;
+ letter-spacing:1px;
 }
 
-.glow{
- position:absolute;
- width:450px;
- height:450px;
+.brand small{
+ display:block;
+ font-size:9px;
+ letter-spacing:3px;
+ color:#a5aa91;
+ font-weight:500;
+}
+
+.online{
+ font-size:11px;
+ color:#9bd18c;
+ display:flex;
+ align-items:center;
+ gap:7px;
+}
+
+.dot{
+ width:7px;height:7px;
+ background:#83c77c;
  border-radius:50%;
- filter:blur(100px);
- opacity:.17;
- background:#168cff;
- animation:glow 9s ease-in-out infinite alternate;
+ box-shadow:0 0 12px #83c77c;
 }
 
-.glow.one{top:10%;right:-200px}
-.glow.two{bottom:-200px;left:-180px;background:#00c8ff;animation-delay:2s}
-
-@keyframes glow{
- from{transform:scale(.8);opacity:.1}
- to{transform:scale(1.3);opacity:.25}
+.container{
+ max-width:1100px;
+ margin:auto;
+ padding:22px 16px 50px;
 }
 
-.gridbg{
+.hero{
+ min-height:275px;
+ border:1px solid var(--border);
+ border-radius:18px;
+ overflow:hidden;
+ position:relative;
+ display:flex;
+ align-items:center;
+ background:
+ linear-gradient(90deg,rgba(8,14,9,.96),rgba(8,14,9,.48)),
+ radial-gradient(ellipse at 75% 50%,#647345 0%,#283a29 35%,#111b14 75%);
+}
+
+.hero:before{
+ content:"";
  position:absolute;
  inset:0;
- opacity:.12;
+ opacity:.24;
  background-image:
- linear-gradient(#67baff33 1px,transparent 1px),
- linear-gradient(90deg,#67baff33 1px,transparent 1px);
- background-size:45px 45px;
- mask-image:linear-gradient(to bottom,transparent,#000 30%,#000 80%,transparent);
+ linear-gradient(rgba(220,210,160,.2) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(220,210,160,.2) 1px,transparent 1px);
+ background-size:32px 32px;
+ mask-image:linear-gradient(90deg,transparent,#000);
 }
 
-.orbit{
+.map-art{
  position:absolute;
- width:520px;
- height:520px;
- border:1px solid #5ebaff20;
- border-radius:50%;
- top:50%;
- left:50%;
- transform:translate(-50%,-50%);
- box-shadow:0 0 70px #168cff12,inset 0 0 70px #168cff12;
+ right:26%;
+ top:0;
+ width:70%;
+ height:100%;
+ opacity:.7;
+ pointer-events:none;
 }
 
-.orbit:before,.orbit:after{
- content:"";
- position:absolute;
- inset:35px;
- border:1px solid #69bfff18;
- border-radius:50%;
-}
-.orbit:after{inset:90px}
+.map-art svg{width:100%;height:100%}
 
-header{
- text-align:center;
- padding:65px 15px 25px;
+.hero-content{
  position:relative;
+ z-index:1;
+ padding:30px;
+ max-width:550px;
 }
 
-.logo{
- font-size:clamp(28px,7vw,48px);
- font-weight:900;
- letter-spacing:2px;
- text-shadow:0 0 25px #41aaff99;
-}
-
-.subtitle{
- color:#8cb9e5;
+.kicker{
+ color:var(--gold);
  font-size:11px;
- letter-spacing:4px;
- margin-top:12px;
+ letter-spacing:3px;
+ font-weight:700;
 }
 
-.line{
- width:100px;
- height:2px;
- background:linear-gradient(90deg,transparent,#56baff,transparent);
- margin:23px auto;
+.hero h1{
+ margin:10px 0 4px;
+ font-size:clamp(29px,6vw,48px);
+ line-height:1.4;
+ font-weight:900;
+ color:#f0dfb0;
+ text-shadow:0 3px 20px #000;
 }
 
-main{
- width:min(650px,92%);
- margin:auto;
- padding-bottom:60px;
- position:relative;
+.hero p{
+ color:#c2c9b8;
+ font-size:13px;
+ line-height:2;
+ margin:7px 0 18px;
+}
+
+.hero-line{
+ width:75px;
+ height:3px;
+ background:var(--gold);
+ border-radius:5px;
+}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:12px;
+ margin:18px 0 28px;
+}
+
+.stat{
+ background:linear-gradient(145deg,#202c20,#151e17);
+ border:1px solid var(--border);
+ border-radius:13px;
+ padding:15px;
+ text-align:center;
+}
+
+.stat-icon{font-size:20px}
+.stat-number{
+ font-size:23px;
+ color:var(--gold2);
+ font-weight:900;
+ margin:3px 0;
+}
+.stat-label{font-size:11px;color:var(--muted)}
+
+.section-head{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin:25px 0 14px;
+ gap:10px;
 }
 
 .section-title{
- text-align:center;
- margin:20px 0 25px;
+ font-size:17px;
+ font-weight:800;
+ color:#e5d19b;
+ display:flex;
+ align-items:center;
+ gap:9px;
 }
 
-.section-title h2{
- font-size:21px;
- margin-bottom:9px;
+.section-title:before{
+ content:"";
+ width:4px;
+ height:22px;
+ background:var(--gold);
+ border-radius:5px;
 }
 
-.section-title p{
- font-size:12px;
- color:#88a9ca;
+.section-sub{
+ font-size:10px;
+ color:var(--muted);
 }
 
-.worlds{
+.world-grid{
  display:grid;
- gap:16px;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:15px;
 }
 
 .world-card{
  position:relative;
  overflow:hidden;
- border:1px solid #4b91c455;
- border-radius:17px;
- padding:22px;
- background:linear-gradient(120deg,#102b49dd,#0a1a30ee);
- box-shadow:0 8px 35px #0005, inset 0 0 25px #3a9dff0b;
- transition:.3s;
-}
-
-.world-card:before{
- content:"";
- position:absolute;
- width:180px;
- height:180px;
- border-radius:50%;
- background:#168cff;
- filter:blur(80px);
- opacity:.12;
- left:-90px;
- top:-100px;
+ background:linear-gradient(145deg,#253326,#151f17);
+ border:1px solid var(--border);
+ border-radius:15px;
+ padding:18px;
+ transition:.25s;
 }
 
 .world-card:hover{
  transform:translateY(-4px);
- border-color:#64baff;
- box-shadow:0 12px 40px #168cff30;
+ border-color:#c4a45f;
+ box-shadow:0 12px 30px #0005;
 }
 
-.world-top{
+.world-card:after{
+ content:"";
+ position:absolute;
+ width:140px;
+ height:140px;
+ border-radius:50%;
+ background:#b99b4c0b;
+ top:-70px;
+ left:-50px;
+}
+
+.world-card-top{
  display:flex;
  justify-content:space-between;
  align-items:center;
- gap:10px;
- position:relative;
+ gap:8px;
 }
 
 .world-name{
- font-size:18px;
- font-weight:bold;
+ font-weight:800;
+ font-size:17px;
+ color:#f0dba7;
 }
 
-.status{
- background:#123d36;
- color:#72f1c1;
- border:1px solid #36d8a366;
- border-radius:30px;
- padding:6px 11px;
+.active-label{
  font-size:10px;
+ color:#9dd18e;
+ border:1px solid #61845b;
+ padding:4px 8px;
+ border-radius:20px;
  white-space:nowrap;
 }
 
-.world-description{
- color:#9cb7d4;
+.world-desc{
  font-size:12px;
  line-height:2;
- margin:15px 0;
- position:relative;
+ color:#b3bfae;
+ min-height:45px;
+ margin:13px 0;
 }
 
-.world-bottom{
+.world-meta{
  display:flex;
  align-items:center;
  justify-content:space-between;
- border-top:1px solid #ffffff15;
- padding-top:14px;
- position:relative;
+ border-top:1px solid #ffffff12;
+ padding-top:13px;
+ gap:8px;
 }
 
-.world-count{
+.country-count{
+ color:#c5cbbd;
  font-size:11px;
- color:#82acd2;
 }
 
-.enter{
- border:1px solid #4daeff88;
- color:#fff;
- background:linear-gradient(100deg,#1673bd,#249ee8);
- padding:10px 18px;
- border-radius:9px;
- font-family:inherit;
- font-weight:bold;
- cursor:pointer;
- box-shadow:0 0 18px #168cff35;
+.enter-btn{
+ background:linear-gradient(135deg,#ddc17e,#a88a4b);
+ color:#1b2117;
+ border:0;
+ border-radius:8px;
+ padding:9px 14px;
+ font-size:11px;
+ font-weight:900;
 }
 
-.enter:active{transform:scale(.96)}
+.refresh-btn,.back-btn{
+ background:#29372b;
+ border:1px solid var(--border);
+ color:#e4d5ad;
+ border-radius:8px;
+ padding:9px 13px;
+ font-size:11px;
+}
 
-.empty{
+.loading,.empty{
+ border:1px dashed #647253;
+ background:#1b261d;
+ border-radius:14px;
+ padding:28px 15px;
  text-align:center;
- padding:40px 15px;
- border:1px dashed #47749d66;
- border-radius:16px;
- color:#9bb8d6;
+ color:#b6c1ae;
  font-size:13px;
- line-height:2.5;
- background:#0b1c30aa;
+ line-height:2.2;
+}
+
+.loading:before{
+ content:"";
+ display:block;
+ width:24px;
+ height:24px;
+ border:2px solid #74633c;
+ border-top-color:var(--gold);
+ border-radius:50%;
+ margin:0 auto 12px;
+ animation:spin .8s linear infinite;
+}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.error{
+ border:1px solid #a45b4e;
+ background:#321e1b;
+ color:#ffc0ac;
+ padding:14px;
+ border-radius:10px;
+ font-size:12px;
+ line-height:2;
+ overflow-wrap:anywhere;
 }
 
 #countryPage{display:none}
 
-.back{
- background:#173653;
- border:1px solid #4c83ae66;
- color:#c8e6ff;
- padding:10px 17px;
- border-radius:9px;
- font-family:inherit;
- cursor:pointer;
- margin-bottom:15px;
+.country-header{
+ background:linear-gradient(120deg,#293b2a,#17221a);
+ border:1px solid var(--border);
+ padding:20px;
+ border-radius:14px;
+ margin-bottom:18px;
 }
 
-.country{
- background:#102a46;
- border:1px solid #4b91c455;
+.country-header h2{
+ margin:0 0 8px;
+ color:var(--gold2);
+ font-size:21px;
+}
+
+.country-header p{
+ margin:0;
+ font-size:12px;
+ color:#b6c2b2;
+ line-height:2;
+}
+
+.country-grid{
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:12px;
+}
+
+.country-card{
+ background:linear-gradient(145deg,#263427,#182219);
+ border:1px solid #4b6044;
  border-radius:12px;
  padding:15px;
- margin-bottom:10px;
+}
+
+.country-card-top{
  display:flex;
  align-items:center;
  justify-content:space-between;
- gap:10px;
+ gap:8px;
 }
 
-.country-name{font-size:14px;font-weight:bold}
-.country-ruler{font-size:10px;color:#90b3d2;margin-top:7px}
-.country-state{font-size:10px;color:#80e7bd}
+.country-name{
+ font-weight:800;
+ color:#f0d9a1;
+ font-size:14px;
+}
 
-footer{
- text-align:center;
- color:#557b9f;
+.country-ruler{
+ font-size:11px;
+ color:#aab8a5;
+ margin-top:12px;
+}
+
+.country-status{
  font-size:10px;
- padding:20px;
- letter-spacing:2px;
+ margin-top:9px;
+}
+
+.available{color:#9ed18e}
+.occupied{color:#d8b875}
+
+.back-btn{margin-bottom:15px}
+
+.footer{
+ border-top:1px solid #ffffff13;
+ text-align:center;
+ padding:24px 10px;
+ margin-top:35px;
+ color:#788575;
+ font-size:10px;
+ letter-spacing:1px;
+}
+
+@media(max-width:650px){
+ .topbar{padding:0 15px}
+ .brand{font-size:16px}
+ .container{padding:15px 12px 35px}
+ .hero{min-height:250px}
+ .hero-content{padding:22px}
+ .map-art{right:12%;width:90%;opacity:.48}
+ .stats{gap:7px}
+ .stat{padding:12px 5px}
+ .stat-number{font-size:20px}
+ .world-grid,.country-grid{grid-template-columns:1fr}
+ .section-title{font-size:15px}
 }
 </style>
 </head>
 
 <body>
 
-<div class="background">
- <div class="gridbg"></div>
- <div class="glow one"></div>
- <div class="glow two"></div>
- <div class="orbit"></div>
-</div>
-
-<header>
- <div class="logo">🌍 WORLD AT ARMS</div>
- <div class="subtitle">GLOBAL STRATEGY SIMULATION</div>
- <div class="line"></div>
+<header class="topbar">
+ <div class="brand">
+  ⚔ WORLD AT ARMS
+  <small>GLOBAL STRATEGY SYSTEM</small>
+ </div>
+ <div class="online">
+  <span class="dot"></span>
+  سیستم آنلاین
+ </div>
 </header>
 
-<main>
+<main class="container">
 
-<section id="worldPage">
- <div class="section-title">
-  <h2>انتخاب جهان</h2>
-  <p>جهان موردنظر خود را برای ورود انتخاب کنید</p>
- </div>
- <div class="worlds" id="worldList"></div>
-</section>
+ <section id="worldPage">
 
-<section id="countryPage">
- <button class="back" onclick="backToWorlds()">→ بازگشت به جهان‌ها</button>
- <div class="section-title">
-  <h2 id="selectedWorldName">کشورهای جهان</h2>
-  <p>کشور موردنظر خود را انتخاب کنید</p>
- </div>
- <div id="countryList"></div>
-</section>
+  <div class="hero">
+   <div class="map-art">
+    <svg viewBox="0 0 700 300" preserveAspectRatio="xMidYMid meet">
+     <g fill="#9ba77a" stroke="#d4b36b" stroke-width="1.2">
+      <path d="M75 65 L105 40 150 45 172 62 205 60 225 83 210 103 187 108 176 135 151 151 139 185 115 174 104 144 81 126 67 95Z"/>
+      <path d="M190 171 L220 160 246 178 252 211 235 244 222 281 205 267 198 231 182 205Z"/>
+      <path d="M300 75 L328 54 361 61 372 78 402 72 426 92 410 110 385 114 369 132 342 126 325 109 303 109Z"/>
+      <path d="M346 139 L376 129 403 148 399 183 383 219 361 234 347 206 333 176Z"/>
+      <path d="M410 67 L447 47 496 49 530 67 570 71 601 96 586 119 551 126 535 146 504 139 480 156 454 137 430 120 407 104Z"/>
+      <path d="M550 190 L579 177 610 192 615 218 589 236 560 220Z"/>
+      <path d="M268 53 L279 42 291 49 286 62Z"/>
+     </g>
+     <g fill="none" stroke="#d4b36b" opacity=".55">
+      <circle cx="360" cy="145" r="95" stroke-dasharray="4 8"/>
+      <circle cx="360" cy="145" r="125" stroke-dasharray="2 12"/>
+      <path d="M50 145 H650 M360 15 V280" stroke-dasharray="3 7"/>
+     </g>
+     <g fill="#f2d18a">
+      <circle cx="165" cy="98" r="4"/>
+      <circle cx="360" cy="105" r="4"/>
+      <circle cx="470" cy="100" r="4"/>
+     </g>
+    </svg>
+   </div>
+
+   <div class="hero-content">
+    <div class="kicker">THE YEAR IS 1936</div>
+    <h1>جهان در آستانه جنگ</h1>
+    <div class="hero-line"></div>
+    <p>
+     تاریخ در انتظار فرمان توست.
+     کشور خود را انتخاب کن، قدرت بساز و سرنوشت جهان را تغییر بده.
+    </p>
+   </div>
+  </div>
+
+  <div class="stats">
+   <div class="stat">
+    <div class="stat-icon">🌍</div>
+    <div class="stat-number" id="worldCount">—</div>
+    <div class="stat-label">جهان فعال</div>
+   </div>
+   <div class="stat">
+    <div class="stat-icon">🏳️</div>
+    <div class="stat-number" id="countryCount">—</div>
+    <div class="stat-label">کشور ثبت‌شده</div>
+   </div>
+   <div class="stat">
+    <div class="stat-icon">⚔️</div>
+    <div class="stat-number">1936</div>
+    <div class="stat-label">سال آغاز بازی</div>
+   </div>
+  </div>
+
+  <div class="section-head">
+   <div class="section-title">انتخاب جهان</div>
+   <button class="refresh-btn" onclick="showWorlds()">↻ بروزرسانی</button>
+  </div>
+
+  <div id="worldList" class="loading">
+   در حال برقراری ارتباط با مرکز فرماندهی...
+  </div>
+
+ </section>
+
+ <section id="countryPage">
+
+  <button class="back-btn" onclick="backToWorlds()">
+   ← بازگشت به جهان‌ها
+  </button>
+
+  <div class="country-header">
+   <h2 id="selectedWorldName">نام جهان</h2>
+   <p id="selectedWorldDescription"></p>
+  </div>
+
+  <div class="section-head">
+   <div class="section-title">نقشه سیاسی جهان</div>
+   <div class="section-sub" id="countryTotal"></div>
+  </div>
+
+  <div id="countryList" class="loading">
+   در حال دریافت اطلاعات کشورها...
+  </div>
+
+ </section>
 
 </main>
 
-<footer>
-WORLD AT ARMS • THE WORLD IS YOURS
+<footer class="footer">
+ WORLD AT ARMS · GLOBAL STRATEGY SIMULATION · 1936
 </footer>
 
 <script>
-const KEY="WAA_FINAL_PANEL_2026";
+const SUPABASE_URL =
+ "https://hgaliwladnrtfdkwbtzz.supabase.co";
 
-function getDB(){
- try{
-  return JSON.parse(localStorage.getItem(KEY))||{};
- }catch(e){
-  return {};
- }
-}
+const SUPABASE_KEY =
+ "sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
 
-function showWorlds(){
- const db=getDB();
- const list=document.getElementById("worldList");
- const worlds=(db.worlds||[]).filter(w=>w.status==="active");
+const HEADERS = {
+ apikey: SUPABASE_KEY,
+ Authorization: "Bearer " + SUPABASE_KEY
+};
 
- if(!worlds.length){
-  list.innerHTML=`
-   <div class="empty">
-    <div style="font-size:35px">🌐</div>
-    هنوز جهان فعالی ساخته نشده است.<br>
-    منتظر ایجاد جهان توسط مدیریت باشید.
-   </div>`;
-  return;
- }
+let currentWorld = null;
 
- list.innerHTML=worlds.map(w=>{
-  const count=(db.countries||[]).filter(c=>c.worldId===w.id).length;
-  return `
-   <div class="world-card">
-    <div class="world-top">
-     <div class="world-name">🌍 ${safe(w.name)}</div>
-     <div class="status">● فعال</div>
-    </div>
-    <div class="world-description">
-     ${safe(w.description||"جهان استراتژیک WORLD AT ARMS")}
-    </div>
-    <div class="world-bottom">
-     <span class="world-count">🏳️ ${count} کشور</span>
-     <button class="enter" onclick="openWorld('${safe(w.id)}')">
-      ورود به جهان ←
-     </button>
-    </div>
-   </div>`;
- }).join("");
-}
+async function dbGet(table,query){
+ const response = await fetch(
+  SUPABASE_URL + "/rest/v1/" + table + "?" + query,
+  {headers:HEADERS}
+ );
 
-function openWorld(worldId){
- const db=getDB();
- const world=(db.worlds||[]).find(w=>w.id===worldId&&w.status==="active");
- if(!world)return alert("این جهان دیگر فعال نیست.");
-
- document.getElementById("worldPage").style.display="none";
- document.getElementById("countryPage").style.display="block";
- document.getElementById("selectedWorldName").textContent=world.name;
-
- const countries=(db.countries||[]).filter(c=>c.worldId===worldId);
- const list=document.getElementById("countryList");
-
- if(!countries.length){
-  list.innerHTML='<div class="empty">هنوز کشوری برای این جهان ساخته نشده است.</div>';
-  return;
+ if(!response.ok){
+  const message = await response.text();
+  throw new Error("خطای پایگاه داده: " + response.status + " " + message);
  }
 
- list.innerHTML=countries.map(c=>`
-  <div class="country">
-   <div>
-    <div class="country-name">🏳️ ${safe(c.name)}</div>
-    <div class="country-ruler">فرمانده: ${safe(c.ruler||"تعیین نشده")}</div>
-   </div>
-   <div class="country-state">
-    ${c.playerId?"دارای فرمانده":"آماده انتخاب"}
-   </div>
-  </div>
- `).join("");
-}
-
-function backToWorlds(){
- document.getElementById("countryPage").style.display="none";
- document.getElementById("worldPage").style.display="block";
- showWorlds();
+ return await response.json();
 }
 
 function safe(value){
- return String(value??"").replace(/[&<>"']/g,c=>({
- "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ return String(value ?? "").replace(/[&<>"']/g,c=>({
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
  }[c]));
+}
+
+async function showWorlds(){
+
+ document.getElementById("worldPage").style.display="block";
+ document.getElementById("countryPage").style.display="none";
+
+ const list=document.getElementById("worldList");
+ list.className="loading";
+ list.textContent="در حال دریافت اطلاعات جهان‌ها...";
+
+ try{
+  const worlds=await dbGet(
+   "worlds",
+   "select=id,name,description,status&status=eq.active&order=created_at.desc"
+  );
+
+  document.getElementById("worldCount").textContent=worlds.length;
+
+  let countries=[];
+
+  try{
+   countries=await dbGet(
+    "countries",
+    "select=world_id"
+   );
+  }catch(error){
+   console.warn(error);
+  }
+
+  document.getElementById("countryCount").textContent=countries.length;
+
+  if(!worlds.length){
+   list.className="empty";
+   list.innerHTML=`
+    <div style="font-size:35px">🌐</div>
+    هنوز جهان فعالی ساخته نشده است.
+    <br>
+    منتظر ایجاد جهان توسط مدیریت باشید.
+   `;
+   return;
+  }
+
+  list.className="world-grid";
+
+  list.innerHTML=worlds.map(world=>{
+   const count=countries.filter(
+    c=>c.world_id===world.id
+   ).length;
+
+   return `
+    <article class="world-card">
+     <div class="world-card-top">
+      <div class="world-name">🌍 ${safe(world.name)}</div>
+      <span class="active-label">● فعال</span>
+     </div>
+
+     <div class="world-desc">
+      ${safe(world.description || "جهان استراتژیک WORLD AT ARMS")}
+     </div>
+
+     <div class="world-meta">
+      <span class="country-count">🏳️ ${count} کشور</span>
+      <button class="enter-btn"
+       onclick="openWorld('${safe(world.id)}')">
+       ورود به جهان ←
+      </button>
+     </div>
+    </article>
+   `;
+  }).join("");
+
+ }catch(error){
+  list.className="error";
+  list.innerHTML=`
+   دریافت اطلاعات ناموفق بود.
+   <br>${safe(error.message)}
+  `;
+ }
+}
+
+async function openWorld(worldId){
+
+ const page=document.getElementById("countryPage");
+ const list=document.getElementById("countryList");
+
+ document.getElementById("worldPage").style.display="none";
+ page.style.display="block";
+
+ list.className="loading";
+ list.textContent="در حال دریافت اطلاعات کشورها...";
+
+ try{
+  const worlds=await dbGet(
+   "worlds",
+   "select=id,name,description,status&id=eq."+
+   encodeURIComponent(worldId)+
+   "&status=eq.active"
+  );
+
+  if(!worlds.length){
+   throw new Error("جهان موردنظر فعال نیست یا وجود ندارد.");
+  }
+
+  currentWorld=worlds[0];
+
+  document.getElementById("selectedWorldName").textContent=
+   "🌍 "+currentWorld.name;
+
+  document.getElementById("selectedWorldDescription").textContent=
+   currentWorld.description || "جهان استراتژیک WORLD AT ARMS";
+
+  const countries=await dbGet(
+   "countries",
+   "select=id,name,ruler,player_telegram_id,world_id&world_id=eq."+
+   encodeURIComponent(worldId)+
+   "&order=name.asc"
+  );
+
+  document.getElementById("countryTotal").textContent=
+   countries.length+" کشور";
+
+  if(!countries.length){
+   list.className="empty";
+   list.innerHTML=`
+    <div style="font-size:30px">🏳️</div>
+    هنوز کشوری برای این جهان ساخته نشده است.
+   `;
+   return;
+  }
+
+  list.className="country-grid";
+
+  list.innerHTML=countries.map(country=>{
+   const occupied=Boolean(country.player_telegram_id);
+
+   return `
+    <article class="country-card">
+     <div class="country-card-top">
+      <div class="country-name">🏳️ ${safe(country.name)}</div>
+     </div>
+
+     <div class="country-ruler">
+      👤 فرمانده: ${safe(country.ruler || "تعیین نشده")}
+     </div>
+
+     <div class="country-status ${occupied?"occupied":"available"}">
+      ${occupied?"● دارای فرمانده":"● آماده انتخاب"}
+     </div>
+    </article>
+   `;
+  }).join("");
+
+ }catch(error){
+  list.className="error";
+  list.innerHTML=`
+   دریافت اطلاعات کشورها ناموفق بود.
+   <br>${safe(error.message)}
+  `;
+ }
+}
+
+function backToWorlds(){
+ currentWorld=null;
+ showWorlds();
 }
 
 showWorlds();
 </script>
-<script src="script.js"></script>
+
 </body>
 </html>
