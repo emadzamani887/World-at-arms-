@@ -1,29 +1,35 @@
 
-const tg = window.Telegram.WebApp;
+const tg = window.Telegram?.WebApp;
 
-tg.ready();
-tg.expand();
+tg?.ready();
+tg?.expand();
 
-const user = tg.initDataUnsafe?.user;
-
+const user = tg?.initDataUnsafe?.user;
 const main = document.querySelector("main");
+
+// اتصال به دیتابیس
+const SUPABASE_URL = "https://hgaliwladnrtfdkwbtzz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
+
+let supabaseClient;
+let selectedWorld = null;
 
 const pages = {
     "🌐 کشورها": {
         title: "کشورهای جهان",
-        text: "فهرست ۳۲ کشور بازی در این بخش قرار می‌گیرد."
+        text: "فهرست کشورهای این جهان به‌زودی نمایش داده می‌شود."
     },
     "📜 قطعنامه‌ها": {
         title: "قطعنامه‌ها",
-        text: "در این بخش قطعنامه‌های ثبت‌شده نمایش داده می‌شوند."
+        text: "قطعنامه‌های ثبت‌شده این جهان."
     },
     "🤝 اتحادها": {
         title: "اتحادها",
-        text: "اینجا می‌توانی اتحادهای کشورها را مشاهده کنی."
+        text: "اتحادهای کشورهای این جهان."
     },
     "⚔️ مدیریت جنگ": {
         title: "مدیریت جنگ",
-        text: "وضعیت جنگ‌های فعال بازی در این بخش نمایش داده می‌شود."
+        text: "وضعیت جنگ‌های این جهان."
     },
     "👤 پروفایل": {
         title: "پروفایل فرمانده",
@@ -33,41 +39,190 @@ const pages = {
     }
 };
 
-function showHome() {
+function safe(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[char]);
+}
+
+function loadSupabase() {
+    return new Promise((resolve, reject) => {
+        if (window.supabase?.createClient) {
+            resolve();
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+        script.onload = resolve;
+        script.onerror = () => reject(
+            new Error("بارگذاری کتابخانه Supabase ناموفق بود.")
+        );
+
+        document.head.appendChild(script);
+    });
+}
+
+async function initialize() {
+    if (!main) {
+        throw new Error("بخش اصلی صفحه پیدا نشد.");
+    }
+
+    await loadSupabase();
+
+    supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+    showWorlds();
+}
+
+async function showWorlds() {
     main.innerHTML = `
         <section class="welcome">
-            <h2>به دنیای جنگ خوش آمدید</h2>
-            <p>سیستم مدیریت و فرماندهی</p>
+            <h2>انتخاب جهان</h2>
+            <p>در حال دریافت جهان‌های فعال...</p>
         </section>
+    `;
+
+    const { data, error } = await supabaseClient
+        .from("worlds")
+        .select("id,name,description,status")
+        .eq("status", "active")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        main.innerHTML = `
+            <section class="welcome">
+                <h2>خطا در دریافت جهان‌ها</h2>
+                <p>${safe(error.message)}</p>
+                <button id="refreshWorlds">تلاش مجدد</button>
+            </section>
+        `;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        main.innerHTML = `
+            <section class="welcome">
+                <h2>هیچ جهان فعالی وجود ندارد</h2>
+                <p>منتظر ایجاد جهان جدید توسط مدیریت باشید.</p>
+                <button id="refreshWorlds">بروزرسانی</button>
+            </section>
+        `;
+        return;
+    }
+
+    main.innerHTML = `
+        <section class="welcome">
+            <h2>به WORLD AT ARMS خوش آمدید</h2>
+            <p>جهان موردنظر خود را انتخاب کنید.</p>
+        </section>
+
         <section class="menu">
-            ${Object.keys(pages).map(name =>
-                `<button data-page="${name}">${name}</button>`
-            ).join("")}
+            ${data.map(world => `
+                <button data-world-id="${safe(world.id)}">
+                    🌍 ${safe(world.name)}
+                </button>
+                ${world.description ? `
+                    <p>${safe(world.description)}</p>
+                ` : ""}
+            `).join("")}
+        </section>
+
+        <section class="welcome">
+            <button id="refreshWorlds">🔄 بروزرسانی جهان‌ها</button>
+        </section>
+    `;
+}
+
+function showWorld(world) {
+    selectedWorld = world;
+
+    main.innerHTML = `
+        <section class="welcome">
+            <h2>🌍 ${safe(world.name)}</h2>
+            <p>${safe(world.description || "جهان انتخاب‌شده")}</p>
+            <p>به مرکز فرماندهی خوش آمدید.</p>
+        </section>
+
+        <section class="menu">
+            ${Object.keys(pages).map(name => `
+                <button data-page="${safe(name)}">${safe(name)}</button>
+            `).join("")}
+            <button id="backWorlds">🔙 بازگشت به انتخاب جهان‌ها</button>
         </section>
     `;
 }
 
 function showPage(name) {
     const page = pages[name];
-    if (!page) return;
+    if (!page || !selectedWorld) return;
 
     main.innerHTML = `
         <section class="welcome">
-            <h2>${page.title}</h2>
-            <p>${page.text}</p>
-            <button id="backButton">بازگشت به منوی اصلی</button>
+            <h2>${safe(page.title)}</h2>
+            <p>جهان: ${safe(selectedWorld.name)}</p>
+            <p>${safe(page.text)}</p>
+            <button id="backMenu">بازگشت به منوی جهان</button>
         </section>
     `;
-
-    document.getElementById("backButton")
-        .addEventListener("click", showHome);
 }
 
-main.addEventListener("click", event => {
-    const button = event.target.closest("[data-page]");
-    if (button) showPage(button.dataset.page);
+main?.addEventListener("click", async event => {
+    const worldButton = event.target.closest("[data-world-id]");
+
+    if (worldButton) {
+        const { data, error } = await supabaseClient
+            .from("worlds")
+            .select("id,name,description,status")
+            .eq("id", worldButton.dataset.worldId)
+            .eq("status", "active")
+            .maybeSingle();
+
+        if (error || !data) {
+            showWorlds();
+            return;
+        }
+
+        showWorld(data);
+        return;
+    }
+
+    const pageButton = event.target.closest("[data-page]");
+    if (pageButton) {
+        showPage(pageButton.dataset.page);
+        return;
+    }
+
+    if (
+        event.target.closest("#backWorlds") ||
+        event.target.closest("#refreshWorlds")
+    ) {
+        showWorlds();
+        return;
+    }
+
+    if (event.target.closest("#backMenu")) {
+        showWorld(selectedWorld);
+    }
 });
 
-showHome();
+initialize().catch(error => {
+    if (main) {
+        main.innerHTML = `
+            <section class="welcome">
+                <h2>خطا در اتصال</h2>
+                <p>${safe(error.message)}</p>
+                <button onclick="location.reload()">تلاش مجدد</button>
+            </section>
+        `;
+    }
+});
 
 console.log("WORLD AT ARMS started");
