@@ -4,258 +4,396 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#1c1d18">
+<meta name="theme-color" content="#101d2b">
 <title>WORLD AT ARMS 1936</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/d3-geo@3.1.1/dist/d3-geo.min.js"></script>
-<script src="https://unpkg.com/globe.gl"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap');
-:root{--bg:#1c1d18;--panel:#292a21;--gold:#c6a45c;--light:#e1c782;--text:#eee4ca;--muted:#b9ad8d;--border:#756644;--green:#77bd83;--red:#d87969;--blue:#79a9c8}
+:root{
+ --bg:#101d2b;--panel:#192b3d;--panel2:#20364b;
+ --gold:#e0b75e;--gold2:#f3d48b;--text:#edf3f7;
+ --muted:#a9bac8;--border:#38536a;--green:#73d39a;
+ --red:#e77b75;--blue:#69b9e8;
+}
 *{box-sizing:border-box}
-body{margin:0;padding:14px;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#48432f 0%,transparent 60%),var(--bg);color:var(--text);font-family:Vazirmatn,Tahoma,sans-serif}
-button,input,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}
-.container{max-width:950px;margin:auto}
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 3px 17px;margin-bottom:16px;border-bottom:1px solid var(--border)}
-.logo{font-size:19px;font-weight:900;color:var(--light)}.world-label{font-size:11px;color:var(--muted)}
-.panel{background:linear-gradient(145deg,#363528,#24251e);border:1px solid var(--border);border-radius:13px;padding:17px;margin-bottom:15px;box-shadow:0 8px 25px #0005}
+body{margin:0;padding:13px;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#29465e 0%,transparent 60%),var(--bg);color:var(--text);font-family:Vazirmatn,Tahoma,sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.container{max-width:980px;margin:auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 3px 17px;margin-bottom:15px;border-bottom:1px solid var(--border)}
+.logo{font-size:19px;font-weight:900;color:var(--gold2)}
+.world-label{font-size:10px;color:var(--muted)}
+.panel{background:linear-gradient(145deg,#20364a,#172839);border:1px solid var(--border);border-radius:13px;padding:16px;margin-bottom:14px;box-shadow:0 8px 25px #0004}
 .section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:4px 0 14px}
-.section-title h2,.section-title h3{margin:0;color:var(--light);font-size:17px}
+.section-title h2,.section-title h3{margin:0;color:var(--gold2);font-size:16px}
 .section-title small{color:var(--muted);font-size:10px}
 .page{display:none}.page.active{display:block}.hidden{display:none!important}
-.divider{height:1px;background:var(--border);margin:15px 0}
-.state-box{background:#22231c;border:1px dashed #665739;border-radius:10px;padding:18px;text-align:center;color:var(--muted);font-size:13px;line-height:2}
+.divider{height:1px;background:var(--border);margin:14px 0}
+.state-box{background:#142536;border:1px dashed #45647d;border-radius:10px;padding:18px;text-align:center;color:var(--muted);font-size:13px;line-height:2}
 .state-box.error{color:#ffb5a7;border-color:#98584c}
-.btn{border:1px solid var(--border);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--text);background:#343326}
-.btn-primary{background:linear-gradient(145deg,#827044,#595638);color:#fff0c9;border-color:#b39a5d}
-.btn-gold{background:linear-gradient(145deg,#927744,#6b5733);color:#fff0c9;border-color:#c6a45c}
-.btn-quiet{background:#343326;color:var(--muted)}.btn-danger{background:#633b30;color:#ffe0c8;border-color:#98614a}
+.btn{border:1px solid var(--border);border-radius:8px;padding:9px 13px;font-size:12px;color:var(--text);background:#29445b}
+.btn-primary{background:linear-gradient(145deg,#b28a3e,#80632f);color:#fff3d4;border-color:#e0b75e}
+.btn-gold{background:linear-gradient(145deg,#d0a64f,#8c6b31);color:#fff5d8;border-color:#f0cb78}
+.btn-quiet{background:#20364a;color:var(--muted)}
+.btn-danger{background:#673b40;color:#ffe0dc;border-color:#a65d60}
 .btn-small{padding:6px 9px;font-size:10px}
 .world-list,.countries{display:grid;gap:11px}
-.world-card,.country-card{background:linear-gradient(145deg,#373629,#24251e);border:1px solid #6b5d3d;border-radius:11px;padding:14px}
+.world-card,.country-card{background:linear-gradient(145deg,#263f54,#192d40);border:1px solid #45627a;border-radius:11px;padding:14px}
 .world-card{display:flex;align-items:center;gap:12px}
 .world-symbol{font-size:28px}.world-info{flex:1;min-width:0}
-.world-info h4{margin:0 0 4px;color:#e6d4a5;font-size:15px}
+.world-info h4{margin:0 0 4px;color:var(--gold2);font-size:15px}
 .world-info p{margin:0;color:var(--muted);font-size:11px}
-.world-count{color:#d5c49b;font-size:11px;margin-top:6px}
+.world-count{color:#c7d7e3;font-size:11px;margin-top:6px}
 .toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.search,.field,.receipt{width:100%;background:#202119;color:var(--light);border:1px solid #756644;border-radius:8px;padding:11px;outline:none;font-size:13px}
-.search:focus,.field:focus,.receipt:focus{border-color:var(--light)}
+.search,.field,.receipt{width:100%;background:#122334;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:11px;outline:none;font-size:13px}
+.search:focus,.field:focus,.receipt:focus{border-color:var(--gold)}
 .country-card{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
 .country-title{display:flex;align-items:center;gap:9px}
-.flag{font-size:25px}.country-name{font-weight:800;color:#e6d4a5}
-.country-status{font-size:11px;color:var(--green)}.country-status.taken{color:var(--red)}.country-status.premium{color:var(--light)}
+.flag{width:36px;height:36px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#122334;border:1px solid #718da2;font-size:22px;overflow:hidden}
+.country-name{font-weight:800;color:var(--gold2)}
+.country-status{font-size:11px;color:var(--green)}.country-status.taken{color:var(--red)}.country-status.premium{color:var(--gold2)}
 .country-owner{width:100%;font-size:11px;color:var(--muted)}
-.notice{background:#22231c;border:1px solid #665739;border-radius:9px;padding:12px;color:#d0c29d;font-size:12px;line-height:2;margin-top:12px}
-.management-head{background:radial-gradient(circle at left top,#6a6543 0%,transparent 55%),linear-gradient(120deg,#41402e,#28291f);border:1px solid #a18a53;border-radius:13px;padding:19px;margin-bottom:14px}
+.notice{background:#142536;border:1px solid #38536a;border-radius:9px;padding:11px;color:#c5d3dd;font-size:12px;line-height:2;margin-top:11px}
+.management-head{background:radial-gradient(circle at left top,#3c6680 0%,transparent 58%),linear-gradient(120deg,#294b62,#1a2e40);border:1px solid #66849a;border-radius:13px;padding:18px;margin-bottom:13px}
 .management-top{display:flex;align-items:center;gap:13px}
-.management-flag{width:54px;height:54px;border-radius:50%;background:#202119;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:27px}
-.eyebrow{font-size:10px;color:#c9bd9c;letter-spacing:1px}
-.management-name{color:#f1dba5;font-size:23px;font-weight:900;margin:2px 0}
-.management-sub{font-size:11px;color:#c9bd9c}.owner-status{font-size:11px;color:var(--green);margin-top:7px}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.stat{background:#22231c;border:1px solid #554c35;border-radius:10px;padding:12px;min-width:0}
-.stat-label{font-size:11px;color:var(--muted)}.stat-value{font-size:18px;font-weight:900;color:var(--light);margin-top:5px;overflow-wrap:anywhere}
+.management-flag{width:56px;height:56px;border-radius:50%;background:#142536;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:27px;overflow:hidden}
+.eyebrow{font-size:10px;color:#c4d2dc;letter-spacing:1px}
+.management-name{color:#f5d994;font-size:22px;font-weight:900;margin:2px 0}
+.management-sub{font-size:11px;color:#c4d2dc}
+.owner-status{font-size:11px;color:var(--green);margin-top:7px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.stat{background:#142536;border:1px solid #38536a;border-radius:10px;padding:12px;min-width:0}
+.stat-label{font-size:11px;color:var(--muted)}
+.stat-value{font-size:18px;font-weight:900;color:var(--gold2);margin-top:5px;overflow-wrap:anywhere}
 .stat-value.money{font-size:17px}
-.three-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:11px}
-.mini-stat{background:linear-gradient(145deg,#303126,#22231c);border:1px solid #65583b;border-radius:9px;text-align:center;padding:12px 5px}
-.mini-stat strong{display:block;color:var(--light);font-size:17px}.mini-stat span{font-size:10px;color:var(--muted)}
-.season{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;background:#202119;border:1px solid #514a34;border-radius:9px;padding:11px;margin-top:12px;font-size:11px}
-.season strong{color:var(--light)}
-.hq-card{background:radial-gradient(circle at left top,#6a6543 0%,transparent 55%),linear-gradient(120deg,#41402e,#28291f);border:1px solid #a18a53;border-radius:13px;padding:17px;cursor:pointer;margin-bottom:11px}
-.hq-card h3{margin:0 0 6px;color:#e9d29a;font-size:17px}.hq-card p{margin:0;color:#c9bd9c;font-size:11px}
-.hq-icon{float:left;font-size:25px;color:var(--light)}
-.back-button{background:#343326;color:var(--light);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:13px;font-size:12px}
-.banner{background:linear-gradient(120deg,#4c4933,#292a20);border:1px solid #8d7949;border-radius:12px;padding:17px;margin-bottom:13px}
-.banner h2{margin:0 0 5px;color:var(--light);font-size:19px}.banner p{margin:0;color:var(--muted);font-size:11px}
+.three-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.mini-stat{background:#1b3043;border:1px solid #456078;border-radius:9px;text-align:center;padding:11px 4px}
+.mini-stat strong{display:block;color:var(--gold2);font-size:16px}
+.mini-stat span{font-size:10px;color:var(--muted)}
+.season{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;background:#122334;border:1px solid var(--border);border-radius:9px;padding:11px;margin-top:12px;font-size:11px}
+.season strong{color:var(--gold2)}
+.hq-card{background:linear-gradient(120deg,#294b62,#1a2e40);border:1px solid #66849a;border-radius:12px;padding:16px;cursor:pointer;margin-bottom:10px}
+.hq-card h3{margin:0 0 5px;color:#f1d38f;font-size:16px}
+.hq-card p{margin:0;color:#c4d2dc;font-size:11px}
+.hq-icon{float:left;font-size:25px;color:var(--gold2)}
+.back-button{background:#20364a;color:var(--gold2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:13px;font-size:12px}
+.banner{background:linear-gradient(120deg,#294b62,#1a2e40);border:1px solid #66849a;border-radius:12px;padding:16px;margin-bottom:13px}
+.banner h2{margin:0 0 5px;color:var(--gold2);font-size:18px}
+.banner p{margin:0;color:var(--muted);font-size:11px}
 .tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:13px 0}
-.tab{background:#292a21;color:#c9bd9c;border:1px solid #62573b;border-radius:9px;padding:11px 5px;font-size:12px}
-.tab.active{background:#756541;color:#fff0c5;border-color:var(--light)}
-.unit-grid,.ammo-grid{display:grid;grid-template-columns:1fr;gap:11px}
-.unit-card,.ammo-card{background:linear-gradient(145deg,#373629,#24251e);border:1px solid #6b5d3d;border-radius:11px;padding:14px;box-shadow:0 4px 12px #0003}
-.unit-name,.ammo-name{color:#e6d4a5;font-size:15px;font-weight:800;margin-bottom:10px}
-.unit-info,.ammo-info{background:#202119;border:1px solid #4d4935;border-radius:8px;padding:10px;color:#c6b998;font-size:11px;line-height:2.1}
-.unit-info b,.ammo-info b{color:var(--light)}
-.order-button,.ammo-order{width:100%;margin-top:10px;padding:10px;background:linear-gradient(145deg,#827044,#595638);color:#fff0c9;border:1px solid #b39a5d;border-radius:8px;font-size:12px}
-.stock-line{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #49442f;padding:5px 0;font-size:11px}
-.stock-line:last-child{border:0}.stock-line strong{color:var(--light)}
-.queue-title{color:var(--light);font-size:15px;font-weight:800;margin-top:19px}
-.queue-card{background:#25261f;border:1px solid #665739;border-radius:9px;padding:12px;margin-top:9px;font-size:11px;line-height:2}
-.queue-card strong{color:var(--light)}.queue-actions{display:flex;justify-content:flex-end;margin-top:8px}
-.empty-queue{text-align:center;color:var(--muted);background:#22231c;border:1px dashed #665739;padding:16px;border-radius:9px;font-size:12px;margin-top:9px}
-.locked{text-align:center;padding:24px 15px;background:#22231c;border:1px solid #756644;border-radius:10px;color:var(--muted);line-height:2}
-.locked strong{display:block;color:var(--light);font-size:16px}
+.tab{background:#1b3043;color:#c5d3dd;border:1px solid #456078;border-radius:9px;padding:11px 5px;font-size:12px}
+.tab.active{background:#80632f;color:#fff3d4;border-color:var(--gold)}
+.unit-grid,.ammo-grid,.building-grid{display:grid;grid-template-columns:1fr;gap:10px}
+.unit-card,.ammo-card,.building-card{background:linear-gradient(145deg,#263f54,#192d40);border:1px solid #45627a;border-radius:11px;padding:13px}
+.unit-name,.ammo-name,.building-name{color:var(--gold2);font-size:15px;font-weight:800;margin-bottom:9px}
+.unit-info,.ammo-info,.building-info{background:#142536;border:1px solid #38536a;border-radius:8px;padding:10px;color:#c5d3dd;font-size:11px;line-height:2}
+.unit-info b,.ammo-info b,.building-info b{color:var(--gold2)}
+.order-button,.ammo-order{width:100%;margin-top:9px;padding:10px;background:linear-gradient(145deg,#b28a3e,#80632f);color:#fff3d4;border:1px solid var(--gold);border-radius:8px;font-size:12px}
+.queue-title{color:var(--gold2);font-size:15px;font-weight:800;margin-top:17px}
+.queue-card{background:#142536;border:1px solid #456078;border-radius:9px;padding:12px;margin-top:9px;font-size:11px;line-height:2}
+.queue-card strong{color:var(--gold2)}
+.queue-actions{display:flex;justify-content:flex-end;margin-top:8px}
+.empty-queue{text-align:center;color:var(--muted);background:#142536;border:1px dashed #456078;padding:15px;border-radius:9px;font-size:12px;margin-top:9px}
+.locked{text-align:center;padding:23px 14px;background:#142536;border:1px solid #456078;border-radius:10px;color:var(--muted);line-height:2}
+.locked strong{display:block;color:var(--gold2);font-size:16px}
+.resource-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:15px}
+.resource-card{aspect-ratio:1.55;background:linear-gradient(145deg,#29465d,#172b3d);border:1px solid #54738b;border-radius:11px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.resource-card span{font-size:11px;color:var(--muted)}
+.resource-card strong{font-size:19px;color:var(--gold2);overflow-wrap:anywhere}
+.resource-card small{font-size:10px;color:#9eb4c4}
+.building-category{margin:15px 0 9px;color:var(--gold2);font-size:14px;font-weight:800}
+.building-info{margin-bottom:8px}
+.building-card .btn{width:100%;margin-top:8px}
+.building-card .building-tag{display:inline-block;font-size:10px;color:var(--green);margin-bottom:6px}
 .modal{display:none;position:fixed;inset:0;z-index:1000;background:#000b;align-items:center;justify-content:center;padding:14px}
-.modal.show{display:flex}.modal-box{width:100%;max-width:440px;max-height:90vh;overflow-y:auto;background:linear-gradient(145deg,#363528,#24251e);border:1px solid #a18a53;border-radius:14px;padding:17px;box-shadow:0 15px 50px #0009}
-.modal-title{color:var(--light);font-size:18px;font-weight:900;margin-bottom:13px}
-.modal-info{background:#202119;border:1px solid #554c35;border-radius:9px;padding:11px;color:#d0c29d;font-size:11px;line-height:2}
+.modal.show{display:flex}
+.modal-box{width:100%;max-width:440px;max-height:90vh;overflow-y:auto;background:linear-gradient(145deg,#20364a,#172839);border:1px solid #66849a;border-radius:14px;padding:17px}
+.modal-title{color:var(--gold2);font-size:18px;font-weight:900;margin-bottom:13px}
+.modal-info{background:#142536;border:1px solid #38536a;border-radius:9px;padding:11px;color:#c5d3dd;font-size:11px;line-height:2}
 .quantity-label,.form-label{display:block;color:var(--muted);font-size:12px;margin:14px 0 7px}
-.quantity-input{width:100%;background:#202119;color:var(--light);border:1px solid #756644;border-radius:8px;padding:12px;font-size:16px;outline:none}
-.calculation{background:#202119;border:1px solid #554c35;border-radius:9px;padding:11px;margin-top:12px;font-size:11px;line-height:2.1;color:#c6b998}
-.calculation strong{color:var(--light)}.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
+.quantity-input{width:100%;background:#122334;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:16px}
+.calculation{background:#142536;border:1px solid #38536a;border-radius:9px;padding:11px;margin-top:12px;font-size:11px;line-height:2.1;color:#c5d3dd}
+.calculation strong{color:var(--gold2)}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
 .confirm-button,.close-button{padding:11px;border-radius:8px;font-size:12px}
-.confirm-button{background:linear-gradient(145deg,#827044,#595638);color:#fff0c9;border:1px solid #b39a5d}
-.close-button{background:#343326;color:var(--muted);border:1px solid #62573b}
+.confirm-button{background:linear-gradient(145deg,#b28a3e,#80632f);color:#fff3d4;border:1px solid var(--gold)}
+.close-button{background:#29445b;color:var(--muted);border:1px solid var(--border)}
 .receipt{min-height:100px;resize:vertical}
-footer{text-align:center;color:#857b62;font-size:10px;padding:20px 5px 8px}
-#mapPage{display:none;position:fixed;inset:0;z-index:3000;background:#3b82b6;color:#eee4ca;flex-direction:column;height:100vh;height:100dvh;width:100%;overflow:hidden}
-#mapPage.active{display:flex}
-.map-header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;background:#183c59;border-bottom:1px solid #6da6cc;flex-shrink:0;z-index:2}
-.map-title{font-size:15px;font-weight:900;color:#fff0c9}.map-subtitle{font-size:10px;color:#d4e9f5}
-#mapClose{background:#285777;color:#fff;border:1px solid #91bad3;border-radius:8px;padding:8px 13px;white-space:nowrap}
-#globeContainer{flex:1;min-height:0;min-width:0;width:100%;height:100%;position:relative;background:#3b82b6;overflow:hidden}
-#globeContainer canvas{display:block;width:100%;height:100%}
-.map-footer{padding:9px;background:#183c59;border-top:1px solid #6da6cc;flex-shrink:0;z-index:2}
-#mapStatus{text-align:center;font-size:10px;color:#e4f2fa;line-height:1.7}
-#mapCountryInfo{display:none!important}
-.map-open-btn{width:100%;margin-bottom:12px;padding:12px;background:linear-gradient(145deg,#827044,#595638);color:#fff0c9;border:1px solid #b39a5d;border-radius:9px;font-size:12px;font-weight:800}
-@media(min-width:650px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.unit-grid,.ammo-grid,.countries{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:420px){body{padding:10px}.panel{padding:13px}.management-name{font-size:20px}.stat-value{font-size:16px}.world-card{flex-wrap:wrap}.world-card .btn{width:100%}.map-header{padding:9px}.map-footer{padding:7px}}
+footer{text-align:center;color:#7890a2;font-size:10px;padding:20px 5px 8px}
+@media(min-width:650px){
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .unit-grid,.ammo-grid,.building-grid,.countries{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .resource-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:420px){
+ body{padding:9px}.panel{padding:12px}
+ .management-name{font-size:19px}
+ .stat-value{font-size:16px}
+ .world-card{flex-wrap:wrap}
+ .world-card .btn{width:100%}
+}
 </style>
 </head>
 <body>
 <div class="container">
-<header class="topbar"><div class="logo">WORLD AT ARMS</div><div class="world-label">WORLD OF NATIONS • 1936</div></header>
+<header class="topbar">
+ <div class="logo">WORLD AT ARMS</div>
+ <div class="world-label">WORLD OF NATIONS • 1936</div>
+</header>
 
-<section id="loadingPage" class="page active"><div class="panel"><div class="state-box">در حال اتصال به مرکز فرماندهی...</div></div></section>
+<section id="loadingPage" class="page active">
+ <div class="panel"><div class="state-box">در حال اتصال به مرکز فرماندهی...</div></div>
+</section>
 
 <section id="worldPage" class="page">
-<div class="panel">
-<div class="section-title"><h2>🌍 انتخاب جهان</h2><small>WORLD SELECTION</small></div>
-<div id="worldList" class="state-box">در حال دریافت جهان‌ها...</div>
-</div></section>
+ <div class="panel">
+  <div class="section-title"><h2>🌍 انتخاب جهان</h2><small>WORLD SELECTION</small></div>
+  <div id="worldList" class="state-box">در حال دریافت جهان‌ها...</div>
+ </div>
+</section>
 
 <section id="countryPage" class="page">
-<div class="panel">
-<div class="section-title"><h2 id="worldTitle">کشورهای جهان</h2><button id="backWorld" class="btn btn-quiet">بازگشت</button></div>
-<div id="worldDescription" class="notice hidden"></div>
-<button class="map-open-btn" id="openMapCountries">🌍 مشاهده نقشه جهان</button>
-<div class="toolbar"><input id="countrySearch" class="search" type="search" placeholder="جستجوی کشور..."><button id="refreshCountries" class="btn btn-quiet">↻</button></div>
-<div id="countryList" class="state-box">در حال دریافت کشورها...</div>
-<div class="notice">هر بازیکن در هر جهان فقط می‌تواند یک کشور داشته باشد. مالکیت کشور در سرور بررسی و ثبت می‌شود.</div>
-</div></section>
+ <div class="panel">
+  <div class="section-title">
+   <h2 id="worldTitle">کشورهای جهان</h2>
+   <button id="backWorld" class="btn btn-quiet">بازگشت</button>
+  </div>
+  <div id="worldDescription" class="notice hidden"></div>
+  <div class="toolbar">
+   <input id="countrySearch" class="search" type="search" placeholder="جستجوی کشور...">
+   <button id="refreshCountries" class="btn btn-quiet">↻</button>
+  </div>
+  <div id="countryList" class="state-box">در حال دریافت کشورها...</div>
+  <div class="notice">هر بازیکن در هر جهان فقط می‌تواند یک کشور داشته باشد.</div>
+ </div>
+</section>
 
 <section id="managementPage" class="page">
-<div class="management-head"><div class="management-top">
-<div class="management-flag" id="countryFlag">🏳️</div>
-<div><div class="eyebrow">NATIONAL COMMAND CENTER</div><div class="management-name" id="countryName">کشور شما</div><div class="management-sub" id="countryWorld">جهان شما</div><div class="owner-status">● مالکیت کشور تأیید شده</div></div>
-</div></div>
-<button class="map-open-btn" id="openMapManagement">🌍 مشاهده نقشه جهان</button>
-<div class="panel">
-<div class="section-title"><h3>وضعیت کشور</h3><small id="politicalSystem">نظام سیاسی</small></div>
-<div class="stats">
-<div class="stat"><div class="stat-label">موجودی خزانه</div><div class="stat-value money" id="balance">$0</div></div>
-<div class="stat"><div class="stat-label">درآمد روزانه</div><div class="stat-value money" id="dailyIncome">$0</div></div>
-<div class="stat"><div class="stat-label">آهن</div><div class="stat-value" id="iron">0</div></div>
-<div class="stat"><div class="stat-label">نفت</div><div class="stat-value" id="oil">0</div></div>
-</div>
-<div class="three-stats">
-<div class="mini-stat"><strong id="manpower">0</strong><span>نیروی انسانی</span></div>
-<div class="mini-stat"><strong id="electricity">0</strong><span>برق</span></div>
-<div class="mini-stat"><strong id="armyPower">0</strong><span>قدرت نظامی</span></div>
-</div>
-<div class="season"><span>فصل جاری: <strong id="season">بهار</strong></span><span>زمان باقی‌مانده: <strong id="seasonTimer">--:--:--</strong></span></div>
-<div class="divider"></div>
-<div class="stock-line"><span>اورانیوم</span><strong id="uranium">0</strong></div>
-<div class="stock-line"><span>فرمانروا</span><strong id="ruler">—</strong></div>
-<div class="notice" id="countryNotice">اطلاعات کشور از پایگاه داده دریافت می‌شود.</div>
-</div>
-<div class="hq-card" id="openHQ"><div class="hq-icon">⚙️</div><h3>ستاد کل فرماندهی</h3><p>مدیریت نیروهای هوایی، زرهی، دریایی و پشتیبانی</p></div>
-<div class="hq-card" id="openArsenal"><div class="hq-icon">⚒️</div><h3>زرادخانه</h3><p>مدیریت ذخایر و سفارش‌های تولید</p></div>
-<div class="toolbar"><button class="btn btn-quiet" id="refreshState">↻ به‌روزرسانی اطلاعات کشور</button></div>
+ <div class="management-head">
+  <div class="management-top">
+   <div class="management-flag" id="countryFlag">🏳️</div>
+   <div>
+    <div class="eyebrow">NATIONAL COMMAND CENTER</div>
+    <div class="management-name" id="countryName">کشور شما</div>
+    <div class="management-sub" id="countryWorld">جهان شما</div>
+    <div class="owner-status">● مالکیت کشور تأیید شده</div>
+   </div>
+  </div>
+ </div>
+
+ <div class="panel">
+  <div class="section-title"><h3>وضعیت کشور</h3><small id="politicalSystem">نظام سیاسی</small></div>
+  <div class="stats">
+   <div class="stat"><div class="stat-label">موجودی خزانه</div><div class="stat-value money" id="balance">$0</div></div>
+   <div class="stat"><div class="stat-label">درآمد روزانه</div><div class="stat-value money" id="dailyIncome">$0</div></div>
+  </div>
+  <div class="three-stats">
+   <div class="mini-stat"><strong id="manpower">0</strong><span>نیروی انسانی</span></div>
+   <div class="mini-stat"><strong id="armyPower">0</strong><span>قدرت نظامی</span></div>
+   <div class="mini-stat"><strong id="season">بهار</strong><span>فصل جاری</span></div>
+  </div>
+  <div class="season">
+   <span>زمان باقی‌مانده فصل: <strong id="seasonTimer">--:--:--</strong></span>
+   <span>مدت فصل: <strong>۱۸ ساعت</strong></span>
+  </div>
+  <div class="divider"></div>
+  <div class="stock-line"><span>فرمانروا</span><strong id="ruler">—</strong></div>
+ </div>
+
+ <div class="panel">
+  <div class="section-title"><h3>صف ساخت زیرساخت</h3><small>CONSTRUCTION</small></div>
+  <div id="constructionQueue" class="empty-queue">هنوز پروژه‌ای در حال ساخت نیست.</div>
+ </div>
+
+ <div class="hq-card" id="openInfrastructure">
+  <div class="hq-icon">🏗️</div>
+  <h3>زیرساخت کشور</h3>
+  <p>مدیریت منابع، ساختمان‌ها، برق و تولید غذا</p>
+ </div>
+ <div class="hq-card" id="openHQ">
+  <div class="hq-icon">⚙️</div>
+  <h3>ستاد کل فرماندهی</h3>
+  <p>مدیریت نیروهای هوایی، زرهی، دریایی و پشتیبانی</p>
+ </div>
+ <div class="hq-card" id="openArsenal">
+  <div class="hq-icon">⚒️</div>
+  <h3>زرادخانه</h3>
+  <p>مدیریت ذخایر و سفارش‌های تولید</p>
+ </div>
+ <div class="toolbar">
+  <button class="btn btn-quiet" id="refreshState">↻ به‌روزرسانی اطلاعات کشور</button>
+ </div>
+</section>
+
+<section id="infrastructurePage" class="page">
+ <div class="banner"><h2>زیرساخت کشور</h2><p id="infraSubtitle">مدیریت توسعه و منابع ملی</p></div>
+ <button class="back-button" id="backInfrastructure">← بازگشت به مدیریت کشور</button>
+ <div class="panel">
+  <div class="section-title"><h3>منابع کشور</h3><small>RESOURCES</small></div>
+  <div class="resource-grid">
+   <div class="resource-card"><span>☢️ اورانیوم</span><strong id="infraUranium">۰</strong><small>موجودی</small></div>
+   <div class="resource-card"><span>⛓️ آهن</span><strong id="infraIron">۰</strong><small>موجودی</small></div>
+   <div class="resource-card"><span>🛢️ نفت</span><strong id="infraOil">۰</strong><small>موجودی</small></div>
+   <div class="resource-card"><span>🌾 غذا</span><strong id="infraFood">۰</strong><small id="infraFoodIncome">درآمد روزانه: ۰</small></div>
+  </div>
+  <div class="resource-grid">
+   <div class="resource-card"><span>⚡ برق</span><strong id="infraElectricity">۰</strong><small>ظرفیت موجود</small></div>
+   <div class="resource-card"><span>💰 خزانه</span><strong id="infraBalance">۰</strong><small>موجودی مالی</small></div>
+  </div>
+ </div>
+
+ <div class="panel">
+  <div class="section-title"><h3>ساختمان‌های کشور</h3><small>BUILDINGS</small></div>
+  <div class="tabs">
+   <button class="tab active" data-infra-category="military">نظامی</button>
+   <button class="tab" data-infra-category="electricity">برق</button>
+   <button class="tab" data-infra-category="food">غذا</button>
+   <button class="tab" data-infra-category="nuclear">هسته‌ای</button>
+  </div>
+  <div id="buildingList" class="building-grid"></div>
+ </div>
 </section>
 
 <section id="hqPage" class="page">
-<div class="banner"><h2>ستاد کل فرماندهی</h2><p id="hqSubtitle">فرماندهی نیروهای کشور</p></div>
-<button class="back-button" id="backHQ">← بازگشت به مدیریت کشور</button>
-<div class="tabs">
-<button class="tab active" data-unit-category="air">نیروی هوایی</button>
-<button class="tab" data-unit-category="armor">نیروی زرهی</button>
-<button class="tab" data-unit-category="navy">نیروی دریایی</button>
-<button class="tab" data-unit-category="support">پشتیبانی دوربرد</button>
-</div>
-<div id="unitList" class="unit-grid"></div><div class="notice" id="categoryInfo">واحدهای کشور</div>
+ <div class="banner"><h2>ستاد کل فرماندهی</h2><p id="hqSubtitle">فرماندهی نیروهای کشور</p></div>
+ <button class="back-button" id="backHQ">← بازگشت به مدیریت کشور</button>
+ <div class="tabs">
+  <button class="tab active" data-unit-category="air">نیروی هوایی</button>
+  <button class="tab" data-unit-category="armor">نیروی زرهی</button>
+  <button class="tab" data-unit-category="navy">نیروی دریایی</button>
+  <button class="tab" data-unit-category="support">پشتیبانی دوربرد</button>
+ </div>
+ <div id="unitList" class="unit-grid"></div>
+ <div class="notice" id="categoryInfo">واحدهای کشور</div>
 </section>
 
 <section id="arsenalPage" class="page">
-<div class="banner"><h2>زرادخانه کشور</h2><p id="arsenalSubtitle">مرکز ذخایر و سفارش تولید</p></div>
-<button class="back-button" id="backArsenal">← بازگشت به مدیریت کشور</button>
-<div class="tabs">
-<button class="tab active" data-ammo-category="air">مهمات هوایی</button>
-<button class="tab" data-ammo-category="ground">مهمات زمینی</button>
-<button class="tab" data-ammo-category="navy">مهمات دریایی</button>
-<button class="tab" data-ammo-category="nuclear">هسته‌ای</button>
+ <div class="banner"><h2>زرادخانه کشور</h2><p id="arsenalSubtitle">مرکز ذخایر و سفارش تولید</p></div>
+ <button class="back-button" id="backArsenal">← بازگشت به مدیریت کشور</button>
+ <div class="tabs">
+  <button class="tab active" data-ammo-category="air">مهمات هوایی</button>
+  <button class="tab" data-ammo-category="ground">مهمات زمینی</button>
+  <button class="tab" data-ammo-category="navy">مهمات دریایی</button>
+  <button class="tab" data-ammo-category="nuclear">هسته‌ای</button>
+ </div>
+ <div id="arsenalList" class="ammo-grid"></div>
+ <div class="queue-title">صف سفارش‌های تولید</div>
+ <div id="orderQueue"></div>
+</section>
+
+<div class="modal" id="orderModal">
+ <div class="modal-box">
+  <div class="modal-title" id="modalTitle">ثبت سفارش تولید</div>
+  <div class="modal-info" id="modalInfo"></div>
+  <label class="quantity-label" for="packageCount">تعداد بسته‌های موردنظر</label>
+  <input class="quantity-input" id="packageCount" type="number" min="1" max="1000" value="1">
+  <div class="calculation" id="calculation"></div>
+  <div class="modal-actions">
+   <button class="confirm-button" id="confirmOrder">تأیید سفارش</button>
+   <button class="close-button" id="closeOrder">انصراف</button>
+  </div>
+ </div>
 </div>
-<div id="arsenalList" class="ammo-grid"></div><div class="queue-title">صف سفارش‌های تولید</div><div id="orderQueue"></div>
-</section>
 
-<div class="modal" id="orderModal"><div class="modal-box">
-<div class="modal-title" id="modalTitle">ثبت سفارش تولید</div><div class="modal-info" id="modalInfo"></div>
-<label class="quantity-label" for="packageCount">تعداد بسته‌های موردنظر</label>
-<input class="quantity-input" id="packageCount" type="number" min="1" max="1000" value="1">
-<div class="calculation" id="calculation"></div>
-<div class="modal-actions"><button class="confirm-button" id="confirmOrder">تأیید سفارش</button><button class="close-button" id="closeOrder">انصراف</button></div>
-</div></div>
+<div class="modal" id="purchaseModal">
+ <div class="modal-box">
+  <div class="modal-title">💳 درخواست کشور ویژه</div>
+  <div class="modal-info" id="purchaseCountryName"></div>
+  <div class="notice">اطلاعات محرمانه بانکی، رمز کارت، CVV2 یا رمز پویا را وارد نکن.</div>
+  <label class="form-label" for="receiptText">توضیح درخواست</label>
+  <textarea class="receipt" id="receiptText" maxlength="1500" placeholder="توضیحات خود را بنویس..."></textarea>
+  <div class="modal-actions">
+   <button class="close-button" id="closePurchase">انصراف</button>
+   <button class="confirm-button" id="sendPurchase">ارسال درخواست</button>
+  </div>
+ </div>
+</div>
 
-<div class="modal" id="purchaseModal"><div class="modal-box">
-<div class="modal-title">💳 درخواست کشور ویژه</div><div class="modal-info" id="purchaseCountryName"></div>
-<div class="notice">اطلاعات محرمانه بانکی، رمز کارت، CVV2 یا رمز پویا را وارد نکن. فقط توضیحات درخواست را ثبت کن.</div>
-<label class="form-label" for="receiptText">توضیح درخواست</label><textarea class="receipt" id="receiptText" maxlength="1500" placeholder="توضیحات خود را بنویس..."></textarea>
-<div class="modal-actions"><button class="close-button" id="closePurchase">انصراف</button><button class="confirm-button" id="sendPurchase">ارسال درخواست</button></div>
-</div></div>
-
-<section id="mapPage">
-<div class="map-header"><div><div class="map-title">🌍 نقشه جهان</div><div class="map-subtitle" id="mapWorldName">نقشه تاریخی ۱۹۳۸</div></div><button id="mapClose">✕ بستن</button></div>
-<div id="globeContainer"></div><div class="map-footer"><div id="mapStatus">در حال آماده‌سازی نقشه...</div></div>
-</section>
 <footer>WORLD AT ARMS © 2026 • STRATEGIC COMMAND NETWORK</footer>
 </div>
 
 <script>
 "use strict";
 
-/* تنظیمات اتصال */
+/* اتصال */
 const SUPABASE_URL="https://hgaliwladnrtfdkwbtzz.supabase.co";
 const SUPABASE_KEY="sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
 const CLAIM_URL=`${SUPABASE_URL}/functions/v1/dynamic-action`;
 const PURCHASE_URL=`${SUPABASE_URL}/functions/v1/dynamic-task`;
 const COMMAND_URL=`${SUPABASE_URL}/functions/v1/country-command`;
+const INFRA_URL=`${SUPABASE_URL}/functions/v1/infrastructure-command`;
+
 const tg=window.Telegram?.WebApp??null;
 if(tg){tg.ready();tg.expand();}
 
 const state={
  player:null,worlds:[],countries:[],activeWorld:null,myCountry:null,snapshot:null,
  currentView:"loadingPage",currentUnitCategory:"air",currentAmmoCategory:"air",
- currentItem:null,purchaseCountryId:null,claiming:false,purchasing:false,
- commanding:false,refreshing:false
+ currentInfraCategory:"military",currentItem:null,purchaseCountryId:null,
+ claiming:false,purchasing:false,commanding:false,refreshing:false,
+ infraData:null,infraBusy:false
 };
-const $=id=>document.getElementById(id);
-const fa=value=>Number(value||0).toLocaleString("fa-IR");
-const money=value=>"$"+Number(value||0).toLocaleString("en-US");
-function escapeHTML(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function errorMessage(error){if(error instanceof TypeError)return "ارتباط با سرور برقرار نشد. اینترنت یا دسترسی تابع را بررسی کن.";return error?.message||"خطای نامشخص رخ داد.";}
-function setBox(id,message,error=false){const box=$(id);box.className=`state-box${error?" error":""}`;box.textContent=message;}
-function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));state.currentView=id;window.scrollTo({top:0,behavior:"smooth"});}
 
-async function readResponse(response){
- const raw=await response.text();let data=null;
- try{data=raw?JSON.parse(raw):null;}catch{}
- if(!response.ok)throw new Error(data?.error||data?.message||raw||`HTTP ${response.status}`);
+const $=id=>document.getElementById(id);
+const fa=v=>Number(v||0).toLocaleString("fa-IR");
+const money=v=>"$"+Number(v||0).toLocaleString("en-US");
+function escapeHTML(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function errorMessage(e){
+ if(e instanceof TypeError)return "ارتباط با سرور برقرار نشد. اینترنت یا دسترسی تابع را بررسی کن.";
+ return e?.message||"خطای نامشخص رخ داد.";
+}
+function setBox(id,msg,error=false){
+ const el=$(id);el.className=`state-box${error?" error":""}`;el.textContent=msg;
+}
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
+ state.currentView=id;window.scrollTo({top:0,behavior:"smooth"});
+}
+async function readResponse(r){
+ const raw=await r.text();let data=null;
+ try{data=raw?JSON.parse(raw):null}catch{}
+ if(!r.ok)throw new Error(data?.error||data?.message||raw||`HTTP ${r.status}`);
  return data;
 }
 async function dbGet(path){
- const r=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,Accept:"application/json"},cache:"no-store"});
+ const r=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{
+  headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,Accept:"application/json"},
+  cache:"no-store"
+ });
  return readResponse(r);
 }
 async function postFunction(url,payload){
- const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json",apikey:SUPABASE_KEY},body:JSON.stringify(payload)});
+ const r=await fetch(url,{
+  method:"POST",
+  headers:{"Content-Type":"application/json",apikey:SUPABASE_KEY},
+  body:JSON.stringify(payload)
+ });
  return readResponse(r);
 }
 async function countryCommand(action,extra={}){
- if(!tg?.initData)throw new Error("اطلاعات ورود تلگرام در دسترس نیست. مینی‌اپ را دوباره باز کن.");
+ if(!tg?.initData)throw new Error("اطلاعات ورود تلگرام در دسترس نیست.");
  if(!state.myCountry?.id)throw new Error("کشور انتخاب‌شده مشخص نیست.");
- const result=await postFunction(COMMAND_URL,{initData:tg.initData,action,country_id:state.myCountry.id,...extra});
+ const result=await postFunction(COMMAND_URL,{
+  initData:tg.initData,action,country_id:state.myCountry.id,...extra
+ });
  if(result?.success!==true)throw new Error(result?.error||"عملیات توسط سرور تأیید نشد.");
+ return result;
+}
+async function infrastructureCommand(action,buildingKey=null){
+ if(!tg?.initData)throw new Error("اطلاعات ورود تلگرام در دسترس نیست.");
+ if(!state.myCountry?.id)throw new Error("کشور انتخاب‌شده مشخص نیست.");
+ const result=await postFunction(INFRA_URL,{
+  initData:tg.initData,
+  action,
+  country_id:state.myCountry.id,
+  building_key:buildingKey
+ });
+ if(result?.success!==true)throw new Error(result?.error||"عملیات زیرساختی توسط سرور تأیید نشد.");
+ state.infraData=result;
+ if(result.country)state.snapshot={...(state.snapshot||{}),country:{...(state.snapshot?.country||{}),...result.country}};
  return result;
 }
 async function findMyCountry(){
@@ -269,10 +407,11 @@ async function openManagement(country){
  $("countryName").textContent=country.name||"کشور شما";
  $("countryFlag").textContent=country.flag_emoji||"🏳️";
  $("countryWorld").textContent="در حال دریافت اطلاعات جهان...";
- $("countryNotice").textContent="در حال دریافت اطلاعات کشور...";
  try{await refreshCountryState();}
- catch(e){console.error(e);$("countryNotice").textContent="دریافت اطلاعات ناموفق بود: "+errorMessage(e);}
+ catch(e){console.error(e);$("countryWorld").textContent="دریافت اطلاعات ناموفق بود: "+errorMessage(e);}
 }
+
+/* دریافت اطلاعات کشور */
 async function refreshCountryState(){
  if(state.commanding)return;
  state.commanding=true;
@@ -280,20 +419,28 @@ async function refreshCountryState(){
   const result=await countryCommand("state");
   state.snapshot=result;
   if(result.country)state.myCountry={...state.myCountry,...result.country};
-  renderManagement();renderUnits(state.currentUnitCategory);renderArsenal(state.currentAmmoCategory);renderQueue();
+  renderManagement();
+  renderUnits(state.currentUnitCategory);
+  renderArsenal(state.currentAmmoCategory);
+  renderQueue();
+  if(state.currentView==="infrastructurePage")await refreshInfrastructureState();
  }finally{state.commanding=false;}
 }
 function renderManagement(){
  const d=state.snapshot?.country;if(!d)return;
- $("countryName").textContent=d.name||"کشور شما";$("countryFlag").textContent=d.flag_emoji||"🏳️";
- $("countryWorld").textContent=d.world_name||"جهان شما";$("politicalSystem").textContent=d.political_system||"نامشخص";
- $("balance").textContent=money(d.balance);$("dailyIncome").textContent=money(d.daily_income);
- $("iron").textContent=fa(d.iron);$("oil").textContent=fa(d.oil);$("uranium").textContent=fa(d.uranium);
- $("manpower").textContent=fa(d.manpower);$("electricity").textContent=fa(d.electricity);$("armyPower").textContent=fa(d.army_power);
- $("season").textContent=d.season||"نامشخص";$("ruler").textContent=d.ruler||state.player?.first_name||"—";
+ $("countryName").textContent=d.name||"کشور شما";
+ $("countryFlag").textContent=d.flag_emoji||"🏳️";
+ $("countryWorld").textContent=d.world_name||"جهان شما";
+ $("politicalSystem").textContent=d.political_system||"نامشخص";
+ $("balance").textContent=money(d.balance);
+ $("dailyIncome").textContent=money(d.daily_income);
+ $("manpower").textContent=fa(d.manpower);
+ $("armyPower").textContent=fa(d.army_power);
+ $("season").textContent=d.season||"نامشخص";
+ $("ruler").textContent=d.ruler||state.player?.first_name||"—";
  $("hqSubtitle").textContent=`فرماندهی نیروهای مسلح • ${d.name}`;
  $("arsenalSubtitle").textContent=`ذخایر و سفارش‌های تولید • ${d.name}`;
- $("countryNotice").textContent="اطلاعات کشور از پایگاه داده اصلی دریافت می‌شود و تغییرات سفارش‌ها در سرور ثبت می‌شود.";
+ $("infraSubtitle").textContent=`توسعه زیرساخت‌های ${d.name}`;
 }
 
 /* جهان‌ها */
@@ -311,7 +458,11 @@ function renderWorlds(rows=[]){
  box.innerHTML=state.worlds.map(w=>{
   const list=rows.filter(c=>String(c.world_id)===String(w.id));
   const free=list.filter(c=>!c.player_telegram_id).length;
-  return `<article class="world-card"><div class="world-symbol">🌍</div><div class="world-info"><h4>${escapeHTML(w.name)}</h4><p>${escapeHTML(w.description||"سناریوی استراتژیک")}</p><div class="world-count">${fa(list.length)} کشور • ${fa(free)} کشور آزاد</div></div><button class="btn btn-primary" data-world="${escapeHTML(w.id)}">ورود ←</button></article>`;
+  return `<article class="world-card">
+   <div class="world-symbol">🌍</div>
+   <div class="world-info"><h4>${escapeHTML(w.name)}</h4><p>${escapeHTML(w.description||"سناریوی استراتژیک")}</p><div class="world-count">${fa(list.length)} کشور • ${fa(free)} کشور آزاد</div></div>
+   <button class="btn btn-primary" data-world="${escapeHTML(w.id)}">ورود ←</button>
+  </article>`;
  }).join("");
  box.querySelectorAll("[data-world]").forEach(b=>b.addEventListener("click",()=>openWorld(b.dataset.world)));
 }
@@ -346,7 +497,13 @@ function renderCountries(){
   let status="● آزاد",cls="",action=`<button class="btn btn-primary" data-claim="${escapeHTML(c.id)}">⚑ انتخاب کشور</button>`;
   if(taken){status="● تصاحب‌شده";cls="taken";action=`<button class="btn btn-quiet" disabled>در اختیار بازیکن</button>`;}
   else if(premium){status="● ویژه";cls="premium";action=`<button class="btn btn-gold" data-purchase="${escapeHTML(c.id)}">درخواست کشور ویژه</button>`;}
-  return `<article class="country-card"><div class="country-title"><span class="flag">${escapeHTML(c.flag_emoji||"🏳️")}</span><span class="country-name">${escapeHTML(c.name)}</span></div><div class="country-status ${cls}">${status}</div>${taken&&c.player_telegram_username?`<div class="country-owner">@${escapeHTML(c.player_telegram_username)}</div>`:""}${premium&&!taken?`<div class="country-owner">قیمت: ${fa(c.price||0)} تومان</div>`:""}${action}</article>`;
+  return `<article class="country-card">
+   <div class="country-title"><span class="flag">${escapeHTML(c.flag_emoji||"🏳️")}</span><span class="country-name">${escapeHTML(c.name)}</span></div>
+   <div class="country-status ${cls}">${status}</div>
+   ${taken&&c.player_telegram_username?`<div class="country-owner">@${escapeHTML(c.player_telegram_username)}</div>`:""}
+   ${premium&&!taken?`<div class="country-owner">قیمت: ${fa(c.price||0)} تومان</div>`:""}
+   ${action}
+  </article>`;
  }).join("");
  box.querySelectorAll("[data-claim]").forEach(b=>b.addEventListener("click",()=>claimCountry(b.dataset.claim)));
  box.querySelectorAll("[data-purchase]").forEach(b=>b.addEventListener("click",()=>openPurchase(b.dataset.purchase)));
@@ -362,8 +519,9 @@ async function claimCountry(id){
   const result=await postFunction(CLAIM_URL,{initData:tg?.initData,world_id:state.activeWorld.id,country_id:id});
   if(result?.success!==true)throw new Error(result?.error||"سرور انتخاب کشور را تأیید نکرد.");
   const mine=await findMyCountry();
-  if(!mine)throw new Error("کشور ثبت شد، اما اطلاعات مالکیت هنوز دریافت نشده است. بازی را دوباره باز کن.");
-  alert("کشور با موفقیت انتخاب شد!");await openManagement(mine);
+  if(!mine)throw new Error("کشور ثبت شد، اما اطلاعات مالکیت هنوز دریافت نشده است.");
+  alert("کشور با موفقیت انتخاب شد!");
+  await openManagement(mine);
  }catch(e){console.error(e);alert("انتخاب کشور انجام نشد:\n"+errorMessage(e));}
  finally{state.claiming=false;}
 }
@@ -372,10 +530,14 @@ async function claimCountry(id){
 function openPurchase(id){
  const c=state.countries.find(x=>String(x.id)===String(id));
  if(!c||isTaken(c)||!isPremium(c))return;
- state.purchaseCountryId=id;$("purchaseCountryName").textContent=`کشور انتخابی: ${c.name} | مبلغ: ${fa(c.price||0)} تومان`;
+ state.purchaseCountryId=id;
+ $("purchaseCountryName").textContent=`کشور انتخابی: ${c.name} | مبلغ: ${fa(c.price||0)} تومان`;
  $("receiptText").value="";$("purchaseModal").classList.add("show");
 }
-function closePurchase(){if(state.purchasing)return;$("purchaseModal").classList.remove("show");state.purchaseCountryId=null;}
+function closePurchase(){
+ if(state.purchasing)return;
+ $("purchaseModal").classList.remove("show");state.purchaseCountryId=null;
+}
 async function sendPurchase(){
  if(state.purchasing)return;
  const c=state.countries.find(x=>String(x.id)===String(state.purchaseCountryId));
@@ -386,12 +548,131 @@ async function sendPurchase(){
  try{
   const r=await postFunction(PURCHASE_URL,{action:"purchase",initData:tg?.initData,world_id:state.activeWorld.id,country_id:state.purchaseCountryId,receipt_text:receipt});
   if(r?.success!==true&&r?.ok!==true)throw new Error(r?.error||"ثبت درخواست ناموفق بود.");
-  alert("درخواست با موفقیت ثبت شد.");$("purchaseModal").classList.remove("show");state.purchaseCountryId=null;await loadCountries();
+  alert("درخواست با موفقیت ثبت شد.");
+  $("purchaseModal").classList.remove("show");state.purchaseCountryId=null;await loadCountries();
  }catch(e){console.error(e);alert("ثبت درخواست انجام نشد:\n"+errorMessage(e));}
  finally{state.purchasing=false;$("sendPurchase").disabled=false;$("sendPurchase").textContent="ارسال درخواست";}
 }
 
-/* داده‌های واحدهای بازی */
+/* زیرساخت‌ها */
+const buildingCatalog={
+ military:[
+  {key:"barracks",name:"پادگان",price:1500000,power:6,time:1200,desc:"زیرساخت آموزشی نیروهای زمینی"},
+  {key:"armored_factory",name:"کارخانه زرهی",price:2000000,power:7,time:1200,desc:"زیرساخت تولید تجهیزات زرهی"},
+  {key:"airfield",name:"پایگاه هوایی",price:1700000,power:7,time:1200,desc:"زیرساخت پشتیبانی نیروی هوایی"},
+  {key:"aviation_industry",name:"صنایع هواپیمایی",price:2000000,power:5,time:1200,desc:"زیرساخت تولید تجهیزات هوایی"},
+  {key:"port",name:"بندر",price:1000000,power:6,time:1200,desc:"زیرساخت پشتیبانی دریایی"},
+  {key:"shipyard",name:"کارخانه کشتی‌سازی",price:1300000,power:4,time:1200,desc:"زیرساخت ساخت شناورهای بازی"},
+  {key:"missile_factory",name:"کارخانه موشکی",price:3000000,power:10,time:1200,desc:"زیرساخت پشتیبانی دوربرد در بازی"},
+  {key:"missile_depot",name:"انبار موشکی",price:2500000,power:8,time:1200,desc:"زیرساخت ذخیره تجهیزات پشتیبانی"}
+ ],
+ electricity:[
+  {key:"coal_power_plant",name:"نیروگاه زغال‌سنگ",price:500000,power:0,effect:30,time:900,desc:"افزایش ۳۰ واحد ظرفیت برق"},
+  {key:"gas_power_plant",name:"نیروگاه گازی",price:1000000,power:0,effect:45,time:900,desc:"افزایش ۴۵ واحد ظرفیت برق"},
+  {key:"wind_power_plant",name:"نیروگاه بادی",price:800000,power:0,effect:40,time:900,desc:"افزایش ۴۰ واحد ظرفیت برق"},
+  {key:"nuclear_reactor",name:"نیروگاه هسته‌ای",price:3000000,power:0,effect:100,time:3600,desc:"افزایش ۱۰۰ واحد برق؛ مصرف روزانه اورانیوم طبق قوانین بازی"}
+ ],
+ food:[
+  {key:"agriculture",name:"مزارع کشاورزی",price:1500000,power:3,effect:10000,time:1500,desc:"افزایش ۱۰٬۰۰۰ غذا در روز"},
+  {key:"greenhouse",name:"گلخانه صنعتی",price:2000000,power:5,effect:16000,time:1500,desc:"افزایش ۱۶٬۰۰۰ غذا در روز"}
+ ],
+ nuclear:[
+  {key:"enrichment_center",name:"مرکز پژوهش هسته‌ای",price:5000000,power:0,effect:500,time:3600,desc:"مصرف روزانه منابع طبق قوانین بازی و بازکردن دسترسی پژوهشی هسته‌ای"}
+ ]
+};
+const infraCategoryNames={military:"ساختمان‌های نظامی",electricity:"تأسیسات برق",food:"تأسیسات غذایی",nuclear:"بخش پژوهش هسته‌ای"};
+
+function getInfraRows(){
+ return state.infraData?.infrastructure||state.infraData?.buildings||[];
+}
+function getBuildingCount(key){
+ const row=getInfraRows().find(x=>x.building_key===key);
+ return Number(row?.quantity||0);
+}
+function hasBuilding(key){return getBuildingCount(key)>0;}
+function refreshInfrastructureResources(){
+ const c=state.infraData?.country||state.snapshot?.country||{};
+ $("infraUranium").textContent=fa(c.uranium);
+ $("infraIron").textContent=fa(c.iron);
+ $("infraOil").textContent=fa(c.oil);
+ $("infraFood").textContent=fa(c.food);
+ $("infraFoodIncome").textContent="درآمد روزانه: "+fa(c.daily_food_income);
+ $("infraElectricity").textContent=fa(c.electricity);
+ $("infraBalance").textContent=money(c.balance);
+}
+function renderConstructionQueue(){
+ const orders=state.infraData?.orders||state.infraData?.construction_orders||[];
+ const box=$("constructionQueue");
+ const active=orders.filter(o=>!["completed","cancelled"].includes(o.status));
+ if(!active.length){
+  box.className="empty-queue";box.textContent="هنوز پروژه‌ای در حال ساخت نیست.";return;
+ }
+ box.className="";
+ box.innerHTML=active.map(o=>{
+  const end=new Date(o.completes_at).getTime();
+  const remaining=Number.isFinite(end)?Math.max(0,Math.ceil((end-Date.now())/1000)):0;
+  const status=o.status==="queued"?"در صف ساخت":"در حال ساخت";
+  return `<article class="queue-card">
+   <strong>${escapeHTML(o.building_name||o.item_name||"پروژه زیرساختی")}</strong><br>
+   وضعیت: <strong>${status}</strong><br>
+   هزینه: ${money(o.price)}<br>
+   زمان باقی‌مانده: <strong>${formatDuration(remaining)}</strong>
+  </article>`;
+ }).join("");
+}
+async function refreshInfrastructureState(){
+ if(state.infraBusy)return;
+ state.infraBusy=true;
+ try{
+  const result=await infrastructureCommand("state");
+  state.infraData=result;
+  refreshInfrastructureResources();
+  renderConstructionQueue();
+  renderBuildings(state.currentInfraCategory);
+ }finally{state.infraBusy=false;}
+}
+function renderBuildings(category){
+ state.currentInfraCategory=category;
+ document.querySelectorAll("[data-infra-category]").forEach(t=>t.classList.toggle("active",t.dataset.infraCategory===category));
+ const list=buildingCatalog[category]||[];
+ const box=$("buildingList");
+ if(category==="nuclear"&&state.infraData?.country?.nuclear_permission_unlocked){
+  box.innerHTML='<div class="locked"><strong>دسترسی پژوهشی فعال است</strong>مجوز پژوهشی این بخش در بازی فعال شده است.</div>';
+  return;
+ }
+ box.innerHTML=list.map(b=>{
+  const count=getBuildingCount(b.key);
+  let details=`هزینه: <b>${money(b.price)}</b><br>برق موردنیاز: <b>${fa(b.power||0)}</b><br>زمان ساخت: <b>${formatDuration(b.time)}</b>`;
+  if(b.effect)details+=`<br>اثر پس از تکمیل: <b>${fa(b.effect)}</b>`;
+  if(b.key==="enrichment_center")details+="<br>اثر ویژه: <b>بازشدن دسترسی پژوهشی هسته‌ای</b>";
+  return `<article class="building-card">
+   <div class="building-name">${escapeHTML(b.name)}</div>
+   <span class="building-tag">ساخته‌شده: ${fa(count)}</span>
+   <div class="building-info">${escapeHTML(b.desc)}<br>${details}</div>
+   <button class="btn btn-primary" data-build="${b.key}">ساخت ساختمان</button>
+  </article>`;
+ }).join("");
+ box.querySelectorAll("[data-build]").forEach(btn=>btn.addEventListener("click",()=>buildInfrastructure(btn.dataset.build)));
+}
+async function buildInfrastructure(key){
+ const item=Object.values(buildingCatalog).flat().find(b=>b.key===key);
+ if(!item||state.infraBusy)return;
+ if(!confirm(`ساخت «${item.name}» با هزینه ${money(item.price)} ثبت شود؟`))return;
+ state.infraBusy=true;
+ try{
+  const result=await infrastructureCommand("build",key);
+  state.infraData=result;
+  refreshInfrastructureResources();
+  renderConstructionQueue();
+  renderBuildings(state.currentInfraCategory);
+  renderManagement();
+  alert("سفارش ساخت در صف زیرساخت ثبت شد.");
+  showPage("managementPage");
+ }catch(e){console.error(e);alert("ثبت ساخت ناموفق بود:\n"+errorMessage(e));}
+ finally{state.infraBusy=false;}
+}
+
+/* واحدهای بازی */
 const units={
  air:[
   {key:"fighter",name:"جنگنده",iron:50,oil:20,people:50,price:10000,time:30,attack:30,defense:40},
@@ -412,7 +693,7 @@ const units={
  support:[
   {key:"rocket",name:"راکت",iron:20,oil:15,people:18,price:1000,time:40,attack:30,defense:0},
   {key:"drone",name:"پهپاد",iron:60,oil:20,people:100,price:10000,time:60,attack:100,defense:0},
-  {key:"ballistic_missile",name:"موشک بالستیک",iron:3000,oil:5000,people:2500,price:100000,time:1800,attack:300,defense:0}
+  {key:"ballistic_missile",name:"سامانه پشتیبانی دوربرد",iron:3000,oil:5000,people:2500,price:100000,time:1800,attack:300,defense:0}
  ]
 };
 const unitCategoryNames={air:"نیروی هوایی",armor:"نیروی زرهی",navy:"نیروی دریایی",support:"پشتیبانی دوربرد"};
@@ -423,64 +704,99 @@ function formatDuration(sec){
  if(m)return `${fa(m)} دقیقه و ${fa(s)} ثانیه`;
  return `${fa(s)} ثانیه`;
 }
+function unitUnlocked(category){
+ if(category==="air")return hasBuilding("airfield")&&hasBuilding("aviation_industry");
+ if(category==="armor")return hasBuilding("barracks")&&hasBuilding("armored_factory");
+ if(category==="navy")return hasBuilding("port")&&hasBuilding("shipyard");
+ if(category==="support")return hasBuilding("missile_depot")&&hasBuilding("missile_factory");
+ return false;
+}
 function renderUnits(category){
  state.currentUnitCategory=category;
  document.querySelectorAll("[data-unit-category]").forEach(t=>t.classList.toggle("active",t.dataset.unitCategory===category));
+ const box=$("unitList");
+ if(!unitUnlocked(category)){
+  const requirements={
+   air:"پایگاه هوایی و صنایع هواپیمایی",
+   armor:"پادگان و کارخانه زرهی",
+   navy:"بندر و کارخانه کشتی‌سازی",
+   support:"انبار موشکی و کارخانه موشکی"
+  };
+  box.innerHTML=`<div class="locked"><strong>این بخش هنوز فعال نیست</strong>برای بازشدن ${unitCategoryNames[category]} باید ${requirements[category]} را بسازی.</div>`;
+  $("categoryInfo").textContent="پیش‌نیازهای زیرساختی تکمیل نشده‌اند.";
+  return;
+ }
  const owned=state.snapshot?.units||[];
- $("unitList").innerHTML=units[category].map(u=>{
+ box.innerHTML=units[category].map(u=>{
   const current=owned.find(x=>x.unit_key===u.key)?.quantity||0;
-  return `<article class="unit-card"><div class="unit-name">${escapeHTML(u.name)}</div><div class="unit-info">موجودی فعلی: <b>${fa(current)}</b><br>آهن موردنیاز: <b>${fa(u.iron)}</b><br>نفت موردنیاز: <b>${fa(u.oil)}</b><br>نیروی انسانی: <b>${fa(u.people)}</b><br>هزینه: <b>${money(u.price)}</b><br>زمان تولید: <b>${formatDuration(u.time)}</b><br>حمله: <b>${fa(u.attack)}</b><br>دفاع: <b>${fa(u.defense)}</b></div><button class="order-button" data-unit-order="${u.key}">سفارش ساخت</button></article>`;
+  return `<article class="unit-card">
+   <div class="unit-name">${escapeHTML(u.name)}</div>
+   <div class="unit-info">موجودی فعلی: <b>${fa(current)}</b><br>آهن موردنیاز: <b>${fa(u.iron)}</b><br>نفت موردنیاز: <b>${fa(u.oil)}</b><br>نیروی انسانی: <b>${fa(u.people)}</b><br>هزینه: <b>${money(u.price)}</b><br>زمان تولید: <b>${formatDuration(u.time)}</b><br>حمله: <b>${fa(u.attack)}</b><br>دفاع: <b>${fa(u.defense)}</b></div>
+   <button class="order-button" data-unit-order="${u.key}">سفارش ساخت</button>
+  </article>`;
  }).join("");
- $("unitList").querySelectorAll("[data-unit-order]").forEach(b=>b.addEventListener("click",()=>{
-  const u=units[category].find(x=>x.key===b.dataset.unitOrder);if(u)openOrder({...u,kind:"unit"});
+ box.querySelectorAll("[data-unit-order]").forEach(b=>b.addEventListener("click",()=>{
+  const u=units[category].find(x=>x.key===b.dataset.unitOrder);
+  if(u)openOrder({...u,kind:"unit"});
  }));
- $("categoryInfo").textContent=`بخش ${unitCategoryNames[category]} انتخاب شده است.`;
+ $("categoryInfo").textContent=`بخش ${unitCategoryNames[category]} فعال است.`;
 }
 
 /* مهمات بازی */
 const ammunition={
  air:[
-  {key:"air_shell",name:"گلوله توپ جنگنده",batch:10000,iron:200,oil:100,uranium:0,price:5000,time:300},
-  {key:"air_bomb",name:"بمب هواپیما",batch:100,iron:500,oil:200,uranium:0,price:6000,time:300}
+  {key:"air_shell",name:"گلوله توپ جنگنده",batch:10000,iron:200,oil:100,price:5000,time:300},
+  {key:"air_bomb",name:"مهمات هوایی",batch:100,iron:500,oil:200,price:6000,time:300}
  ],
  ground:[
-  {key:"ground_shell",name:"گلوله توپ زمینی",batch:1000,iron:400,oil:150,uranium:0,price:5500,time:300},
-  {key:"small_arms",name:"فشنگ اسلحه",batch:10000,iron:200,oil:100,uranium:0,price:2000,time:300}
+  {key:"ground_shell",name:"مهمات زمینی",batch:1000,iron:400,oil:150,price:5500,time:300},
+  {key:"small_arms",name:"تجهیزات سبک",batch:10000,iron:200,oil:100,price:2000,time:300}
  ],
- navy:[{key:"torpedo",name:"اژدر دریایی",batch:100,iron:100,oil:50,uranium:0,price:3000,time:300}],
- nuclear:[
-  {key:"fat_man",name:"بمب فتمن",batch:1,iron:4000,oil:0,uranium:3000,price:20000000,time:18000},
-  {key:"little_boy",name:"بمب لیتل بوی",batch:1,iron:2500,oil:0,uranium:5000,price:10000000,time:18000}
- ]
+ navy:[
+  {key:"torpedo",name:"تجهیزات دریایی",batch:100,iron:100,oil:50,price:3000,time:300}
+ ],
+ nuclear:[]
 };
 function renderArsenal(category){
  state.currentAmmoCategory=category;
  document.querySelectorAll("[data-ammo-category]").forEach(t=>t.classList.toggle("active",t.dataset.ammoCategory===category));
- const country=state.snapshot?.country,stock=state.snapshot?.ammunition||[];
- if(category==="nuclear"&&!country?.nuclear_infrastructure){
-  $("arsenalList").innerHTML='<div class="locked"><strong>زیرساخت هسته‌ای فعال نیست</strong>دسترسی به این بخش به فعال‌سازی زیرساخت هسته‌ای کشور توسط سامانه بازی نیاز دارد.</div>';
-  renderQueue();return;
+ const box=$("arsenalList");
+ if(category==="nuclear"){
+  const unlocked=Boolean(state.infraData?.country?.nuclear_permission_unlocked||state.snapshot?.country?.nuclear_permission_unlocked);
+  box.innerHTML=unlocked
+   ?'<div class="locked"><strong>دسترسی پژوهشی هسته‌ای فعال است</strong>این بخش در نسخه فعلی صرفاً وضعیت مجوز پژوهشی بازی را نمایش می‌دهد.</div>'
+   :'<div class="locked"><strong>دسترسی پژوهشی فعال نیست</strong>برای بازشدن این بخش، مرکز پژوهش هسته‌ای را از قسمت زیرساخت بساز.</div>';
+  return;
  }
- $("arsenalList").innerHTML=ammunition[category].map(a=>{
+ const stock=state.snapshot?.ammunition||[];
+ box.innerHTML=ammunition[category].map(a=>{
   const current=stock.find(x=>x.ammo_key===a.key)?.quantity||0;
-  return `<article class="ammo-card"><div class="ammo-name">${escapeHTML(a.name)}</div><div class="ammo-info">موجودی فعلی: <b>${fa(current)}</b><br>تعداد هر بسته: <b>${fa(a.batch)}</b><br>آهن موردنیاز: <b>${fa(a.iron)}</b><br>نفت موردنیاز: <b>${fa(a.oil)}</b><br>اورانیوم موردنیاز: <b>${fa(a.uranium)}</b><br>هزینه هر بسته: <b>${money(a.price)}</b><br>زمان تولید هر بسته: <b>${formatDuration(a.time)}</b></div><button class="ammo-order" data-ammo-order="${a.key}">ثبت سفارش تولید</button></article>`;
+  return `<article class="ammo-card">
+   <div class="ammo-name">${escapeHTML(a.name)}</div>
+   <div class="ammo-info">موجودی فعلی: <b>${fa(current)}</b><br>تعداد هر بسته: <b>${fa(a.batch)}</b><br>آهن موردنیاز: <b>${fa(a.iron)}</b><br>نفت موردنیاز: <b>${fa(a.oil)}</b><br>هزینه هر بسته: <b>${money(a.price)}</b><br>زمان تولید: <b>${formatDuration(a.time)}</b></div>
+   <button class="ammo-order" data-ammo-order="${a.key}">ثبت سفارش تولید</button>
+  </article>`;
  }).join("");
- $("arsenalList").querySelectorAll("[data-ammo-order]").forEach(b=>b.addEventListener("click",()=>{
-  const a=ammunition[category].find(x=>x.key===b.dataset.ammoOrder);if(a)openOrder({...a,kind:"ammo"});
+ box.querySelectorAll("[data-ammo-order]").forEach(b=>b.addEventListener("click",()=>{
+  const a=ammunition[category].find(x=>x.key===b.dataset.ammoOrder);
+  if(a)openOrder({...a,kind:"ammo"});
  }));
  renderQueue();
 }
 
-/* ثبت سفارش */
+/* سفارش تولید */
 function openOrder(item){
- state.currentItem=item;$("packageCount").value=1;$("modalTitle").textContent="سفارش تولید "+item.name;
+ state.currentItem=item;
+ $("packageCount").value=1;
+ $("modalTitle").textContent="سفارش تولید "+item.name;
  $("modalInfo").innerHTML=`تعداد هر بسته: ${fa(item.batch||1)}<br>هزینه هر بسته: ${money(item.price)}<br>زمان تولید هر بسته: ${formatDuration(item.time)}`;
  updateCalculation();$("orderModal").classList.add("show");
 }
 function updateCalculation(){
  const i=state.currentItem;if(!i)return;
- let n=parseInt($("packageCount").value,10);if(!Number.isFinite(n)||n<1)n=1;if(n>1000)n=1000;
- $("calculation").innerHTML=`تعداد بسته‌ها: <strong>${fa(n)}</strong><br>مجموع تولید: <strong>${fa((i.batch||1)*n)}</strong><br>آهن موردنیاز: <strong>${fa(i.iron*n)}</strong><br>نفت موردنیاز: <strong>${fa((i.oil||0)*n)}</strong><br>اورانیوم موردنیاز: <strong>${fa((i.uranium||0)*n)}</strong><br>نیروی انسانی: <strong>${fa((i.people||0)*n)}</strong><br>هزینه نهایی: <strong>${money(i.price*n)}</strong><br>زمان کل تولید: <strong>${formatDuration(i.time*n)}</strong>`;
+ let n=parseInt($("packageCount").value,10);
+ if(!Number.isFinite(n)||n<1)n=1;if(n>1000)n=1000;
+ $("calculation").innerHTML=`تعداد بسته‌ها: <strong>${fa(n)}</strong><br>مجموع تولید: <strong>${fa((i.batch||1)*n)}</strong><br>آهن موردنیاز: <strong>${fa((i.iron||0)*n)}</strong><br>نفت موردنیاز: <strong>${fa((i.oil||0)*n)}</strong><br>نیروی انسانی: <strong>${fa((i.people||0)*n)}</strong><br>هزینه نهایی: <strong>${money(i.price*n)}</strong><br>زمان کل تولید: <strong>${formatDuration(i.time*n)}</strong>`;
 }
 async function confirmProduction(){
  const item=state.currentItem;if(!item||state.commanding)return;
@@ -505,190 +821,66 @@ function renderQueue(){
   const remaining=Number.isFinite(end)?Math.max(0,Math.ceil((end-Date.now())/1000)):0;
   const status=o.status==="completed"?"تولید تکمیل شد":o.status==="cancelled"?"لغو شده":o.status==="queued"?"در صف تولید":"در حال تولید";
   const canCancel=o.status==="queued"&&new Date(o.starts_at).getTime()>Date.now();
-  return `<article class="queue-card"><strong>${escapeHTML(o.item_name)}</strong><br>تعداد بسته‌ها: ${fa(o.quantity)}<br>مجموع تولید: ${fa(o.total_output)}<br>هزینه: ${money(o.money_cost)}<br>وضعیت: <strong>${status}</strong><br>زمان باقی‌مانده: <strong>${o.status==="completed"?"تکمیل‌شده":formatDuration(remaining)}</strong>${canCancel?`<div class="queue-actions"><button class="btn btn-danger btn-small" data-cancel-order="${escapeHTML(o.id)}">لغو سفارش</button></div>`:""}</article>`;
+  return `<article class="queue-card">
+   <strong>${escapeHTML(o.item_name)}</strong><br>
+   تعداد بسته‌ها: ${fa(o.quantity)}<br>
+   مجموع تولید: ${fa(o.total_output)}<br>
+   هزینه: ${money(o.money_cost)}<br>
+   وضعیت: <strong>${status}</strong><br>
+   زمان باقی‌مانده: <strong>${o.status==="completed"?"تکمیل‌شده":formatDuration(remaining)}</strong>
+   ${canCancel?`<div class="queue-actions"><button class="btn btn-danger btn-small" data-cancel-order="${escapeHTML(o.id)}">لغو سفارش</button></div>`:""}
+  </article>`;
  }).join("");
  box.querySelectorAll("[data-cancel-order]").forEach(b=>b.addEventListener("click",()=>cancelOrder(b.dataset.cancelOrder)));
 }
 async function cancelOrder(id){
- if(!confirm("این سفارش لغو شود؟ منابع آن در صورت امکان به خزانه بازگردانده می‌شود."))return;
+ if(!confirm("این سفارش لغو شود؟"))return;
  try{await countryCommand("cancel",{order_id:id});await refreshCountryState();alert("سفارش لغو شد.");}
  catch(e){console.error(e);alert("لغو سفارش انجام نشد:\n"+errorMessage(e));}
 }
 
-/* نقشه تاریخی */
-const HISTORICAL_MAP_URL="https://raw.githubusercontent.com/aourednik/historical-basemaps/master/geojson/world_1938.geojson";
-const mapState={globe:null,features:[],countries:[],worldId:null,selected:null,initialized:false,loading:false,resizeObserver:null,lastError:null};
-
-function normalizeMapName(v){
- return String(v??"").trim().toLocaleLowerCase("fa").normalize("NFKC")
- .replace(/[\u200c\u200f\u202a-\u202e\s_\-–—.'’،,()]+/g,"")
- .replace(/ي/g,"ی").replace(/ك/g,"ک").replace(/[^\p{L}\p{N}]/gu,"");
-}
-const PERSIAN_COUNTRY_KEYS={
- "آلمان":"germany","آمریکا":"unitedstates","ایالاتمتحدهآمریکا":"unitedstates","ایالاتمتحده":"unitedstates",
- "اتحادجماهیرشوروی":"sovietunion","اتحادجماهیرشورویسوسیالیستی":"sovietunion","اتحادشوروی":"sovietunion","شوروی":"sovietunion",
- "اتریش":"austria","اسپانیا":"spain","ایتالیا":"italy","ایران":"iran","پرشیا":"iran",
- "بریتانیا":"unitedkingdom","انگلستان":"unitedkingdom","پادشاهی‌متحد":"unitedkingdom",
- "بلژیک":"belgium","بلغارستان":"bulgaria","ترکیه":"turkey","جمهوریتُرکیه":"turkey","چکسلواکی":"czechoslovakia",
- "چین":"china","جمهورچین":"china","دانمارک":"denmark","رومانی":"romania","ژاپن":"japan","فرانسه":"france",
- "فنلاند":"finland","کانادا":"canada","لهستان":"poland","مجارستان":"hungary","نروژ":"norway","هلند":"netherlands",
- "یوگسلاوی":"yugoslavia","یونان":"greece","سوئد":"sweden","سوئیس":"switzerland","پرتغال":"portugal","مصر":"egypt",
- "افغانستان":"afghanistan","عراق":"iraq","عربستان":"saudiarabia","مکزیک":"mexico","برزیل":"brazil","استرالیا":"australia",
- "نیوزیلند":"newzealand","هند":"india","تایلند":"thailand","سیام":"thailand","نپال":"nepal","بوتان":"bhutan",
- "مغولستان":"mongolia","آلبانی":"albania","استونی":"estonia","لتونی":"latvia","لیتوانی":"lithuania",
- "ایرلند":"ireland","لوکزامبورگ":"luxembourg","ایسلند":"iceland"
-};
-const NORMALIZED_PERSIAN_COUNTRY_KEYS={};
-for(const [n,k] of Object.entries(PERSIAN_COUNTRY_KEYS))NORMALIZED_PERSIAN_COUNTRY_KEYS[normalizeMapName(n)]=k;
-const MAP_ALIASES={
- unitedstatesofamerica:"unitedstates",unitedstates:"unitedstates",usa:"unitedstates",us:"unitedstates",
- sovietunion:"sovietunion",ussr:"sovietunion",unionofsovietsocialistrepublics:"sovietunion",
- persia:"iran",iran:"iran",turkey:"turkey",turkiye:"turkey",republicofturkey:"turkey",
- greatbritain:"unitedkingdom",britain:"unitedkingdom",uk:"unitedkingdom",unitedkingdom:"unitedkingdom",
- germanreich:"germany",germany:"germany",deutschesreich:"germany",czechoslovakia:"czechoslovakia",
- netherlands:"netherlands",holland:"netherlands",kingdomofthenetherlands:"netherlands",
- japan:"japan",empireofjapan:"japan",china:"china",republicofchina:"china",france:"france",
- poland:"poland",italy:"italy",spain:"spain",austria:"austria",belgium:"belgium",bulgaria:"bulgaria",
- denmark:"denmark",romania:"romania",finland:"finland",canada:"canada",hungary:"hungary",norway:"norway",
- yugoslavia:"yugoslavia",kingdomofyugoslavia:"yugoslavia",greece:"greece",sweden:"sweden",
- switzerland:"switzerland",portugal:"portugal",egypt:"egypt",afghanistan:"afghanistan",iraq:"iraq",
- saudiarabia:"saudiarabia",mexico:"mexico",brazil:"brazil",australia:"australia",newzealand:"newzealand",
- india:"india",siam:"thailand",thailand:"thailand",mongolia:"mongolia",albania:"albania",estonia:"estonia",
- latvia:"latvia",lithuania:"lithuania",ireland:"ireland",luxembourg:"luxembourg",iceland:"iceland"
-};
-function mapKey(v){const k=normalizeMapName(v);return NORMALIZED_PERSIAN_COUNTRY_KEYS[k]||MAP_ALIASES[k]||k;}
-function historicalCountryName(f){
- const p=f?.properties||{};
- return p.NAME||p.name||p.ADMIN||p.SOVEREIGNT||p.SUBJECTO||p.NAME_LONG||p.ABBREV||p.ABBREVN||p.PARTOF||"کشور ناشناخته";
-}
-function findMapCountry(f){
- const p=f?.properties||{};
- for(const v of [historicalCountryName(f),p.ADMIN,p.SOVEREIGNT,p.SUBJECTO,p.NAME_LONG,p.ABBREV]){
-  const key=mapKey(v);if(!key)continue;
-  const found=mapState.countries.find(c=>mapKey(c.name)===key);if(found)return found;
- }
- return null;
-}
-function getMapDisplayName(f){return findMapCountry(f)?.name||historicalCountryName(f);}
-function mapCountryLabels(features){
- const labels=[];
- for(const f of features){
-  try{
-   if(!f.geometry)continue;
-   const center=d3.geoCentroid(f);
-   if(center&&Number.isFinite(center[0])&&Number.isFinite(center[1])){
-    const name=getMapDisplayName(f);if(name)labels.push({label:name,lat:center[1],lng:center[0]});
-   }
-  }catch(e){console.warn("MAP LABEL",e);}
- }
- return labels;
-}
-function refreshGlobeLayers(){
- if(!mapState.globe)return;
- mapState.globe
-  .polygonsData(mapState.features)
-  .polygonGeoJsonGeometry(f=>f.geometry)
-  .polygonCapColor(() => "#d8c29a")
-  .polygonSideColor(() => "#c5ad83")
-  .polygonStrokeColor(() => "rgba(104,83,54,0.42)")
-  .polygonAltitude(0.006)
-  .labelsData(mapCountryLabels(mapState.features))
-  .labelLat(d=>d.lat).labelLng(d=>d.lng).labelText(d=>d.label)
-  .labelSize(0.42).labelAltitude(0.012).labelDotRadius(0)
-  .labelColor(()=>"rgba(55,43,29,0.98)").labelResolution(3).labelIncludeDot(false);
-}
-async function initializeGlobe(){
- if(mapState.initialized&&mapState.globe){refreshGlobeLayers();return;}
- if(typeof Globe!=="function")throw new Error("کتابخانه کره سه‌بعدی بارگذاری نشده است.");
- if(typeof d3==="undefined")throw new Error("کتابخانه مختصات نقشه بارگذاری نشده است.");
- $("mapStatus").textContent="در حال دریافت نقشه تاریخی...";
- const r=await fetch(HISTORICAL_MAP_URL,{cache:"force-cache"});
- if(!r.ok)throw new Error("دریافت داده نقشه تاریخی ناموفق بود.");
- const geo=await r.json();
- if(!Array.isArray(geo.features)||!geo.features.length)throw new Error("اطلاعات نقشه معتبر نیست.");
- mapState.features=geo.features;
- const host=$("globeContainer"),width=Math.max(200,host.clientWidth),height=Math.max(200,host.clientHeight);
- mapState.globe=Globe()(host)
-  .width(width).height(height)
-  .globeImageUrl(null)
-  /* این گزینه کره خاکستری پیش‌فرض را پنهان می‌کند */
-  .showGlobe(false)
-  .backgroundColor("#3b82b6")
-  .showAtmosphere(false)
-  .showGraticules(false)
-  .polygonsData(mapState.features)
-  .polygonGeoJsonGeometry(f=>f.geometry)
-  .polygonCapColor(() => "#d8c29a")
-  .polygonSideColor(() => "#c5ad83")
-  .polygonStrokeColor(() => "rgba(104,83,54,0.42)")
-  .polygonAltitude(0.006)
-  .labelsData(mapCountryLabels(mapState.features))
-  .labelLat(d=>d.lat).labelLng(d=>d.lng).labelText(d=>d.label)
-  .labelSize(0.42).labelAltitude(0.012).labelDotRadius(0)
-  .labelColor(()=>"rgba(55,43,29,0.98)").labelResolution(3).labelIncludeDot(false);
- const controls=mapState.globe.controls();
- controls.autoRotate=true;controls.autoRotateSpeed=0.35;
- controls.enableZoom=true;controls.enablePan=false;controls.enableDamping=true;controls.dampingFactor=0.08;
- mapState.globe.pointOfView({lat:25,lng:20,altitude:2.3},1000);
- mapState.initialized=true;
- if(window.ResizeObserver){
-  mapState.resizeObserver?.disconnect();
-  mapState.resizeObserver=new ResizeObserver(resizeGlobe);
-  mapState.resizeObserver.observe(host);
- }
- $("mapStatus").textContent=`نقشه آماده است • ${fa(mapState.features.length)} محدوده جغرافیایی`;
-}
-function resizeGlobe(){
- if(!mapState.globe)return;
- const host=$("globeContainer");
- mapState.globe.width(Math.max(200,host.clientWidth)).height(Math.max(200,host.clientHeight));
-}
-async function loadMapCountries(worldId){
- const url=`${SUPABASE_URL}/rest/v1/countries?select=id,name,world_id,player_telegram_id,player_telegram_username,flag_emoji&world_id=eq.${encodeURIComponent(worldId)}`;
- const r=await fetch(url,{headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,Accept:"application/json"},cache:"no-store"});
- return readResponse(r);
-}
-async function openHistoricalMap(){
- const world=state.activeWorld,my=state.myCountry,worldId=world?.id||my?.world_id;
- if(!worldId){alert("ابتدا یک جهان را انتخاب کن.");return;}
- $("mapPage").classList.add("active");
- $("mapWorldName").textContent=(world?.name||my?.world_name||"جهان شما")+" • نقشه تاریخی ۱۹۳۸";
- $("mapStatus").textContent="در حال آماده‌سازی نقشه...";
- if(mapState.loading)return;
- mapState.loading=true;
- try{
-  mapState.worldId=worldId;mapState.selected=my;
-  mapState.countries=await loadMapCountries(worldId);
-  await initializeGlobe();refreshGlobeLayers();resizeGlobe();
-  $("mapStatus").textContent=`نقشه آماده است • ${fa(mapState.features.length)} محدوده جغرافیایی`;
- }catch(e){console.error("MAP ERROR",e);mapState.lastError=e;$("mapStatus").textContent="خطا در بارگذاری نقشه: "+errorMessage(e);}
- finally{mapState.loading=false;}
-}
-function closeHistoricalMap(){$("mapPage").classList.remove("active");}
-
 /* رویدادها */
-$("backWorld").addEventListener("click",()=>{state.activeWorld=null;showPage("worldPage");loadWorlds();});
+$("backWorld").addEventListener("click",()=>{
+ state.activeWorld=null;showPage("worldPage");loadWorlds();
+});
 $("countrySearch").addEventListener("input",renderCountries);
 $("refreshCountries").addEventListener("click",loadCountries);
-$("openHQ").addEventListener("click",()=>{showPage("hqPage");renderUnits(state.currentUnitCategory);});
-$("openArsenal").addEventListener("click",()=>{showPage("arsenalPage");renderArsenal(state.currentAmmoCategory);});
+
+$("openInfrastructure").addEventListener("click",async()=>{
+ showPage("infrastructurePage");
+ try{await refreshInfrastructureState();}
+ catch(e){alert("دریافت اطلاعات زیرساخت ناموفق بود:\n"+errorMessage(e));}
+});
+$("backInfrastructure").addEventListener("click",()=>showPage("managementPage"));
+
+$("openHQ").addEventListener("click",()=>{
+ showPage("hqPage");renderUnits(state.currentUnitCategory);
+});
+$("openArsenal").addEventListener("click",()=>{
+ showPage("arsenalPage");renderArsenal(state.currentAmmoCategory);
+});
 $("backHQ").addEventListener("click",()=>showPage("managementPage"));
 $("backArsenal").addEventListener("click",()=>showPage("managementPage"));
+
+document.querySelectorAll("[data-infra-category]").forEach(t=>t.addEventListener("click",()=>renderBuildings(t.dataset.infraCategory)));
 document.querySelectorAll("[data-unit-category]").forEach(t=>t.addEventListener("click",()=>renderUnits(t.dataset.unitCategory)));
 document.querySelectorAll("[data-ammo-category]").forEach(t=>t.addEventListener("click",()=>renderArsenal(t.dataset.ammoCategory)));
+
 $("packageCount").addEventListener("input",updateCalculation);
-$("closeOrder").addEventListener("click",()=>{$("orderModal").classList.remove("show");state.currentItem=null;});
+$("closeOrder").addEventListener("click",()=>{
+ $("orderModal").classList.remove("show");state.currentItem=null;
+});
 $("confirmOrder").addEventListener("click",confirmProduction);
-$("orderModal").addEventListener("click",e=>{if(e.target===$("orderModal")){$("orderModal").classList.remove("show");state.currentItem=null;}});
+$("orderModal").addEventListener("click",e=>{
+ if(e.target===$("orderModal")){$("orderModal").classList.remove("show");state.currentItem=null;}
+});
 $("closePurchase").addEventListener("click",closePurchase);
 $("sendPurchase").addEventListener("click",sendPurchase);
 $("purchaseModal").addEventListener("click",e=>{if(e.target===$("purchaseModal"))closePurchase();});
-$("refreshState").addEventListener("click",async()=>{try{await refreshCountryState();alert("اطلاعات کشور به‌روزرسانی شد.");}catch(e){alert(errorMessage(e));}});
-$("openMapCountries").addEventListener("click",openHistoricalMap);
-$("openMapManagement").addEventListener("click",openHistoricalMap);
-$("mapClose").addEventListener("click",closeHistoricalMap);
-window.addEventListener("resize",resizeGlobe);
-window.addEventListener("orientationchange",()=>setTimeout(resizeGlobe,250));
+$("refreshState").addEventListener("click",async()=>{
+ try{await refreshCountryState();alert("اطلاعات کشور به‌روزرسانی شد.");}
+ catch(e){alert(errorMessage(e));}
+});
 
 /* زمان فصل */
 function updateSeasonTimer(){
@@ -715,10 +907,12 @@ async function init(){
   setBox("worldList","ورود به بازی ناموفق بود: "+errorMessage(e),true);
  }
 }
-setInterval(()=>{updateSeasonTimer();renderQueue();},1000);
+setInterval(()=>{
+ updateSeasonTimer();renderQueue();renderConstructionQueue();
+},1000);
 setInterval(async()=>{
  if(state.myCountry){
-  if(!state.commanding&&!state.claiming&&!state.purchasing&&["managementPage","hqPage","arsenalPage"].includes(state.currentView)){
+  if(!state.commanding&&!state.claiming&&!state.purchasing&&["managementPage","hqPage","arsenalPage","infrastructurePage"].includes(state.currentView)){
    try{await refreshCountryState();}catch(e){console.warn("AUTO REFRESH",e);}
   }
   return;
@@ -727,6 +921,7 @@ setInterval(async()=>{
   if(!state.refreshing&&!state.claiming&&!state.purchasing)loadCountries();
  }else if(state.currentView==="worldPage")loadWorlds();
 },15000);
+
 init();
 </script>
 </body>
