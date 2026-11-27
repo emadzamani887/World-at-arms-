@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -56,22 +57,20 @@ button,input,textarea{font-family:inherit}button{cursor:pointer}button:disabled{
 .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.confirm-button,.close-button{padding:11px;border-radius:8px;font-size:12px}.confirm-button{background:linear-gradient(145deg,#827044,#595638);color:#fff0c9;border:1px solid #b39a5d}.close-button{background:#343326;color:var(--muted);border:1px solid #62573b}
 .receipt{min-height:100px;resize:vertical}footer{text-align:center;color:#857b62;font-size:10px;padding:20px 5px 8px}
 
-/* نقشه */
-#mapPage{display:none;position:fixed;inset:0;z-index:3000;background:#071522;color:#eee4ca;flex-direction:column;height:100vh;height:100dvh;width:100%;overflow:hidden}
+/* نقشه ساده: آب آبی، خشکی کرمی، فقط نام کشورها */
+#mapPage{display:none;position:fixed;inset:0;z-index:3000;background:#3b82b6;color:#eee4ca;flex-direction:column;height:100vh;height:100dvh;width:100%;overflow:hidden}
 #mapPage.active{display:flex}
-.map-header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;background:#172a38;border-bottom:1px solid #47728e;flex-shrink:0;z-index:2}
-.map-title{font-size:15px;font-weight:900;color:#e1c782}.map-subtitle{font-size:10px;color:#b9cddd}
-#mapClose{background:#263e50;color:#eee4ca;border:1px solid #60839a;border-radius:8px;padding:8px 13px;white-space:nowrap}
-#globeContainer{flex:1;min-height:0;min-width:0;width:100%;height:100%;position:relative;background:radial-gradient(circle,#174c70,#061522 78%);overflow:hidden}
+.map-header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px;background:#183c59;border-bottom:1px solid #6da6cc;flex-shrink:0;z-index:2}
+.map-title{font-size:15px;font-weight:900;color:#fff0c9}.map-subtitle{font-size:10px;color:#d4e9f5}
+#mapClose{background:#285777;color:#fff;border:1px solid #91bad3;border-radius:8px;padding:8px 13px;white-space:nowrap}
+#globeContainer{flex:1;min-height:0;min-width:0;width:100%;height:100%;position:relative;background:#3b82b6;overflow:hidden}
 #globeContainer canvas{display:block;width:100%;height:100%}
-.map-footer{padding:10px;background:#172a38;border-top:1px solid #47728e;flex-shrink:0;z-index:2}
-#mapStatus{text-align:center;font-size:11px;color:#d5c49b;margin-bottom:8px;line-height:1.8}
-.map-legend{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;font-size:10px;color:#c9bd9c}.map-legend span{display:flex;align-items:center;gap:5px}.map-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
-#mapCountryInfo{display:none;position:absolute;left:10px;right:10px;bottom:10px;z-index:5;background:#172a38f2;border:1px solid #a18a53;border-radius:10px;padding:12px;color:#eee4ca;font-size:12px;line-height:2;pointer-events:none;box-shadow:0 5px 20px #0008}
-#mapCountryInfo strong{color:#e1c782;font-size:15px}
+.map-footer{padding:9px;background:#183c59;border-top:1px solid #6da6cc;flex-shrink:0;z-index:2}
+#mapStatus{text-align:center;font-size:10px;color:#e4f2fa;line-height:1.7}
+#mapCountryInfo{display:none!important}
 .map-open-btn{width:100%;margin-bottom:12px;padding:12px;background:linear-gradient(145deg,#827044,#595638);color:#fff0c9;border:1px solid #b39a5d;border-radius:9px;font-size:12px;font-weight:800}
 @media(min-width:650px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.unit-grid,.ammo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.countries{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:420px){body{padding:10px}.panel{padding:13px}.management-name{font-size:20px}.stat-value{font-size:16px}.world-card{flex-wrap:wrap}.world-card .btn{width:100%}.map-header{padding:9px}.map-footer{padding:8px}.map-legend{gap:8px;font-size:9px}}
+@media(max-width:420px){body{padding:10px}.panel{padding:13px}.management-name{font-size:20px}.stat-value{font-size:16px}.world-card{flex-wrap:wrap}.world-card .btn{width:100%}.map-header{padding:9px}.map-footer{padding:7px}}
 </style>
 </head>
 
@@ -92,7 +91,7 @@ button,input,textarea{font-family:inherit}button{cursor:pointer}button:disabled{
 <div class="panel">
 <div class="section-title"><h2 id="worldTitle">کشورهای جهان</h2><button id="backWorld" class="btn btn-quiet" type="button">بازگشت</button></div>
 <div id="worldDescription" class="notice hidden"></div>
-<button class="map-open-btn" id="openMapCountries" type="button">🌍 مشاهده نقشه سه‌بعدی جهان</button>
+<button class="map-open-btn" id="openMapCountries" type="button">🌍 مشاهده نقشه جهان</button>
 <div class="toolbar"><input id="countrySearch" class="search" type="search" placeholder="جستجوی کشور..."><button id="refreshCountries" class="btn btn-quiet" type="button">↻</button></div>
 <div id="countryList" class="state-box">در حال دریافت کشورها...</div>
 <div class="notice">هر بازیکن در هر جهان فقط می‌تواند یک کشور داشته باشد. مالکیت کشور در سرور بررسی و ثبت می‌شود.</div>
@@ -104,7 +103,7 @@ button,input,textarea{font-family:inherit}button{cursor:pointer}button:disabled{
 <div class="management-flag" id="countryFlag">🏳️</div>
 <div><div class="eyebrow">NATIONAL COMMAND CENTER</div><div class="management-name" id="countryName">کشور شما</div><div class="management-sub" id="countryWorld">جهان شما</div><div class="owner-status">● مالکیت کشور تأیید شده</div></div>
 </div></div>
-<button class="map-open-btn" id="openMapManagement" type="button">🌍 مشاهده نقشه سه‌بعدی جهان</button>
+<button class="map-open-btn" id="openMapManagement" type="button">🌍 مشاهده نقشه جهان</button>
 <div class="panel">
 <div class="section-title"><h3>وضعیت کشور</h3><small id="politicalSystem">نظام سیاسی</small></div>
 <div class="stats">
@@ -170,19 +169,11 @@ button,input,textarea{font-family:inherit}button{cursor:pointer}button:disabled{
 
 <section id="mapPage">
 <div class="map-header">
-<div><div class="map-title">🌍 اطلس جهانی ۱۹۳۹</div><div class="map-subtitle" id="mapWorldName">نقشه تاریخی ۱۹۳۸ • نزدیک‌ترین داده موجود به ۱۹۳۹</div></div>
+<div><div class="map-title">🌍 نقشه جهان</div><div class="map-subtitle" id="mapWorldName">نقشه تاریخی ۱۹۳۸</div></div>
 <button id="mapClose" type="button">✕ بستن</button>
 </div>
-<div id="globeContainer"><div id="mapCountryInfo"></div></div>
-<div class="map-footer">
-<div id="mapStatus">در حال آماده‌سازی نقشه...</div>
-<div class="map-legend">
-<span><i class="map-dot" style="background:#777b80"></i> کشور آزاد</span>
-<span><i class="map-dot" style="background:#d6ad56"></i> کشور شما</span>
-<span><i class="map-dot" style="background:#5795c8"></i> سایر بازیکنان</span>
-<span><i class="map-dot" style="background:#62d5ed"></i> شهرهای مهم</span>
-</div>
-</div>
+<div id="globeContainer"></div>
+<div class="map-footer"><div id="mapStatus">در حال آماده‌سازی نقشه...</div></div>
 </section>
 
 <footer>WORLD AT ARMS © 2026 • STRATEGIC COMMAND NETWORK</footer>
@@ -545,14 +536,14 @@ async function cancelOrder(orderId){
 }
 
 /* =========================================================
-   نقشه تاریخی، اقیانوس آبی و برچسب خودکار کشورها و شهرها
+   نقشه ساده تاریخی
+   اقیانوس آبی، خشکی کرمی، فقط نام کشورها
 ========================================================= */
 
 const HISTORICAL_MAP_URL="https://raw.githubusercontent.com/aourednik/historical-basemaps/master/geojson/world_1938.geojson";
-const CITIES_MAP_URL="https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_populated_places.geojson";
 
 const mapState={
- globe:null,features:[],cities:[],countries:[],worldId:null,selected:null,
+ globe:null,features:[],countries:[],worldId:null,selected:null,
  initialized:false,loading:false,resizeObserver:null,lastError:null
 };
 
@@ -630,63 +621,8 @@ function getMapDisplayName(feature){
  const country=findMapCountry(feature);
  return country?.name||historicalCountryName(feature);
 }
-function mapCountryColor(country){
- if(!country)return "#777b80";
- if(mapState.selected&&String(country.id)===String(mapState.selected.id))return "#d6ad56";
- if(country.player_telegram_id!==null&&country.player_telegram_id!==undefined&&String(country.player_telegram_id)!=="")return "#5795c8";
- return "#777b80";
-}
-function mapCountryAltitude(feature){
- const country=findMapCountry(feature);
- if(!country)return 0.006;
- if(mapState.selected&&String(country.id)===String(mapState.selected.id))return 0.022;
- if(country.player_telegram_id!==null&&country.player_telegram_id!==undefined&&String(country.player_telegram_id)!=="")return 0.014;
- return 0.007;
-}
-function mapFeatureLabel(feature){
- const country=findMapCountry(feature),name=getMapDisplayName(feature);
- let status="کشور آزاد";
- if(!country)status="اطلاعات این کشور در جهان ثبت نشده";
- else if(mapState.selected&&String(country.id)===String(mapState.selected.id))status="کشور شما";
- else if(country.player_telegram_id)status="در اختیار بازیکن";
- return `<div style="background:#172a38;border:1px solid #a18a53;border-radius:8px;padding:8px 11px;color:#eee4ca;font-family:Vazirmatn,Tahoma,sans-serif;direction:rtl;text-align:right;box-shadow:0 4px 15px #0008"><b style="color:#e1c782">${escapeHTML(name)}</b><br><small>${escapeHTML(status)}</small></div>`;
-}
 
-async function loadMapCountries(worldId){
- const url=`${SUPABASE_URL}/rest/v1/countries?select=id,name,world_id,player_telegram_id,player_telegram_username,flag_emoji&world_id=eq.${encodeURIComponent(worldId)}`;
- const response=await fetch(url,{
-  method:"GET",
-  headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,Accept:"application/json"},
-  cache:"no-store"
- });
- return readResponse(response);
-}
-
-/* دریافت شهرهای مهم */
-async function loadMapCities(){
- const response=await fetch(CITIES_MAP_URL,{method:"GET",cache:"force-cache"});
- if(!response.ok)throw new Error("دریافت اطلاعات شهرها ناموفق بود.");
- const data=await response.json();
- if(!Array.isArray(data.features))throw new Error("داده شهرها معتبر نیست.");
-
- return data.features.filter(feature=>{
-  const p=feature.properties||{};
-  const population=Number(p.POP_MAX||p.POP_MIN||0);
-  const rank=Number(p.SCALERANK??99);
-  return feature.geometry?.type==="Point"&&(population>=500000||rank<=2);
- }).map(feature=>{
-  const p=feature.properties||{};
-  const coordinates=feature.geometry.coordinates||[];
-  return {
-   name:p.NAME||p.NAMEASCII||p.NAMEPAR||"City",
-   country:p.ADM0NAME||p.SOV0NAME||"",
-   lat:Number(coordinates[1]),lng:Number(coordinates[0]),
-   population:Number(p.POP_MAX||0)
-  };
- }).filter(city=>Number.isFinite(city.lat)&&Number.isFinite(city.lng)&&city.name);
-}
-
-/* برچسب کشورها */
+/* فقط برچسب نام کشورها */
 function mapCountryLabels(features){
  const labels=[];
  for(const feature of features){
@@ -695,57 +631,47 @@ function mapCountryLabels(features){
    const center=d3.geoCentroid(feature);
    if(!center||!Number.isFinite(center[0])||!Number.isFinite(center[1]))continue;
    const name=getMapDisplayName(feature);
-   if(name)labels.push({label:name,lat:center[1],lng:center[0],kind:"country"});
+   if(name)labels.push({label:name,lat:center[1],lng:center[0]});
   }catch(error){console.warn("COUNTRY LABEL:",error);}
  }
  return labels;
-}
-
-/* ترکیب نام کشور و شهرها */
-function getAllMapLabels(){
- const countryLabels=mapCountryLabels(mapState.features);
- const cityLabels=mapState.cities.map(city=>({
-  label:city.name,lat:city.lat,lng:city.lng,kind:"city",country:city.country
- }));
- return countryLabels.concat(cityLabels);
 }
 
 function refreshGlobeLayers(){
  if(!mapState.globe)return;
  mapState.globe
   .polygonsData(mapState.features)
-  .polygonCapColor(feature=>mapCountryColor(findMapCountry(feature)))
-  .polygonAltitude(mapCountryAltitude)
-  .polygonLabel(mapFeatureLabel)
-  .labelsData(getAllMapLabels())
+  .polygonCapColor(() => "#d8c29a")
+  .polygonSideColor(() => "#c5ad83")
+  .polygonStrokeColor(() => "rgba(104,83,54,0.42)")
+  .polygonAltitude(0.006)
+  .labelsData(mapCountryLabels(mapState.features))
+  .labelLat(item=>item.lat)
+  .labelLng(item=>item.lng)
   .labelText(item=>item.label)
-  .labelSize(item=>item.kind==="city"?0.20:0.42)
-  .labelAltitude(item=>item.kind==="city"?0.018:0.012)
-  .labelDotRadius(item=>item.kind==="city"?0.13:0.07)
-  .labelColor(item=>item.kind==="city"?"rgba(100,225,255,0.98)":"rgba(255,235,190,0.97)")
+  .labelSize(0.42)
+  .labelAltitude(0.012)
+  .labelDotRadius(0)
+  .labelColor(()=>"rgba(55,43,29,0.98)")
   .labelResolution(3)
-  .labelIncludeDot(true);
+  .labelIncludeDot(false);
 }
 
-/* ساخت کره و بافت آبی زمین */
+/* ساخت کره ساده */
 async function initializeGlobe(){
  if(mapState.initialized&&mapState.globe){refreshGlobeLayers();return;}
  if(typeof Globe!=="function")throw new Error("کتابخانه کره سه‌بعدی بارگذاری نشده است.");
  if(typeof d3==="undefined")throw new Error("کتابخانه مختصات نقشه بارگذاری نشده است.");
 
- $("mapStatus").textContent="در حال دریافت نقشه تاریخی و اطلاعات شهرها...";
+ $("mapStatus").textContent="در حال دریافت نقشه تاریخی...";
 
- const [mapResponse,cities]=await Promise.all([
-  fetch(HISTORICAL_MAP_URL,{method:"GET",cache:"force-cache"}),
-  loadMapCities()
- ]);
+ const mapResponse=await fetch(HISTORICAL_MAP_URL,{method:"GET",cache:"force-cache"});
  if(!mapResponse.ok)throw new Error("دریافت داده نقشه تاریخی ناموفق بود.");
 
  const geojson=await mapResponse.json();
  if(!geojson.features||!geojson.features.length)throw new Error("اطلاعات نقشه معتبر نیست.");
 
  mapState.features=geojson.features;
- mapState.cities=cities;
 
  const host=$("globeContainer");
  const width=Math.max(200,host.clientWidth),height=Math.max(200,host.clientHeight);
@@ -754,51 +680,39 @@ async function initializeGlobe(){
   .width(width)
   .height(height)
 
-  /* بافت زمین با اقیانوس‌های آبی */
-  .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
-  .backgroundColor("#061522")
-  .showAtmosphere(true)
-  .atmosphereColor("#48a9dc")
-  .atmosphereAltitude(0.20)
+  /* کره آبی ساده؛ بدون تصویر ماهواره‌ای */
+  .globeImageUrl(null)
+  .backgroundColor("#3b82b6")
+  .showAtmosphere(false)
+  .showGraticules(false)
 
-  /* مرزهای کشورها */
+  /* خشکی‌های کرمی */
   .polygonsData(mapState.features)
   .polygonGeoJsonGeometry(feature=>feature.geometry)
-  .polygonCapColor(feature=>mapCountryColor(findMapCountry(feature)))
-  .polygonSideColor(()=>"rgba(35,65,90,0.85)")
-  .polygonStrokeColor(()=>"rgba(225,220,190,0.85)")
-  .polygonAltitude(mapCountryAltitude)
-  .polygonLabel(mapFeatureLabel)
+  .polygonCapColor(() => "#d8c29a")
+  .polygonSideColor(() => "#c5ad83")
+  .polygonStrokeColor(() => "rgba(104,83,54,0.42)")
+  .polygonAltitude(0.006)
 
-  /* انتخاب کشور با کلیک */
-  .onPolygonClick(feature=>{
-   const country=findMapCountry(feature),name=getMapDisplayName(feature),info=$("mapCountryInfo");
-   info.style.display="block";
-   if(country){
-    const mine=mapState.selected&&String(country.id)===String(mapState.selected.id);
-    const status=mine?"کشور شما":country.player_telegram_id?"در اختیار بازیکن":"کشور آزاد";
-    info.innerHTML=`<strong>${escapeHTML(name)}</strong><br>${escapeHTML(status)}${country.flag_emoji?`<br>${escapeHTML(country.flag_emoji)}`:""}${country.player_telegram_username?`<br>@${escapeHTML(country.player_telegram_username)}`:""}`;
-   }else{
-    info.innerHTML=`<strong>${escapeHTML(name)}</strong><br>اطلاعات مالکیت این کشور در این جهان ثبت نشده است.`;
-   }
-  })
-
-  /* نام کشورها و شهرها */
-  .labelsData(getAllMapLabels())
+  /* فقط نام کشورها */
+  .labelsData(mapCountryLabels(mapState.features))
   .labelLat(item=>item.lat)
   .labelLng(item=>item.lng)
   .labelText(item=>item.label)
-  .labelSize(item=>item.kind==="city"?0.20:0.42)
-  .labelAltitude(item=>item.kind==="city"?0.018:0.012)
-  .labelDotRadius(item=>item.kind==="city"?0.13:0.07)
-  .labelColor(item=>item.kind==="city"?"rgba(100,225,255,0.98)":"rgba(255,235,190,0.97)")
+  .labelSize(0.42)
+  .labelAltitude(0.012)
+  .labelDotRadius(0)
+  .labelColor(()=>"rgba(55,43,29,0.98)")
   .labelResolution(3)
-  .labelIncludeDot(true);
+  .labelIncludeDot(false);
 
  const controls=mapState.globe.controls();
- controls.autoRotate=true;controls.autoRotateSpeed=0.35;
- controls.enableZoom=true;controls.enablePan=false;
- controls.enableDamping=true;controls.dampingFactor=0.08;
+ controls.autoRotate=true;
+ controls.autoRotateSpeed=0.35;
+ controls.enableZoom=true;
+ controls.enablePan=false;
+ controls.enableDamping=true;
+ controls.dampingFactor=0.08;
 
  mapState.globe.pointOfView({lat:25,lng:20,altitude:2.3},1000);
  mapState.initialized=true;
@@ -809,7 +723,7 @@ async function initializeGlobe(){
   mapState.resizeObserver.observe(host);
  }
 
- $("mapStatus").textContent=`نقشه آماده است • ${fa(mapState.features.length)} محدوده جغرافیایی • ${fa(mapState.cities.length)} شهر مهم`;
+ $("mapStatus").textContent=`نقشه آماده است • ${fa(mapState.features.length)} محدوده جغرافیایی`;
 }
 
 function resizeGlobe(){
@@ -831,8 +745,7 @@ async function openHistoricalMap(){
 
  $("mapPage").classList.add("active");
  $("mapWorldName").textContent=(world?.name||myCountry?.world_name||"جهان شما")+" • نقشه تاریخی ۱۹۳۸";
- $("mapCountryInfo").style.display="none";
- $("mapStatus").textContent="در حال دریافت اطلاعات جهان...";
+ $("mapStatus").textContent="در حال آماده‌سازی نقشه...";
 
  mapState.worldId=worldId;
  mapState.selected=myCountry;
@@ -844,16 +757,25 @@ async function openHistoricalMap(){
   await initializeGlobe();
   updateGlobeColors();
   resizeGlobe();
-  const matched=mapState.features.filter(feature=>findMapCountry(feature)).length;
-  $("mapStatus").textContent=`نقشه آماده است • ${fa(matched)} کشور از دیتابیس تطبیق داده شد • ${fa(mapState.cities.length)} شهر مهم`;
+  $("mapStatus").textContent=`نقشه آماده است • ${fa(mapState.features.length)} محدوده جغرافیایی`;
  }catch(error){
   console.error("MAP ERROR:",error);mapState.lastError=error;
   $("mapStatus").textContent="خطا در بارگذاری نقشه: "+errorMessage(error);
  }finally{mapState.loading=false;}
 }
+
+async function loadMapCountries(worldId){
+ const url=`${SUPABASE_URL}/rest/v1/countries?select=id,name,world_id,player_telegram_id,player_telegram_username,flag_emoji&world_id=eq.${encodeURIComponent(worldId)}`;
+ const response=await fetch(url,{
+  method:"GET",
+  headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,Accept:"application/json"},
+  cache:"no-store"
+ });
+ return readResponse(response);
+}
+
 function closeHistoricalMap(){
  $("mapPage").classList.remove("active");
- $("mapCountryInfo").style.display="none";
  if(mapState.globe)mapState.globe.controls().autoRotate=true;
 }
 
