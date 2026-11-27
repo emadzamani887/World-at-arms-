@@ -1,912 +1,764 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#eaf4ff">
-<title>WORLD AT ARMS | Command Center</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-<style>
-:root{
- --bg:#f1f7ff;
- --surface:#ffffff;
- --surface2:#f7faff;
- --blue:#6c9ff5;
- --blue2:#4383e9;
- --blue3:#dceaff;
- --navy:#263c60;
- --text:#253858;
- --muted:#8798b2;
- --line:#e7eef8;
- --green:#42b98a;
- --red:#e77c8b;
- --orange:#e9ad61;
- --purple:#9b8be8;
- --shadow:0 12px 35px rgba(68,111,170,.08);
- --radius:22px;
-}
-*{box-sizing:border-box}
-body{
- margin:0;
- background:var(--bg);
- color:var(--text);
- font-family:'Vazirmatn',Tahoma,sans-serif;
- font-size:14px;
-}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.app{min-height:100vh;display:flex}
-.sidebar{
- width:255px;position:fixed;right:0;top:0;bottom:0;
- background:rgba(255,255,255,.92);
- border-left:1px solid var(--line);
- padding:24px 17px;z-index:20;
- display:flex;flex-direction:column;overflow-y:auto;
-}
-.brand{display:flex;align-items:center;gap:12px;padding:5px 8px 26px}
-.brand-logo{
- width:47px;height:47px;border-radius:16px;
- display:grid;place-items:center;
- color:#fff;font-size:23px;font-weight:900;
- background:linear-gradient(145deg,#8fc0ff,#568ce9);
- box-shadow:0 8px 18px #8bb9f455;
-}
-.brand h1{font-size:15px;margin:0;font-weight:900;letter-spacing:.3px}
-.brand p{font-size:10px;color:var(--muted);margin:3px 0 0}
-.nav-label{font-size:10px;font-weight:800;color:#a6b4c9;padding:14px 12px 8px}
-.nav-link{
- width:100%;border:0;background:transparent;color:#71829e;
- display:flex;align-items:center;gap:12px;text-align:right;
- padding:12px 13px;border-radius:14px;margin:3px 0;
- transition:.2s;font-weight:600;
-}
-.nav-link .ico{width:24px;text-align:center;font-size:17px}
-.nav-link:hover{background:#f1f6ff;color:var(--blue2);transform:translateX(-2px)}
-.nav-link.active{background:linear-gradient(100deg,#e7f1ff,#f1f7ff);color:#3978d6;font-weight:800}
-.sidebar-bottom{margin-top:auto}
-.server-mini{
- padding:15px;border-radius:18px;background:linear-gradient(145deg,#edf5ff,#f8fbff);
- border:1px solid #e1edfc;margin-top:18px;
-}
-.server-mini-head{display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:12px}
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--orange);margin-left:5px}
-.dot.online{background:var(--green);box-shadow:0 0 0 4px #42b98a20}
-.server-mini p{font-size:10px;color:var(--muted);margin:9px 0 0;line-height:1.9}
-.main{width:calc(100% - 255px);margin-right:255px;padding:25px 30px 45px;min-width:0}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:27px}
-.top-left{display:flex;align-items:center;gap:12px}
-.page-heading h2{font-size:21px;margin:0;font-weight:900}
-.page-heading p{font-size:11px;color:var(--muted);margin:5px 0 0}
-.top-actions{display:flex;align-items:center;gap:10px}
-.icon-btn{
- width:42px;height:42px;border:1px solid var(--line);border-radius:14px;
- background:#fff;color:#6d83a4;display:grid;place-items:center;font-size:17px;
- box-shadow:0 4px 12px #5477a00b;
-}
-.profile{
- display:flex;align-items:center;gap:10px;background:#fff;
- border:1px solid var(--line);border-radius:15px;padding:7px 12px;
-}
-.avatar{width:32px;height:32px;border-radius:11px;background:#e4efff;color:#548be0;display:grid;place-items:center;font-weight:900}
-.profile strong{font-size:11px;display:block}
-.profile small{font-size:9px;color:var(--muted)}
-.page-section{display:none;animation:fade .25s ease}
-.page-section.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.welcome{
- position:relative;overflow:hidden;padding:27px 29px;border-radius:26px;
- background:linear-gradient(115deg,#dcecff,#eef6ff 60%,#e8f0ff);
- border:1px solid #dceaff;margin-bottom:21px;
-}
-.welcome:after{
- content:"";position:absolute;width:210px;height:210px;border-radius:50%;
- background:#fff6;left:8%;top:-105px;
-}
-.welcome h2{font-size:21px;margin:0 0 7px;font-weight:900;position:relative;z-index:1}
-.welcome p{font-size:12px;color:#7188aa;margin:0;position:relative;z-index:1}
-.welcome-tag{display:inline-flex;align-items:center;gap:6px;margin-top:17px;padding:7px 12px;background:#ffffffa8;border:1px solid #fff;border-radius:30px;font-size:10px;color:#5481bd;position:relative;z-index:1}
-.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:20px}
-.stat-card{
- background:#fff;border:1px solid var(--line);border-radius:21px;padding:19px;
- box-shadow:var(--shadow);min-width:0;transition:.2s;
-}
-.stat-card:hover{transform:translateY(-3px);box-shadow:0 15px 35px #507cb51a}
-.stat-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px;font-weight:700}
-.stat-icon{width:39px;height:39px;border-radius:14px;display:grid;place-items:center;font-size:18px}
-.ic-blue{background:#e8f1ff;color:#6598eb}
-.ic-green{background:#e5f8f0;color:#4ab58b}
-.ic-purple{background:#f0edff;color:#9989e5}
-.ic-orange{background:#fff3e5;color:#e5a450}
-.stat-number{font-size:27px;font-weight:900;color:var(--navy);margin-top:13px;direction:ltr;text-align:right}
-.stat-foot{font-size:10px;color:#a1aec1;margin-top:5px}
-.content-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,1fr);gap:17px;margin-bottom:18px}
-.card{
- background:#fff;border:1px solid var(--line);border-radius:22px;
- padding:20px;box-shadow:var(--shadow);min-width:0;margin-bottom:17px;
-}
-.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:17px}
-.card-head h3{font-size:13px;font-weight:900;margin:0}
-.card-head p{font-size:10px;color:var(--muted);margin:4px 0 0}
-.btn{
- border:0;border-radius:12px;padding:9px 14px;font-size:11px;
- font-weight:800;transition:.2s;display:inline-flex;align-items:center;justify-content:center;gap:6px;
-}
-.btn:hover{transform:translateY(-1px);filter:brightness(.98)}
-.btn-primary{background:linear-gradient(120deg,#79aaf6,#548de9);color:#fff;box-shadow:0 5px 13px #6598e933}
-.btn-soft{background:#edf4ff;color:#5488d7}
-.btn-light{background:#f4f7fb;color:#73839b}
-.btn-danger{background:#fff0f1;color:#d96e7b}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;white-space:nowrap}
-th{text-align:right;font-size:10px;color:#9aa9bd;font-weight:800;padding:11px 10px;background:#f8faff}
-th:first-child{border-radius:0 10px 10px 0}
-th:last-child{border-radius:10px 0 0 10px}
-td{font-size:11px;padding:13px 10px;border-bottom:1px solid #f0f3f8;color:#526681}
-tbody tr:last-child td{border-bottom:0}
-tbody tr:hover{background:#fafcff}
-.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:30px;font-size:9px;font-weight:800}
-.badge.green{background:#e6f8f0;color:#38a77b}
-.badge.red{background:#fff0f1;color:#d96c7b}
-.badge.gold{background:#fff5e8;color:#d99a43}
-.badge.blue{background:#eaf2ff;color:#5789d7}
-.badge.gray{background:#f0f3f7;color:#8492a7}
-.activity-list{display:flex;flex-direction:column;gap:0}
-.activity{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #f0f3f8}
-.activity:last-child{border:0}
-.activity-icon{width:34px;height:34px;border-radius:12px;background:#edf4ff;color:#6897e4;display:grid;place-items:center;flex-shrink:0}
-.activity-content{min-width:0}
-.activity-content strong{font-size:11px;display:block}
-.activity-content p{font-size:10px;color:#8797ad;margin:4px 0;white-space:normal;line-height:1.8}
-.activity-content small{font-size:9px;color:#a6b2c2}
-.connection-card{background:linear-gradient(130deg,#f0f7ff,#fff);border:1px solid #e2edfb;border-radius:18px;padding:16px}
-.connection-line{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800}
-.connection-card p{font-size:10px;line-height:1.9;color:var(--muted);margin:9px 0 0}
-.empty-state{text-align:center;padding:35px 15px;color:var(--muted);font-size:11px}
-.empty-state .empty-icon{font-size:28px;margin-bottom:9px}
-.filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px}
-.field{
- width:100%;border:1px solid #e5edf7;background:#fbfdff;
- border-radius:12px;padding:11px 13px;outline:none;color:var(--text);font-size:11px;
-}
-.field:focus{border-color:#9bbdf0;box-shadow:0 0 0 3px #8bb4ed20}
-.search-field{max-width:280px}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.form-group label{display:block;font-size:10px;font-weight:800;color:#788ba7;margin-bottom:7px}
-.notice{padding:13px 15px;background:#fff8ed;border:1px solid #f8ebd5;border-radius:14px;color:#b48645;font-size:10px;line-height:1.9}
-.toast{
- position:fixed;bottom:22px;left:22px;z-index:100;
- background:#263c60;color:white;padding:13px 18px;border-radius:13px;
- box-shadow:0 10px 30px #1e345533;font-size:11px;
- opacity:0;transform:translateY(12px);pointer-events:none;transition:.25s;
- max-width:90vw;
-}
-.toast.show{opacity:1;transform:translateY(0)}
-.mobile-menu{display:none}
-.footer{text-align:center;color:#a5b2c4;font-size:9px;padding:25px 0 0}
-@media(max-width:1100px){
- .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
- .main{padding:22px}
-}
-@media(max-width:760px){
- .sidebar{transform:translateX(105%);transition:.25s;width:270px;box-shadow:-15px 0 40px #263c6020}
- .sidebar.open{transform:translateX(0)}
- .main{width:100%;margin:0;padding:17px 14px 35px}
- .mobile-menu{display:grid}
- .topbar{margin-bottom:19px}
- .page-heading h2{font-size:17px}
- .profile{padding:5px 8px}
- .profile small{display:none}
- .content-grid{grid-template-columns:1fr}
- .welcome{padding:22px}
- .welcome h2{font-size:18px}
- .stats-grid{gap:10px}
- .stat-card{padding:14px}
- .stat-number{font-size:22px}
- .card{padding:15px}
-}
-@media(max-width:380px){
- .stats-grid{grid-template-columns:1fr 1fr}
- .stat-number{font-size:20px}
- .top-actions{gap:5px}
- .profile strong{font-size:9px}
-}
-</style>
-</head>
-<body>
-<div class="app">
-<aside class="sidebar" id="sidebar">
- <div class="brand">
-  <div class="brand-logo">W</div>
-  <div><h1>WORLD AT ARMS</h1><p>COMMAND CENTER · ADMIN</p></div>
- </div>
- <div class="nav-label">مدیریت اصلی</div>
- <button class="nav-link active" data-page="dashboard"><span class="ico">⌂</span>داشبورد</button>
- <button class="nav-link" data-page="worlds"><span class="ico">◎</span>جهان‌ها</button>
- <button class="nav-link" data-page="countries"><span class="ico">♜</span>کشورها</button>
- <button class="nav-link" data-page="players"><span class="ico">♙</span>بازیکنان</button>
- <div class="nav-label">کنترل بازی</div>
- <button class="nav-link" data-page="economy"><span class="ico">◈</span>اقتصاد و خزانه</button>
- <button class="nav-link" data-page="messages"><span class="ico">✉</span>پیام‌ها</button>
- <button class="nav-link" data-page="resolutions"><span class="ico">▤</span>قطعنامه‌ها</button>
- <button class="nav-link" data-page="warnings"><span class="ico">⚑</span>هشدارها</button>
- <div class="nav-label">سیستم</div>
- <button class="nav-link" data-page="events"><span class="ico">✧</span>رویدادها</button>
- <button class="nav-link" data-page="logs"><span class="ico">◷</span>گزارش فعالیت</button>
- <button class="nav-link" data-page="admins"><span class="ico">♧</span>مدیران</button>
- <button class="nav-link" data-page="settings"><span class="ico">⚙</span>تنظیمات</button>
- <div class="sidebar-bottom">
-  <div class="server-mini">
-   <div class="server-mini-head"><span>وضعیت سرور</span><span id="sideStatus" class="dot"></span></div>
-   <p id="sideStatusText">در حال بررسی اتصال...</p>
-  </div>
- </div>
-</aside>
+<div id="waa-command-center">
+  <div class="waa-shell">
+    <aside class="waa-sidebar">
+      <div class="waa-brand">
+        <div class="waa-brand-icon">⚔</div>
+        <div>
+          <strong>WORLD AT ARMS</strong>
+          <small>COMMAND CENTER</small>
+        </div>
+      </div>
+      <div class="waa-admin-card">
+        <div class="waa-avatar">A</div>
+        <div><strong>Super Admin</strong><small>مدیریت کل سیستم</small></div>
+        <span class="waa-online"></span>
+      </div>
+      <div class="waa-menu-title">MAIN MENU</div>
+      <nav class="waa-nav">
+        <button class="active" data-page="overview"><span>▦</span> داشبورد</button>
+        <button data-page="worlds"><span>🌐</span> مدیریت جهان‌ها</button>
+        <button data-page="countries"><span>⚑</span> مدیریت کشورها</button>
+        <button data-page="players"><span>♙</span> بازیکنان و IP</button>
+        <button data-page="economy"><span>◈</span> اقتصاد و منابع</button>
+        <button data-page="messages"><span>✉</span> مرکز پیام‌ها</button>
+        <button data-page="warnings"><span>⚠</span> هشدارها</button>
+        <button data-page="resolutions"><span>▤</span> قطعنامه‌ها</button>
+        <button data-page="admins"><span>♜</span> مدیران سیستم</button>
+        <button data-page="logs"><span>◷</span> گزارش فعالیت‌ها</button>
+        <button data-page="settings"><span>⚙</span> تنظیمات و سرور</button>
+      </nav>
+      <div class="waa-sidebar-bottom">
+        <div class="waa-server-status"><i></i><span>پنل محلی فعال است</span></div>
+        <small>WORLD AT ARMS • ADMIN v2.0</small>
+      </div>
+    </aside>
 
-<main class="main">
- <header class="topbar">
-  <div class="top-left">
-   <button class="icon-btn mobile-menu" id="menuToggle">☰</button>
-   <div class="page-heading"><h2 id="pageTitle">داشبورد مدیریتی</h2><p id="pageSubtitle">مرکز فرماندهی و نظارت بر جهان بازی</p></div>
+    <main class="waa-main">
+      <header class="waa-topbar">
+        <div>
+          <div class="waa-breadcrumb">WORLD AT ARMS / <b id="waa-breadcrumb">DASHBOARD</b></div>
+          <h2 id="waa-page-title">داشبورد مدیریتی</h2>
+        </div>
+        <div class="waa-top-actions">
+          <span class="waa-date" id="waa-clock">--:--</span>
+          <button class="waa-icon-btn" id="waa-refresh" title="بروزرسانی">↻</button>
+          <div class="waa-top-avatar">A</div>
+        </div>
+      </header>
+
+      <div class="waa-content">
+        <section class="waa-page active" id="waa-page-overview">
+          <div class="waa-welcome">
+            <div><span class="waa-eyebrow">COMMAND OVERVIEW</span><h1>مرکز فرماندهی</h1><p>وضعیت کلی دنیای WORLD AT ARMS را مدیریت کن.</p></div>
+            <div class="waa-welcome-symbol">🌐</div>
+          </div>
+          <div class="waa-stats">
+            <div class="waa-stat"><div class="waa-stat-top"><span>جهان‌ها</span><b>🌍</b></div><strong id="waa-stat-worlds">0</strong><small>Worlds registered</small></div>
+            <div class="waa-stat"><div class="waa-stat-top"><span>کشورها</span><b>⚑</b></div><strong id="waa-stat-countries">0</strong><small>Countries registered</small></div>
+            <div class="waa-stat"><div class="waa-stat-top"><span>بازیکنان</span><b>♙</b></div><strong id="waa-stat-players">0</strong><small>Registered players</small></div>
+            <div class="waa-stat"><div class="waa-stat-top"><span>پیام‌ها</span><b>✉</b></div><strong id="waa-stat-messages">0</strong><small>Stored messages</small></div>
+          </div>
+          <div class="waa-grid-two">
+            <div class="waa-panel">
+              <div class="waa-panel-head"><div><h3>دسترسی سریع</h3><p>عملیات پرکاربرد مدیریت</p></div><span class="waa-pill">QUICK ACTIONS</span></div>
+              <div class="waa-quick-grid">
+                <button data-action="create-world"><b>＋</b><span>ساخت جهان جدید</span></button>
+                <button data-action="create-country"><b>⚑</b><span>ثبت کشور جدید</span></button>
+                <button data-action="send-message"><b>✉</b><span>ارسال پیام</span></button>
+                <button data-action="add-warning"><b>⚠</b><span>ثبت هشدار</span></button>
+              </div>
+            </div>
+            <div class="waa-panel">
+              <div class="waa-panel-head"><div><h3>وضعیت سیستم</h3><p>وضعیت پنل و ارتباط سرور</p></div><span class="waa-pill">SYSTEM</span></div>
+              <div class="waa-system-row"><span>رابط مدیریتی</span><b class="waa-good">فعال</b></div>
+              <div class="waa-system-row"><span>ذخیره‌سازی محلی</span><b class="waa-good">فعال</b></div>
+              <div class="waa-system-row"><span>اتصال API بازی</span><b id="waa-api-status" class="waa-neutral">بررسی نشده</b></div>
+              <div class="waa-system-row"><span>آخرین بروزرسانی</span><b id="waa-last-update">همین الان</b></div>
+            </div>
+          </div>
+          <div class="waa-panel">
+            <div class="waa-panel-head"><div><h3>آخرین فعالیت‌ها</h3><p>جدیدترین عملیات انجام‌شده در پنل</p></div><button class="waa-text-btn" data-goto="logs">مشاهده همه ←</button></div>
+            <div id="waa-recent-logs"></div>
+          </div>
+        </section>
+
+        <section class="waa-page" id="waa-page-worlds">
+          <div class="waa-section-head"><div><h2>مدیریت جهان‌ها</h2><p>جهان‌های بازی را ایجاد و مدیریت کن.</p></div><button class="waa-primary" data-action="create-world">＋ ساخت جهان جدید</button></div>
+          <div class="waa-toolbar"><input id="waa-world-search" placeholder="جستجوی نام جهان..."><button class="waa-secondary" id="waa-world-search-btn">جستجو</button></div>
+          <div class="waa-panel"><div id="waa-world-list"></div></div>
+        </section>
+
+        <section class="waa-page" id="waa-page-countries">
+          <div class="waa-section-head"><div><h2>مدیریت کشورها</h2><p>اطلاعات و وضعیت کشورهای هر جهان.</p></div><button class="waa-primary" data-action="create-country">＋ افزودن کشور</button></div>
+          <div class="waa-toolbar"><input id="waa-country-search" placeholder="جستجوی کشور..."><select id="waa-country-filter"><option value="">همه جهان‌ها</option></select><button class="waa-secondary" id="waa-country-search-btn">فیلتر</button></div>
+          <div class="waa-panel"><div id="waa-country-list"></div></div>
+        </section>
+
+        <section class="waa-page" id="waa-page-players">
+          <div class="waa-section-head"><div><h2>بازیکنان و اطلاعات اتصال</h2><p>مشاهده بازیکنان ثبت‌شده و اطلاعاتی که سرور ارائه می‌کند.</p></div><button class="waa-primary" data-action="create-player">＋ ثبت بازیکن</button></div>
+          <div class="waa-toolbar"><input id="waa-player-search" placeholder="نام بازیکن یا کشور..."><button class="waa-secondary" id="waa-player-search-btn">جستجو</button></div>
+          <div class="waa-panel"><div id="waa-player-list"></div></div>
+          <p class="waa-note">اطلاعات IP فقط در صورت دریافت قانونی و مجاز از سرور بازی قابل نمایش است. این پنل به‌تنهایی IP بازیکنان را استخراج نمی‌کند.</p>
+        </section>
+
+        <section class="waa-page" id="waa-page-economy">
+          <div class="waa-section-head"><div><h2>اقتصاد و منابع</h2><p>مدیریت موجودی ثبت‌شده کشورها.</p></div><button class="waa-primary" data-action="money">◈ تغییر موجودی</button></div>
+          <div class="waa-panel"><div id="waa-economy-list"></div></div>
+        </section>
+
+        <section class="waa-page" id="waa-page-messages">
+          <div class="waa-section-head"><div><h2>مرکز پیام‌ها</h2><p>مدیریت پیام‌های خصوصی و همگانی.</p></div><button class="waa-primary" data-action="send-message">＋ پیام جدید</button></div>
+          <div class="waa-panel"><div id="waa-message-list"></div></div>
+        </section>
+
+        <section class="waa-page" id="waa-page-warnings">
+          <div class="waa-section-head"><div><h2>مرکز هشدارها</h2><p>ثبت و پیگیری اخطارهای مدیریتی.</p></div><button class="waa-primary" data-action="add-warning">＋ هشدار جدید</button></div>
+          <div class="waa-panel"><div id="waa-warning-list"></div></div>
+        </section>
+
+        <section class="waa-page" id="waa-page-resolutions">
+          <div class="waa-section-head"><div><h2>مدیریت قطعنامه‌ها</h2><p>ثبت و پیگیری قطعنامه‌های جهان.</p></div><button class="waa-primary" data-action="create-resolution">＋ قطعنامه جدید</button></div>
+          <div class="waa-panel"><div id="waa-resolution-list"></div></div>
+        </section>
+
+        <section class="waa-page" id="waa-page-admins">
+          <div class="waa-section-head"><div><h2>مدیران سیستم</h2><p>فهرست مدیران و سطح دسترسی ثبت‌شده.</p></div><button class="waa-primary" data-action="create-admin">＋ افزودن مدیر</button></div>
+          <div class="waa-panel"><div id="waa-admin-list"></div></div>
+          <p class="waa-note">سطح دسترسی این نسخه نمایشی است؛ احراز هویت واقعی باید در بک‌اند پیاده‌سازی شود.</p>
+        </section>
+
+        <section class="waa-page" id="waa-page-logs">
+          <div class="waa-section-head"><div><h2>گزارش فعالیت‌ها</h2><p>سوابق عملیات انجام‌شده در این پنل.</p></div><button class="waa-danger-outline" id="waa-clear-logs">پاک‌کردن گزارش‌ها</button></div>
+          <div class="waa-panel"><div id="waa-log-list"></div></div>
+        </section>
+
+        <section class="waa-page" id="waa-page-settings">
+          <div class="waa-section-head"><div><h2>تنظیمات و اتصال سرور</h2><p>آدرس API و تنظیمات ذخیره‌سازی.</p></div></div>
+          <div class="waa-grid-two">
+            <div class="waa-panel">
+              <div class="waa-panel-head"><div><h3>اتصال به سرور بازی</h3><p>آدرس API سرور را وارد کن.</p></div></div>
+              <label class="waa-label">آدرس پایه API</label><input class="waa-field" id="waa-api-url" placeholder="https://your-server.com/api">
+              <label class="waa-label">مسیر بررسی سلامت سرور</label><input class="waa-field" id="waa-health-path" value="/health">
+              <button class="waa-primary waa-full" id="waa-save-settings">ذخیره تنظیمات</button>
+              <button class="waa-secondary waa-full" id="waa-test-api">بررسی اتصال سرور</button>
+              <p id="waa-api-result" class="waa-api-result">هنوز اتصالی بررسی نشده است.</p>
+            </div>
+            <div class="waa-panel">
+              <div class="waa-panel-head"><div><h3>مدیریت داده‌های آزمایشی</h3><p>اطلاعات این نسخه در مرورگر ذخیره می‌شوند.</p></div></div>
+              <button class="waa-secondary waa-full" id="waa-export">خروجی پشتیبان JSON</button>
+              <button class="waa-secondary waa-full" id="waa-import-trigger">بازیابی پشتیبان JSON</button>
+              <input type="file" id="waa-import-file" accept=".json,application/json" hidden>
+              <button class="waa-danger waa-full" id="waa-reset-demo">پاک‌سازی تمام داده‌های محلی</button>
+              <p class="waa-note">پاک‌سازی فقط داده‌های همین پنل در همین مرورگر را حذف می‌کند؛ روی سرور بازی اثری ندارد.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <footer class="waa-footer">WORLD AT ARMS COMMAND CENTER <span>ADMINISTRATION INTERFACE</span></footer>
+    </main>
   </div>
-  <div class="top-actions">
-   <button class="icon-btn" id="refreshButton" title="بروزرسانی">↻</button>
-   <div class="profile"><div class="avatar">A</div><div><strong>مدیریت کل</strong><small>WORLD AT ARMS</small></div></div>
+
+  <div class="waa-modal-backdrop" id="waa-modal-backdrop">
+    <div class="waa-modal">
+      <div class="waa-modal-head"><div><span class="waa-eyebrow">ADMIN CONTROL</span><h3 id="waa-modal-title">عملیات مدیریتی</h3></div><button id="waa-modal-close" class="waa-icon-btn">✕</button></div>
+      <form id="waa-modal-form"><div id="waa-modal-fields"></div><div class="waa-modal-actions"><button type="button" class="waa-secondary" id="waa-modal-cancel">انصراف</button><button type="submit" class="waa-primary">ثبت اطلاعات</button></div></form>
+    </div>
   </div>
- </header>
+  <div class="waa-toast" id="waa-toast"></div>
+         </div>
  
-<!-- DASHBOARD -->
-<section class="page-section active" id="page-dashboard">
- <div class="welcome">
-  <h2>به مرکز فرماندهی خوش آمدید</h2>
-  <p>تمام جهان‌ها، کشورها و فعالیت‌های WORLD AT ARMS را از اینجا زیر نظر بگیر.</p>
-  <span class="welcome-tag">✦ پنل مدیریت مرکزی · نسخه جدید</span>
- </div>
-
- <div class="stats-grid">
-  <div class="stat-card">
-   <div class="stat-head"><span>جهان‌های ثبت‌شده</span><span class="stat-icon ic-blue">◎</span></div>
-   <div class="stat-number" id="totalWorlds">—</div>
-   <div class="stat-foot">تعداد جهان‌ها در پایگاه داده</div>
-  </div>
-  <div class="stat-card">
-   <div class="stat-head"><span>کشورهای ثبت‌شده</span><span class="stat-icon ic-purple">♜</span></div>
-   <div class="stat-number" id="totalCountries">—</div>
-   <div class="stat-foot">تمام کشورهای بازی</div>
-  </div>
-  <div class="stat-card">
-   <div class="stat-head"><span>بازیکنان فعال</span><span class="stat-icon ic-green">♙</span></div>
-   <div class="stat-number" id="totalPlayers">—</div>
-   <div class="stat-foot">بازیکنان دارای شناسه تلگرام</div>
-  </div>
-  <div class="stat-card">
-   <div class="stat-head"><span>مجموع خزانه</span><span class="stat-icon ic-orange">◈</span></div>
-   <div class="stat-number" id="totalBalance">—</div>
-   <div class="stat-foot">مجموع موجودی کشورها</div>
-  </div>
- </div>
-
- <div class="content-grid">
-  <div class="card">
-   <div class="card-head"><div><h3>آخرین فعالیت‌ها</h3><p>جدیدترین گزارش‌های ثبت‌شده</p></div><button class="btn btn-soft" onclick="navigateTo('logs')">مشاهده همه ←</button></div>
-   <div class="activity-list" id="dashboardActivity"><div class="empty-state">در انتظار دریافت اطلاعات...</div></div>
-  </div>
-  <div class="card">
-   <div class="card-head"><div><h3>وضعیت سامانه</h3><p>بررسی اتصال سرویس‌ها</p></div><span class="badge blue">LIVE</span></div>
-   <div class="connection-card">
-    <div class="connection-line"><span>پایگاه داده Supabase</span><span id="connectionBadge" class="badge gold">در حال بررسی</span></div>
-    <p id="connectionMessage">در حال بررسی اتصال به سرور...</p>
-   </div>
-   <div style="margin-top:13px" class="connection-card">
-    <div class="connection-line"><span>بارگذاری اطلاعات</span><span id="dataBadge" class="badge gray">منتظر</span></div>
-    <p id="dataMessage">اطلاعات هنوز دریافت نشده است.</p>
-   </div>
-   <button class="btn btn-primary" style="width:100%;margin-top:14px" onclick="refreshAll()">↻ بروزرسانی کامل پنل</button>
-  </div>
- </div>
-
- <div class="card">
-  <div class="card-head"><div><h3>نمای کلی کشورها</h3><p>آخرین کشورهای ثبت‌شده</p></div><button class="btn btn-soft" onclick="navigateTo('countries')">مدیریت کشورها ←</button></div>
-  <div class="table-wrap"><table><thead><tr><th>کشور</th><th>حاکم</th><th>شناسه تلگرام</th><th>موجودی</th><th>وضعیت</th></tr></thead><tbody id="dashboardCountries"><tr><td colspan="5">در انتظار اطلاعات...</td></tr></tbody></table></div>
- </div>
-</section>
-
-<!-- WORLDS -->
-<section class="page-section" id="page-worlds">
- <div class="card">
-  <div class="card-head"><div><h3>مدیریت جهان‌ها</h3><p>فهرست جهان‌های ایجادشده در بازی</p></div><button class="btn btn-primary" onclick="loadWorlds()">↻ بروزرسانی</button></div>
-  <div class="filters"><input class="field search-field" id="worldSearch" placeholder="جستجوی نام جهان..." oninput="filterWorlds()"></div>
-  <div class="table-wrap"><table><thead><tr><th>نام جهان</th><th>توضیحات</th><th>وضعیت</th><th>تاریخ ایجاد</th></tr></thead><tbody id="worldsTable"><tr><td colspan="4">در انتظار اطلاعات...</td></tr></tbody></table></div>
- </div>
- <div class="notice">ساخت، حذف و ویرایش جهان‌ها پس از راه‌اندازی عملیات امن سمت سرور فعال خواهد شد.</div>
-</section>
-
-<!-- COUNTRIES -->
-<section class="page-section" id="page-countries">
- <div class="card">
-  <div class="card-head"><div><h3>مدیریت کشورها</h3><p>مشاهده کشورها، حاکمان و وضعیت آن‌ها</p></div><button class="btn btn-primary" onclick="loadCountries()">↻ بروزرسانی</button></div>
-  <div class="filters">
-   <input class="field search-field" id="countrySearch" placeholder="نام کشور، حاکم یا شناسه..." oninput="filterCountries()">
-   <select class="field" style="max-width:160px" id="countryStatusFilter" onchange="filterCountries()">
-    <option value="all">تمام وضعیت‌ها</option><option value="active">فعال</option><option value="locked">قفل‌شده</option>
-   </select>
-  </div>
-  <div class="table-wrap"><table><thead><tr><th>کشور</th><th>حاکم</th><th>نام کاربری</th><th>شناسه تلگرام</th><th>موجودی</th><th>وضعیت</th></tr></thead><tbody id="countriesTable"><tr><td colspan="6">در انتظار اطلاعات...</td></tr></tbody></table></div>
- </div>
- <div class="notice">اطلاعات این بخش از جدول countries خوانده می‌شود. تغییر حاکم، قفل‌کردن و حذف کشور در مرحله اتصال امن سرور فعال می‌شود.</div>
-</section>
-
-<!-- PLAYERS -->
-<section class="page-section" id="page-players">
- <div class="card">
-  <div class="card-head"><div><h3>مرکز بازیکنان</h3><p>بازیکنان شناسایی‌شده در جهان‌ها</p></div><button class="btn btn-primary" onclick="loadCountries()">↻ بروزرسانی</button></div>
-  <div class="filters"><input class="field search-field" id="playerSearch" placeholder="جستجوی بازیکن یا شناسه..." oninput="filterPlayers()"></div>
-  <div class="table-wrap"><table><thead><tr><th>نام کاربری</th><th>حاکم</th><th>کشور</th><th>شناسه تلگرام</th><th>موجودی کشور</th></tr></thead><tbody id="playersTable"><tr><td colspan="5">در انتظار اطلاعات...</td></tr></tbody></table></div>
- </div>
- <div class="notice">ابزارهای بن، رفع بن و انتقال کشور پس از تنظیم دسترسی مدیریتی امن فعال می‌شوند.</div>
-</section>
-
-<!-- ECONOMY -->
-<section class="page-section" id="page-economy">
- <div class="stats-grid">
-  <div class="stat-card"><div class="stat-head"><span>مجموع خزانه</span><span class="stat-icon ic-orange">◈</span></div><div class="stat-number" id="economyBalance">—</div><div class="stat-foot">موجودی همه کشورها</div></div>
-  <div class="stat-card"><div class="stat-head"><span>کشورهای دارای موجودی</span><span class="stat-icon ic-green">◎</span></div><div class="stat-number" id="fundedCountries">—</div><div class="stat-foot">بیشتر از صفر</div></div>
- </div>
- <div class="card">
-  <div class="card-head"><div><h3>خزانه کشورها</h3><p>بررسی موجودی مالی کشورها</p></div><button class="btn btn-primary" onclick="loadCountries()">↻ بروزرسانی</button></div>
-  <div class="filters"><input class="field search-field" id="economySearch" placeholder="جستجوی کشور..." oninput="filterEconomy()"></div>
-  <div class="table-wrap"><table><thead><tr><th>کشور</th><th>حاکم</th><th>موجودی</th><th>وضعیت</th></tr></thead><tbody id="economyTable"><tr><td colspan="4">در انتظار اطلاعات...</td></tr></tbody></table></div>
- </div>
- <div class="notice">افزایش و کاهش موجودی و انتقال پول بعد از پیاده‌سازی تابع امن سرور فعال می‌شود.</div>
-</section>
-
-<!-- MESSAGES -->
-<section class="page-section" id="page-messages">
- <div class="card">
-  <div class="card-head"><div><h3>مرکز پیام‌رسانی</h3><p>بخش آماده برای مدیریت پیام‌های بازی</p></div></div>
-  <div class="empty-state"><div class="empty-icon">✉</div><h3>مدیریت پیام‌ها</h3><p>برای نمایش پیام‌های موجود باید ساختار دقیق جدول game_messages بررسی شود.</p></div>
- </div>
- <div class="card">
-  <div class="card-head"><h3>ارسال پیام جدید</h3><span class="badge gold">در انتظار اتصال امن</span></div>
-  <div class="form-grid">
-   <div class="form-group"><label>نوع پیام</label><select class="field" id="messageType" disabled><option>پیام همگانی</option><option>پیام به یک جهان</option><option>پیام خصوصی</option></select></div>
-   <div class="form-group"><label>شناسه مقصد</label><input class="field" placeholder="شناسه جهان یا بازیکن" disabled></div>
-   <div class="form-group" style="grid-column:1/-1"><label>متن پیام</label><textarea class="field" rows="4" placeholder="متن پیام..." disabled></textarea></div>
-  </div>
-  <button class="btn btn-light" disabled style="margin-top:12px">ارسال پیام</button>
- </div>
-</section>
-
-<!-- RESOLUTIONS -->
-<section class="page-section" id="page-resolutions">
- <div class="card">
-  <div class="card-head"><div><h3>مرکز قطعنامه‌ها</h3><p>فضای مدیریت قطعنامه‌های جهان‌ها</p></div></div>
-  <div class="empty-state"><div class="empty-icon">▤</div><h3>ساختار جدول مشخص نشده است</h3><p>پس از بررسی جدول مربوط به قطعنامه‌ها، فهرست و ابزارهای مدیریت اینجا قرار می‌گیرند.</p></div>
- </div>
-</section>
-
-<!-- WARNINGS -->
-<section class="page-section" id="page-warnings">
- <div class="card">
-  <div class="card-head"><div><h3>مرکز هشدارها</h3><p>هشدارهای مدیریتی و سیستمی</p></div></div>
-  <div class="empty-state"><div class="empty-icon">⚑</div><h3>بخش هشدارها آماده توسعه است</h3><p>پس از مشخص‌شدن جدول هشدارها، داده‌های واقعی این بخش نمایش داده می‌شوند.</p></div>
- </div>
-</section>
-
-<!-- EVENTS -->
-<section class="page-section" id="page-events">
- <div class="card">
-  <div class="card-head"><div><h3>رویدادهای جهان</h3><p>آخرین رویدادهای ثبت‌شده</p></div><button class="btn btn-primary" onclick="loadLogs()">↻ بروزرسانی</button></div>
-  <div class="activity-list" id="eventsList"><div class="empty-state">در انتظار اطلاعات...</div></div>
- </div>
-</section>
-
-<!-- LOGS -->
-<section class="page-section" id="page-logs">
- <div class="card">
-  <div class="card-head"><div><h3>گزارش فعالیت‌ها</h3><p>سوابق ثبت‌شده در سامانه</p></div><button class="btn btn-primary" onclick="loadLogs()">↻ بروزرسانی</button></div>
-  <div class="filters"><input class="field search-field" id="logSearch" placeholder="جستجو در گزارش‌ها..." oninput="filterLogs()"></div>
-  <div class="activity-list" id="logsList"><div class="empty-state">در انتظار اطلاعات...</div></div>
- </div>
-</section>
-
-<!-- ADMINS -->
-<section class="page-section" id="page-admins">
- <div class="card">
-  <div class="card-head"><div><h3>مدیریت مدیران</h3><p>سطوح دسترسی و حساب‌های مدیریتی</p></div></div>
-  <div class="empty-state"><div class="empty-icon">♧</div><h3>مدیریت دسترسی‌ها</h3><p>برای امنیت بازی، افزودن و حذف مدیران باید از طریق احراز هویت و نقش‌های سمت سرور انجام شود.</p></div>
- </div>
-</section>
-
-<!-- SETTINGS -->
-<section class="page-section" id="page-settings">
- <div class="card">
-  <div class="card-head"><div><h3>تنظیمات سامانه</h3><p>وضعیت اتصال و مشخصات پنل</p></div><span class="badge blue">نسخه 2.0</span></div>
-  <div class="connection-card">
-   <div class="connection-line"><span>اتصال Supabase</span><span id="settingsConnection" class="badge gold">در حال بررسی</span></div>
-   <p id="settingsMessage">در حال بررسی وضعیت اتصال...</p>
-  </div>
-  <div style="margin-top:17px" class="form-group"><label>آدرس پروژه</label><input class="field" id="projectAddress" readonly></div>
-  <div style="margin-top:13px" class="form-group"><label>آخرین بروزرسانی</label><input class="field" id="lastUpdated" readonly value="—"></div>
-  <div style="margin-top:13px" class="form-group"><label>نسخه پنل</label><input class="field" readonly value="WORLD AT ARMS Command Center 2.0"></div>
- </div>
- <div class="card">
-  <div class="card-head"><h3>امنیت اطلاعات</h3><span class="badge green">کلید عمومی</span></div>
-  <div class="notice">این پنل از کلید عمومی Supabase استفاده می‌کند. کلید محرمانه سرویس نباید در فایل HTML یا مخزن عمومی GitHub قرار بگیرد.</div>
- </div>
-</section>
-
-<footer class="footer">WORLD AT ARMS · COMMAND CENTER · ساخته‌شده برای مدیریت جهان بازی</footer>
-</main>
-</div>
-<div class="toast" id="toast"></div>
-
+<style>
+#waa-command-center{font-family:Tahoma,Arial,sans-serif;direction:rtl;color:#263c59;background:#edf5ff;min-height:100vh;line-height:1.7;--blue:#548bd3;--dark:#243e60;--muted:#8395ad;--line:#e6edf6;--pale:#eaf3ff}
+#waa-command-center *{box-sizing:border-box}
+#waa-command-center button,#waa-command-center input,#waa-command-center select,#waa-command-center textarea{font:inherit}
+#waa-command-center button{cursor:pointer;transition:.2s}
+#waa-command-center button:focus-visible,#waa-command-center input:focus-visible,#waa-command-center textarea:focus-visible,#waa-command-center select:focus-visible{outline:3px solid #a9ccff;outline-offset:2px}
+#waa-command-center .waa-shell{display:flex;min-height:100vh;max-width:1600px;margin:auto;background:#f5f8fd}
+#waa-command-center .waa-sidebar{width:255px;flex-shrink:0;background:linear-gradient(165deg,#e1efff,#f0f6ff 55%,#e5f0ff);border-left:1px solid #dce8f6;padding:22px 16px;display:flex;flex-direction:column;min-height:100vh}
+#waa-command-center .waa-brand{display:flex;align-items:center;gap:12px;padding:8px 7px 25px;color:#294a72}
+#waa-command-center .waa-brand-icon{width:43px;height:43px;border-radius:15px;background:linear-gradient(145deg,#76a9ed,#4279c4);color:white;display:grid;place-items:center;font-size:23px;box-shadow:0 7px 17px #76a9ed55}
+#waa-command-center .waa-brand strong{display:block;font-size:13px;letter-spacing:.4px}
+#waa-command-center .waa-brand small{display:block;color:#8196b1;font-size:9px;letter-spacing:1.5px}
+#waa-command-center .waa-admin-card{background:#ffffffa8;border:1px solid #fff;border-radius:16px;padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:25px;box-shadow:0 5px 15px #7497bf12}
+#waa-command-center .waa-avatar,#waa-command-center .waa-top-avatar{width:37px;height:37px;border-radius:13px;background:#d7e9ff;color:#3e78bd;display:grid;place-items:center;font-weight:bold}
+#waa-command-center .waa-admin-card strong{display:block;font-size:12px}
+#waa-command-center .waa-admin-card small{display:block;color:#8798ae;font-size:10px}
+#waa-command-center .waa-online{width:8px;height:8px;background:#48bf8c;border-radius:50%;margin-right:auto;box-shadow:0 0 0 4px #48bf8c20}
+#waa-command-center .waa-menu-title{font-size:9px;color:#9aabc0;letter-spacing:1.4px;padding:0 12px 10px}
+#waa-command-center .waa-nav{display:grid;gap:5px}
+#waa-command-center .waa-nav button{border:0;background:transparent;color:#60758f;text-align:right;padding:11px 12px;border-radius:12px;font-size:12px;display:flex;align-items:center;gap:12px}
+#waa-command-center .waa-nav button span{width:20px;text-align:center;font-size:16px}
+#waa-command-center .waa-nav button:hover{background:#ffffffa8;color:#376fac}
+#waa-command-center .waa-nav button.active{background:linear-gradient(100deg,#6e9fdf,#4d83cb);color:white;box-shadow:0 6px 15px #5b8dcc40}
+#waa-command-center .waa-sidebar-bottom{margin-top:auto;padding:20px 8px 5px;color:#91a1b5}
+#waa-command-center .waa-server-status{display:flex;align-items:center;gap:8px;font-size:10px;margin-bottom:12px}
+#waa-command-center .waa-server-status i{width:8px;height:8px;border-radius:50%;background:#45c18d}
+#waa-command-center .waa-sidebar-bottom small{font-size:8px;letter-spacing:.7px}
+#waa-command-center .waa-main{min-width:0;flex:1}
+#waa-command-center .waa-topbar{height:82px;padding:0 32px;background:#ffffffd9;border-bottom:1px solid #e8eef6;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5;backdrop-filter:blur(12px)}
+#waa-command-center .waa-breadcrumb{font-size:9px;color:#a0aec0;letter-spacing:1px}
+#waa-command-center .waa-breadcrumb b{color:#648dc0}
+#waa-command-center .waa-topbar h2{font-size:17px;margin:3px 0 0;color:#2d4666}
+#waa-command-center .waa-top-actions{display:flex;align-items:center;gap:13px}
+#waa-command-center .waa-date{font-size:11px;color:#8495aa;direction:ltr}
+#waa-command-center .waa-icon-btn{width:35px;height:35px;border:1px solid #e4ecf6;border-radius:11px;background:white;color:#5a82b4}
+#waa-command-center .waa-icon-btn:hover{background:#eaf3ff}
+#waa-command-center .waa-content{padding:27px 32px;max-width:1400px;margin:auto}
+#waa-command-center .waa-page{display:none;animation:waaFade .25s ease}
+#waa-command-center .waa-page.active{display:block}
+@keyframes waaFade{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
+#waa-command-center .waa-welcome{border-radius:22px;padding:27px 30px;background:linear-gradient(110deg,#dcecff,#eef6ff 65%,#dceaff);display:flex;align-items:center;justify-content:space-between;overflow:hidden;margin-bottom:20px;border:1px solid #fff}
+#waa-command-center .waa-eyebrow{font-size:9px;letter-spacing:1.8px;color:#6792c5;font-weight:bold}
+#waa-command-center .waa-welcome h1{font-size:25px;color:#294b73;margin:5px 0}
+#waa-command-center .waa-welcome p{font-size:12px;color:#8095af;margin:0}
+#waa-command-center .waa-welcome-symbol{font-size:60px;opacity:.75;margin-left:20px}
+#waa-command-center .waa-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:19px}
+#waa-command-center .waa-stat,#waa-command-center .waa-panel{background:white;border:1px solid #e8eef6;border-radius:17px;box-shadow:0 5px 20px #42658b08}
+#waa-command-center .waa-stat{padding:17px 19px}
+#waa-command-center .waa-stat-top{display:flex;align-items:center;justify-content:space-between;color:#8091a8;font-size:11px}
+#waa-command-center .waa-stat-top b{width:31px;height:31px;display:grid;place-items:center;background:#edf5ff;border-radius:10px;font-size:15px}
+#waa-command-center .waa-stat>strong{display:block;font-size:27px;color:#355b89;margin:9px 0 0;direction:ltr;text-align:right}
+#waa-command-center .waa-stat small{font-size:9px;color:#a2afbf}
+#waa-command-center .waa-grid-two{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-bottom:18px}
+#waa-command-center .waa-panel{padding:20px;margin-bottom:17px;min-width:0}
+#waa-command-center .waa-grid-two .waa-panel{margin-bottom:0}
+#waa-command-center .waa-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:17px}
+#waa-command-center .waa-panel-head h3{font-size:14px;color:#344f70;margin:0}
+#waa-command-center .waa-panel-head p{font-size:10px;color:#9aa8b9;margin:3px 0 0}
+#waa-command-center .waa-pill{font-size:8px;letter-spacing:1px;color:#6b91bf;background:#edf5ff;padding:6px 9px;border-radius:20px;white-space:nowrap}
+#waa-command-center .waa-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#waa-command-center .waa-quick-grid button{border:1px solid #e8eff8;border-radius:13px;background:#f8fbff;padding:13px 10px;display:flex;align-items:center;gap:10px;color:#5d7491;font-size:10px;text-align:right}
+#waa-command-center .waa-quick-grid button:hover{border-color:#9fc4ef;background:#eef6ff;transform:translateY(-2px)}
+#waa-command-center .waa-quick-grid b{width:29px;height:29px;display:grid;place-items:center;border-radius:9px;background:#e1eeff;color:#4f83c5;font-size:16px}
+#waa-command-center .waa-system-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f3f8;font-size:11px;color:#71849c}
+#waa-command-center .waa-system-row:last-child{border:0}
+#waa-command-center .waa-good{color:#35a97d}.waa-neutral{color:#a18b55}
+#waa-command-center .waa-text-btn{border:0;background:transparent;color:#5687c4;font-size:10px}
+#waa-command-center .waa-section-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:19px}
+#waa-command-center .waa-section-head h2{font-size:19px;margin:0;color:#2e496b}
+#waa-command-center .waa-section-head p{font-size:11px;color:#91a1b5;margin:4px 0 0}
+#waa-command-center .waa-primary,#waa-command-center .waa-secondary,#waa-command-center .waa-danger,#waa-command-center .waa-danger-outline{border:0;border-radius:11px;padding:10px 16px;font-size:11px;font-weight:bold}
+#waa-command-center .waa-primary{background:linear-gradient(110deg,#6c9edf,#4c83cb);color:white;box-shadow:0 5px 12px #6698d52c}
+#waa-command-center .waa-primary:hover{filter:brightness(1.05);transform:translateY(-1px)}
+#waa-command-center .waa-secondary{background:#edf4fc;color:#587ba5;border:1px solid #e2ebf6}
+#waa-command-center .waa-secondary:hover{background:#e1edfb}
+#waa-command-center .waa-danger{background:#fff0f0;color:#cb6666}
+#waa-command-center .waa-danger-outline{background:white;color:#cb6969;border:1px solid #f0dada}
+#waa-command-center .waa-toolbar{display:flex;gap:9px;margin-bottom:15px}
+#waa-command-center input,#waa-command-center select,#waa-command-center textarea{border:1px solid #e2eaf4;background:#fbfdff;border-radius:10px;padding:10px 12px;color:#425b79;font-size:11px;min-width:0}
+#waa-command-center .waa-toolbar input{flex:1}
+#waa-command-center input::placeholder,#waa-command-center textarea::placeholder{color:#a9b5c4}
+#waa-command-center .waa-table-wrap{overflow-x:auto}
+#waa-command-center table{border-collapse:collapse;width:100%;font-size:11px;min-width:560px}
+#waa-command-center th{background:#f5f8fc;color:#8999ad;font-weight:normal;text-align:right;padding:12px 10px;white-space:nowrap}
+#waa-command-center td{padding:12px 10px;border-bottom:1px solid #f0f3f8;color:#536a85;vertical-align:middle}
+#waa-command-center tr:last-child td{border-bottom:0}
+#waa-command-center .waa-table-actions{display:flex;gap:5px;flex-wrap:wrap}
+#waa-command-center .waa-mini-btn{border:1px solid #e5edf6;background:#f7faff;color:#6384aa;border-radius:8px;padding:5px 8px;font-size:9px}
+#waa-command-center .waa-mini-btn:hover{background:#e8f2ff}
+#waa-command-center .waa-mini-btn.danger{color:#c76a6a;background:#fff7f7}
+#waa-command-center .waa-empty{text-align:center;padding:35px 10px;color:#a1afbf;font-size:11px}
+#waa-command-center .waa-tag{display:inline-block;background:#edf5ff;color:#5c88bb;border-radius:20px;padding:4px 8px;font-size:9px}
+#waa-command-center .waa-note{font-size:10px;color:#9a8b68;background:#fffaf0;border:1px solid #f4ead1;border-radius:10px;padding:11px 13px;margin:12px 0}
+#waa-command-center .waa-label{display:block;font-size:10px;color:#70849d;margin:13px 0 6px}
+#waa-command-center .waa-field{width:100%;margin-bottom:5px}
+#waa-command-center .waa-full{width:100%;margin-top:10px}
+#waa-command-center .waa-api-result{font-size:10px;color:#8496ab;margin-top:12px}
+#waa-command-center .waa-footer{padding:15px 32px;border-top:1px solid #e8eef6;color:#9aabc0;font-size:9px;letter-spacing:1px;display:flex;justify-content:space-between}
+#waa-command-center .waa-footer span{letter-spacing:.5px}
+#waa-command-center .waa-modal-backdrop{display:none;position:fixed;inset:0;background:#1e355477;z-index:50;align-items:center;justify-content:center;padding:15px;backdrop-filter:blur(4px)}
+#waa-command-center .waa-modal-backdrop.open{display:flex}
+#waa-command-center .waa-modal{background:white;border-radius:20px;width:min(490px,100%);max-height:90vh;overflow:auto;padding:22px;box-shadow:0 20px 70px #1c385544}
+#waa-command-center .waa-modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+#waa-command-center .waa-modal-head h3{font-size:17px;color:#304d70;margin:3px 0}
+#waa-command-center .waa-modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:20px}
+#waa-command-center .waa-modal textarea{width:100%;min-height:90px;resize:vertical}
+#waa-command-center .waa-modal input,#waa-command-center .waa-modal select{width:100%}
+#waa-command-center .waa-toast{position:fixed;bottom:22px;left:22px;z-index:80;background:#294b70;color:white;padding:12px 18px;border-radius:12px;font-size:11px;box-shadow:0 8px 25px #294b7040;opacity:0;transform:translateY(12px);pointer-events:none;transition:.25s}
+#waa-command-center .waa-toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:900px){#waa-command-center .waa-sidebar{width:210px;padding:16px 10px}#waa-command-center .waa-content{padding:20px}#waa-command-center .waa-stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){#waa-command-center .waa-shell{display:block}#waa-command-center .waa-sidebar{width:100%;min-height:0;padding:12px;position:relative}#waa-command-center .waa-brand{padding:4px 5px 12px}#waa-command-center .waa-admin-card{margin-bottom:10px}#waa-command-center .waa-menu-title,#waa-command-center .waa-sidebar-bottom{display:none}#waa-command-center .waa-nav{display:flex;overflow-x:auto;padding-bottom:5px;gap:5px}#waa-command-center .waa-nav button{white-space:nowrap;padding:9px 11px;font-size:10px}#waa-command-center .waa-nav button span{font-size:14px}#waa-command-center .waa-topbar{height:68px;padding:0 15px}#waa-command-center .waa-topbar h2{font-size:14px}#waa-command-center .waa-content{padding:15px}#waa-command-center .waa-grid-two{grid-template-columns:1fr}#waa-command-center .waa-section-head{align-items:flex-start;flex-direction:column}#waa-command-center .waa-section-head .waa-primary{width:100%}#waa-command-center .waa-welcome{padding:20px}#waa-command-center .waa-welcome h1{font-size:20px}#waa-command-center .waa-welcome-symbol{font-size:40px}#waa-command-center .waa-footer{padding:13px 15px;font-size:8px}#waa-command-center .waa-toolbar{flex-wrap:wrap}#waa-command-center .waa-toolbar input{flex-basis:100%}}
+                                    </style>
+ 
 <script>
-/* =====================================
-   WORLD AT ARMS - SUPABASE CONNECTION
-===================================== */
+(function(){
+"use strict";
+const root=document.getElementById("waa-command-center");
+if(!root || root.dataset.started==="yes")return;
+root.dataset.started="yes";
 
-const SUPABASE_URL = "https://hgaliwladnrtfdkwbtzz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
+const $=id=>document.getElementById("waa-"+id);
+const key="waa_command_center_v2";
+const initial={worlds:[],countries:[],players:[],messages:[],warnings:[],resolutions:[],admins:[],logs:[],settings:{api:"",health:"/health"}};
+let db;
+try{db=JSON.parse(localStorage.getItem(key))||initial}catch(e){db=initial}
+Object.keys(initial).forEach(k=>{if(db[k]===undefined)db[k]=initial[k]});
+let modalMode="",editingId=null,toastTimer=null;
 
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=v=>Number(v||0).toLocaleString("en-US");
+const now=()=>new Date().toLocaleString("fa-IR");
 
-let worldsData = [];
-let countriesData = [];
-let logsData = [];
-let connected = false;
+function save(){
+ try{localStorage.setItem(key,JSON.stringify(db));$("last-update").textContent=now()}
+ catch(e){notify("فضای ذخیره‌سازی مرورگر کافی نیست.")}
+}
+function log(action,detail){
+ db.logs.unshift({id:uid(),action,detail,time:now()});
+ db.logs=db.logs.slice(0,300);
+ save();
+}
+function notify(message){
+ const t=$("toast");t.textContent=message;t.classList.add("show");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>t.classList.remove("show"),2800);
+}
+function empty(text){return '<div class="waa-empty">'+esc(text)+'</div>'}
+function table(headers,rows){
+ if(!rows.length)return empty("هنوز اطلاعاتی ثبت نشده است.");
+ return '<div class="waa-table-wrap"><table><thead><tr>'+headers.map(x=>'<th>'+x+'</th>').join("")+'</tr></thead><tbody>'+rows.join("")+'</tbody></table></div>';
+}
+function actionButtons(type,id){
+ return '<div class="waa-table-actions"><button class="waa-mini-btn" data-edit="'+type+'" data-id="'+esc(id)+'">ویرایش</button><button class="waa-mini-btn danger" data-delete="'+type+'" data-id="'+esc(id)+'">حذف</button></div>';
+}
+function worldName(id){return db.worlds.find(x=>x.id===id)?.name||"بدون جهان"}
+function countryName(id){return db.countries.find(x=>x.id===id)?.name||"نامشخص"}
 
-const $ = id => document.getElementById(id);
-
-function safe(value) {
- return String(value ?? "—").replace(/[&<>"']/g, c => ({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- }[c]));
+function refreshStats(){
+ $("stat-worlds").textContent=db.worlds.length;
+ $("stat-countries").textContent=db.countries.length;
+ $("stat-players").textContent=db.players.length;
+ $("stat-messages").textContent=db.messages.length;
+ $("recent-logs").innerHTML=db.logs.length?
+ table(["عملیات","جزئیات","زمان"],db.logs.slice(0,5).map(x=>'<tr><td><b>'+esc(x.action)+'</b></td><td>'+esc(x.detail)+'</td><td>'+esc(x.time)+'</td></tr>')):
+ empty("هنوز فعالیتی ثبت نشده است.");
+}
+function renderWorlds(){
+ const q=($("world-search")?.value||"").trim().toLowerCase();
+ const list=db.worlds.filter(x=>x.name.toLowerCase().includes(q));
+ $("world-list").innerHTML=table(["نام جهان","شناسه","تعداد کشور","وضعیت","عملیات"],list.map(w=>'<tr><td><b>'+esc(w.name)+'</b></td><td>'+esc(w.id)+'</td><td>'+db.countries.filter(c=>c.worldId===w.id).length+'</td><td><span class="waa-tag">'+esc(w.status||"فعال")+'</span></td><td><div class="waa-table-actions"><button class="waa-mini-btn" data-reset-world="'+esc(w.id)+'">ریست آزمایشی</button>'+actionButtons("world",w.id)+'</div></td></tr>'));
+}
+function renderCountryFilter(){
+ const old=$("country-filter").value;
+ $("country-filter").innerHTML='<option value="">همه جهان‌ها</option>'+db.worlds.map(w=>'<option value="'+esc(w.id)+'">'+esc(w.name)+'</option>').join("");
+ $("country-filter").value=old;
+}
+function renderCountries(){
+ const q=($("country-search")?.value||"").trim().toLowerCase();
+ const f=$("country-filter").value;
+ const list=db.countries.filter(c=>(!f||c.worldId===f)&&((c.name+" "+(c.owner||"")).toLowerCase().includes(q)));
+ $("country-list").innerHTML=table(["کشور","جهان","مالک","موجودی","وضعیت","عملیات"],list.map(c=>'<tr><td><b>'+esc(c.name)+'</b></td><td>'+esc(worldName(c.worldId))+'</td><td>'+esc(c.owner||"—")+'</td><td>'+money(c.balance)+'</td><td><span class="waa-tag">'+esc(c.status||"فعال")+'</span></td><td><div class="waa-table-actions"><button class="waa-mini-btn" data-money="'+esc(c.id)+'">تغییر موجودی</button><button class="waa-mini-btn" data-reset-country="'+esc(c.id)+'">ریست</button>'+actionButtons("country",c.id)+'</div></td></tr>'));
+}
+function renderPlayers(){
+ const q=($("player-search")?.value||"").trim().toLowerCase();
+ const list=db.players.filter(p=>(p.name+" "+countryName(p.countryId)).toLowerCase().includes(q));
+ $("player-list").innerHTML=table(["بازیکن","کشور","شناسه","IP ثبت‌شده","عملیات"],list.map(p=>'<tr><td><b>'+esc(p.name)+'</b></td><td>'+esc(countryName(p.countryId))+'</td><td>'+esc(p.id)+'</td><td>'+esc(p.ip||"ثبت نشده")+'</td><td>'+actionButtons("player",p.id)+'</td></tr>'));
+}
+function renderEconomy(){
+ $("economy-list").innerHTML=table(["کشور","جهان","موجودی","عملیات"],db.countries.map(c=>'<tr><td><b>'+esc(c.name)+'</b></td><td>'+esc(worldName(c.worldId))+'</td><td>'+money(c.balance)+'</td><td><button class="waa-mini-btn" data-money="'+esc(c.id)+'">تغییر موجودی</button></td></tr>'));
+}
+function renderMessages(){
+ $("message-list").innerHTML=table(["نوع","مقصد","متن پیام","زمان","عملیات"],db.messages.map(m=>'<tr><td><span class="waa-tag">'+esc(m.type)+'</span></td><td>'+esc(m.target||"همگانی")+'</td><td>'+esc(m.text)+'</td><td>'+esc(m.time)+'</td><td><button class="waa-mini-btn danger" data-delete="message" data-id="'+esc(m.id)+'">حذف</button></td></tr>'));
+}
+function renderWarnings(){
+ $("warning-list").innerHTML=table(["کشور","سطح","متن هشدار","زمان","عملیات"],db.warnings.map(w=>'<tr><td>'+esc(countryName(w.countryId))+'</td><td><span class="waa-tag">'+esc(w.level)+'</span></td><td>'+esc(w.text)+'</td><td>'+esc(w.time)+'</td><td><button class="waa-mini-btn danger" data-delete="warning" data-id="'+esc(w.id)+'">حذف</button></td></tr>'));
+}
+function renderResolutions(){
+ $("resolution-list").innerHTML=table(["عنوان","جهان","وضعیت","توضیحات","عملیات"],db.resolutions.map(r=>'<tr><td><b>'+esc(r.title)+'</b></td><td>'+esc(worldName(r.worldId))+'</td><td><span class="waa-tag">'+esc(r.status)+'</span></td><td>'+esc(r.description)+'</td><td>'+actionButtons("resolution",r.id)+'</td></tr>'));
+}
+function renderAdmins(){
+ $("admin-list").innerHTML=table(["نام مدیر","شناسه","سطح دسترسی","وضعیت","عملیات"],db.admins.map(a=>'<tr><td><b>'+esc(a.name)+'</b></td><td>'+esc(a.username)+'</td><td>'+esc(a.role)+'</td><td><span class="waa-tag">ثبت‌شده</span></td><td>'+actionButtons("admin",a.id)+'</td></tr>'));
+}
+function renderLogs(){
+ $("log-list").innerHTML=table(["عملیات","جزئیات","زمان"],db.logs.map(x=>'<tr><td><b>'+esc(x.action)+'</b></td><td>'+esc(x.detail)+'</td><td>'+esc(x.time)+'</td></tr>'));
+}
+function render(){
+ refreshStats();renderWorlds();renderCountryFilter();renderCountries();
+ renderPlayers();renderEconomy();renderMessages();renderWarnings();
+ renderResolutions();renderAdmins();renderLogs();
 }
 
-function fmt(value) {
- return Number(value || 0).toLocaleString("fa-IR");
+const titles={
+ overview:["داشبورد مدیریتی","DASHBOARD"],worlds:["مدیریت جهان‌ها","WORLDS"],
+ countries:["مدیریت کشورها","COUNTRIES"],players:["بازیکنان و IP","PLAYERS"],
+ economy:["اقتصاد و منابع","ECONOMY"],messages:["مرکز پیام‌ها","MESSAGES"],
+ warnings:["مرکز هشدارها","WARNINGS"],resolutions:["مدیریت قطعنامه‌ها","RESOLUTIONS"],
+ admins:["مدیران سیستم","ADMINS"],logs:["گزارش فعالیت‌ها","ACTIVITY LOGS"],
+ settings:["تنظیمات و سرور","SETTINGS"]
+};
+function page(name){
+ if(!titles[name])return;
+ root.querySelectorAll(".waa-page").forEach(p=>p.classList.remove("active"));
+ $("page-"+name).classList.add("active");
+ root.querySelectorAll(".waa-nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+ $("page-title").textContent=titles[name][0];
+ $("breadcrumb").textContent=titles[name][1];
+ render();
 }
-
-function dateFmt(value) {
- if (!value) return "—";
- const d = new Date(value);
- return isNaN(d.getTime()) ? "—" : d.toLocaleString("fa-IR");
+function field(name,label,type="text",value="",options=null,placeholder=""){
+ let html='<label class="waa-label">'+label+'</label>';
+ if(type==="textarea")return html+'<textarea name="'+name+'" placeholder="'+esc(placeholder)+'">'+esc(value)+'</textarea>';
+ if(type==="select"){
+ return html+'<select name="'+name+'">'+(options||[]).map(o=>'<option value="'+esc(o.value)+'" '+(String(o.value)===String(value)?"selected":"")+'>'+esc(o.label)+'</option>').join("")+'</select>';
+ }
+ return html+'<input name="'+name+'" type="'+type+'" value="'+esc(value)+'" placeholder="'+esc(placeholder)+'">';
 }
-
-function toast(message) {
- const el = $("toast");
- el.textContent = message;
- el.classList.add("show");
- clearTimeout(window.toastTimeout);
- window.toastTimeout = setTimeout(() => el.classList.remove("show"), 3000);
+function worldOptions(){return db.worlds.map(w=>({value:w.id,label:w.name}))}
+function countryOptions(){return db.countries.map(c=>({value:c.id,label:c.name}))}
+function openModal(title,fields,mode,id){
+ modalMode=mode;editingId=id||null;
+ $("modal-title").textContent=title;
+ $("modal-fields").innerHTML=fields;
+ $("modal-backdrop").classList.add("open");
 }
-
-function setText(id, value) {
- const el = $(id);
- if (el) el.textContent = value;
+function closeModal(){
+ $("modal-backdrop").classList.remove("open");
+ $("modal-form").reset();modalMode="";editingId=null;
 }
-
-function tableMessage(id, message, columns) {
- const el = $(id);
- if (el) el.innerHTML =
-  `<tr><td colspan="${columns}">${safe(message)}</td></tr>`;
+function findItem(type,id){
+ const map={world:"worlds",country:"countries",player:"players",resolution:"resolutions",admin:"admins"};
+ return map[type]?db[map[type]].find(x=>x.id===id):null;
 }
+function openForm(mode,id){
+ const item=id?findItem(mode,id):null;
+ let f="",title="";
+ if(mode==="world"){
+ title=item?"ویرایش جهان":"ساخت جهان جدید";
+ f=field("name","نام جهان","text",item?.name||"","", "مثلاً World 1936")+
+ field("status","وضعیت","select",item?.status||"فعال",[{value:"فعال",label:"فعال"},{value:"متوقف",label:"متوقف"},{value:"پایان‌یافته",label:"پایان‌یافته"}]);
+ }
+ if(mode==="country"){
+ if(!db.worlds.length){notify("اول یک جهان بساز.");return}
+ title=item?"ویرایش کشور":"ثبت کشور جدید";
+ f=field("name","نام کشور","text",item?.name||"","", "مثلاً Iran")+
+ field("worldId","جهان","select",item?.worldId||db.worlds[0].id,worldOptions())+
+ field("owner","نام مالک / بازیکن","text",item?.owner||"")+
+ field("balance","موجودی اولیه","number",item?.balance??0)+
+ field("status","وضعیت","select",item?.status||"فعال",[{value:"فعال",label:"فعال"},{value:"غیرفعال",label:"غیرفعال"}]);
+ }
+ if(mode==="player"){
+ title=item?"ویرایش بازیکن":"ثبت بازیکن";
+ f=field("name","نام بازیکن","text",item?.name||"")+
+ field("countryId","کشور","select",item?.countryId||"",countryOptions())+
+ field("ip","IP ثبت‌شده (اختیاری)","text",item?.ip||"","", "فقط اطلاعات مجاز دریافتی از سرور");
+ }
+ if(mode==="message"){
+ title="ارسال پیام";
+ f=field("type","نوع پیام","select","خصوصی",[{value:"خصوصی",label:"خصوصی"},{value:"همگانی",label:"همگانی"}])+
+ field("target","مقصد / نام کشور","text","","","برای پیام همگانی خالی بگذار")+
+ field("text","متن پیام","textarea","","", "متن پیام را بنویس...");
+ }
+ if(mode==="warning"){
+ title="ثبت هشدار";
+ f=field("countryId","کشور مقصد","select",db.countries[0]?.id||"",countryOptions())+
+ field("level","سطح هشدار","select","عادی",[{value:"عادی",label:"عادی"},{value:"مهم",label:"مهم"},{value:"جدی",label:"جدی"}])+
+ field("text","متن هشدار","textarea","","","متن هشدار...");
+ }
+ if(mode==="resolution"){
+ title=item?"ویرایش قطعنامه":"ثبت قطعنامه";
+ if(!db.worlds.length){notify("ابتدا یک جهان بساز.");return}
+ f=field("title","عنوان قطعنامه","text",item?.title||"")+
+ field("worldId","جهان","select",item?.worldId||db.worlds[0].id,worldOptions())+
+ field("status","وضعیت","select",item?.status||"در حال بررسی",[{value:"در حال بررسی",label:"در حال بررسی"},{value:"تأییدشده",label:"تأییدشده"},{value:"ردشده",label:"ردشده"}])+
+ field("description","توضیحات","textarea",item?.description||"");
+ }
+ if(mode==="admin"){
+ title=item?"ویرایش مدیر":"افزودن مدیر";
+ f=field("name","نام مدیر","text",item?.name||"")+
+ field("username","شناسه مدیر","text",item?.username||"")+
+ field("role","سطح دسترسی","select",item?.role||"مدیر محدود",[{value:"مدیر کل",label:"مدیر کل"},{value:"مدیر جهان",label:"مدیر جهان"},{value:"مدیر محدود",label:"مدیر محدود"}]);
+ }
+ if(mode==="money"){
+ const country=id?db.countries.find(c=>c.id===id):null;
+ if(!country&&!db.countries.length){notify("ابتدا کشور ثبت کن.");return}
+ title="مدیریت موجودی کشور";
+ f=field("countryId","کشور","select",country?.id||db.countries[0].id,countryOptions())+
+ field("operation","نوع عملیات","select","add",[{value:"add",label:"افزایش موجودی"},{value:"subtract",label:"کاهش موجودی"},{value:"set",label:"تنظیم موجودی"}])+
+ field("amount","مقدار","number","0")+
+ field("reason","دلیل عملیات","text","","","توضیح کوتاه");
+ }
+ if(mode==="reset"){
+ const c=db.countries.find(x=>x.id===id);if(!c)return;
+ if(!confirm("موجودی آزمایشی کشور "+c.name+" به صفر تغییر کند؟"))return;
+ c.balance=0;log("ریست موجودی",c.name+" — موجودی به صفر رسید");
+ render();notify("موجودی محلی کشور صفر شد.");return;
+ }
+ if(mode==="resetWorld"){
+ const w=db.worlds.find(x=>x.id===id);if(!w)return;
+ if(!confirm("موجودی آزمایشی تمام کشورهای جهان "+w.name+" صفر شود؟"))return;
+ db.countries.filter(c=>c.worldId===id).forEach(c=>c.balance=0);
+ log("ریست آزمایشی جهان",w.name+" — موجودی کشورها صفر شد");
+ render();notify("ریست آزمایشی انجام شد.");return;
+ }
+ if(!f)return;
+ openModal(title,f,mode,id);
+}
+ 
+function submitForm(e){
+ e.preventDefault();
+ const data=Object.fromEntries(new FormData(e.target).entries());
+ const mode=modalMode;
 
-function setConnection(ok, message) {
- connected = ok;
+ if(["world","country","player","resolution","admin"].includes(mode)){
+  if(!data.name && mode!=="resolution"){notify("نام را وارد کن.");return}
+  if(mode==="resolution"&&!data.title){notify("عنوان قطعنامه را وارد کن.");return}
+  if(mode==="country"&&!data.worldId){notify("جهان را انتخاب کن.");return}
+  if(mode==="player"&&!data.countryId){notify("کشور بازیکن را انتخاب کن.");return}
 
- const badge = $("connectionBadge");
- const settings = $("settingsConnection");
- const dot = $("sideStatus");
+  const map={world:"worlds",country:"countries",player:"players",resolution:"resolutions",admin:"admins"};
+  const collection=db[map[mode]];
 
- if (badge) {
-  badge.textContent = ok ? "متصل" : "خطا در اتصال";
-  badge.className = "badge " + (ok ? "green" : "red");
+  if(editingId){
+   const old=collection.find(x=>x.id===editingId);
+   if(old)Object.assign(old,data);
+   log("ویرایش "+mode,data.name||data.title||"اطلاعات");
+  }else{
+   data.id=uid();
+   if(mode==="country")data.balance=Number(data.balance||0);
+   collection.unshift(data);
+   log("ثبت "+mode,data.name||data.title||"اطلاعات جدید");
+  }
  }
 
- if (settings) {
-  settings.textContent = ok ? "متصل" : "ناموفق";
-  settings.className = "badge " + (ok ? "green" : "red");
+ if(mode==="message"){
+  if(!data.text?.trim()){notify("متن پیام را وارد کن.");return}
+  if(data.type==="خصوصی"&&!data.target?.trim()){notify("مقصد پیام خصوصی را مشخص کن.");return}
+  db.messages.unshift({id:uid(),...data,time:now()});
+  log("ثبت پیام",data.type+" — "+(data.target||"همگانی"));
  }
 
- if (dot) dot.className = "dot " + (ok ? "online" : "");
+ if(mode==="warning"){
+  if(!data.countryId||!data.text?.trim()){notify("کشور و متن هشدار را وارد کن.");return}
+  db.warnings.unshift({id:uid(),...data,time:now()});
+  log("ثبت هشدار",countryName(data.countryId));
+ }
 
- setText("connectionMessage", message);
- setText("settingsMessage", message);
- setText("sideStatusText", ok ? "ارتباط با پایگاه داده برقرار است." : "اتصال یا دسترسی به جدول نیازمند بررسی است.");
- setText("projectAddress", SUPABASE_URL);
- setText("lastUpdated", dateFmt(new Date()));
-}
+ if(mode==="money"){
+  const c=db.countries.find(x=>x.id===data.countryId);
+  const amount=Number(data.amount);
+  if(!c||!Number.isFinite(amount)||amount<0){notify("مقدار واردشده معتبر نیست.");return}
 
-async function testConnection() {
- try {
-  const { error } = await db.from("worlds").select("id").limit(1);
+  if(data.operation==="add")c.balance=Number(c.balance||0)+amount;
 
-  if (error) {
-   setConnection(false, "پاسخ سرور دریافت شد اما خواندن جدول worlds با خطا مواجه شد: " + error.message);
-   return false;
+  if(data.operation==="subtract"){
+   if(amount>Number(c.balance||0)){notify("موجودی برای این کاهش کافی نیست.");return}
+   c.balance=Number(c.balance||0)-amount;
   }
 
-  setConnection(true, "اتصال موفق است. جدول جهان‌ها قابل خواندن است.");
-  return true;
- } catch (error) {
-  setConnection(false, "خطای ارتباط: " + error.message);
-  return false;
- }
-}
-
-/* NAVIGATION */
-
-const pageInfo = {
- dashboard:["داشبورد مدیریتی","مرکز فرماندهی و نظارت بر جهان بازی"],
- worlds:["مدیریت جهان‌ها","مشاهده جهان‌های ثبت‌شده"],
- countries:["مدیریت کشورها","کشورها، حاکمان و وضعیت آن‌ها"],
- players:["مدیریت بازیکنان","فهرست بازیکنان و اطلاعات آن‌ها"],
- economy:["اقتصاد و خزانه","بررسی موجودی مالی کشورها"],
- messages:["مرکز پیام‌رسانی","مدیریت ارتباطات بازی"],
- resolutions:["مدیریت قطعنامه‌ها","قطعنامه‌های جهان‌ها"],
- warnings:["مرکز هشدارها","هشدارهای مدیریتی و سیستمی"],
- events:["رویدادهای بازی","آخرین رویدادهای ثبت‌شده"],
- logs:["گزارش فعالیت‌ها","سوابق فعالیت‌های سامانه"],
- admins:["مدیریت مدیران","دسترسی‌های مدیریتی"],
- settings:["تنظیمات سامانه","مشخصات اتصال و نسخه پنل"]
-};
-
-function navigateTo(page) {
- if (!pageInfo[page]) return;
-
- document.querySelectorAll(".page-section").forEach(section => {
-  section.classList.toggle("active", section.id === "page-" + page);
- });
-
- document.querySelectorAll(".nav-link").forEach(link => {
-  link.classList.toggle("active", link.dataset.page === page);
- });
-
- setText("pageTitle", pageInfo[page][0]);
- setText("pageSubtitle", pageInfo[page][1]);
-
- $("sidebar")?.classList.remove("open");
-
- if (page === "worlds") loadWorlds();
- if (page === "countries" || page === "players" || page === "economy") loadCountries();
- if (page === "logs" || page === "events") loadLogs();
-}
-
-document.querySelectorAll(".nav-link").forEach(link => {
- link.addEventListener("click", () => navigateTo(link.dataset.page));
-});
-
-$("menuToggle")?.addEventListener("click", () => {
- $("sidebar").classList.toggle("open");
-});
-
-$("refreshButton")?.addEventListener("click", refreshAll);
-
-/* WORLDS */
-
-async function loadWorlds() {
- tableMessage("worldsTable", "در حال دریافت اطلاعات...", 4);
-
- const { data, error } = await db
-  .from("worlds")
-  .select("id,name,description,status,created_at")
-  .order("created_at", { ascending:false });
-
- if (error) {
-  tableMessage("worldsTable", "خطا: " + error.message, 4);
-  return;
+  if(data.operation==="set")c.balance=amount;
+  log("تغییر موجودی",c.name+" — "+data.operation+" "+amount+" — "+(data.reason||"بدون توضیح"));
  }
 
- worldsData = data || [];
- renderWorlds(worldsData);
- updateStats();
+ save();
+ closeModal();
+ render();
+ notify("اطلاعات با موفقیت در پنل ذخیره شد.");
 }
 
-function renderWorlds(items) {
- const target = $("worldsTable");
- if (!target) return;
+function deleteItem(type,id){
+ const map={world:"worlds",country:"countries",player:"players",resolution:"resolutions",admin:"admins",message:"messages",warning:"warnings"};
+ const collection=db[map[type]];
+ if(!collection)return;
 
- if (!items.length) {
-  tableMessage("worldsTable", "جهانی ثبت نشده است.", 4);
-  return;
+ const item=collection.find(x=>x.id===id);
+ if(!item)return;
+ if(!confirm("از حذف این مورد مطمئنی؟"))return;
+
+ if(type==="world"){
+  db.countries=db.countries.filter(c=>c.worldId!==id);
  }
 
- target.innerHTML = items.map(w => `
-  <tr>
-   <td><strong>${safe(w.name)}</strong></td>
-   <td>${safe(w.description || "—")}</td>
-   <td><span class="badge ${String(w.status).toLowerCase().includes("active") ? "green" : "blue"}">${safe(w.status)}</span></td>
-   <td>${safe(dateFmt(w.created_at))}</td>
-  </tr>
- `).join("");
+ collection.splice(collection.findIndex(x=>x.id===id),1);
+ log("حذف "+type,item.name||item.title||item.text||"مورد");
+ save();
+ render();
+ notify("مورد حذف شد.");
 }
 
-function filterWorlds() {
- const q = ($("worldSearch")?.value || "").trim().toLowerCase();
- renderWorlds(worldsData.filter(w =>
-  String(w.name || "").toLowerCase().includes(q) ||
-  String(w.description || "").toLowerCase().includes(q)
- ));
+function showPageAction(action,id){
+ const map={
+  "create-world":"world",
+  "create-country":"country",
+  "create-player":"player",
+  "send-message":"message",
+  "add-warning":"warning",
+  "create-resolution":"resolution",
+  "create-admin":"admin",
+  "money":"money"
+ };
+
+ if(action==="money")openForm("money",id);
+ else if(map[action])openForm(map[action],id);
 }
 
-/* COUNTRIES */
-
-async function loadCountries() {
- tableMessage("countriesTable", "در حال دریافت اطلاعات...", 6);
- tableMessage("playersTable", "در حال دریافت اطلاعات...", 5);
- tableMessage("economyTable", "در حال دریافت اطلاعات...", 4);
- tableMessage("dashboardCountries", "در حال دریافت اطلاعات...", 5);
-
- const { data, error } = await db
-  .from("countries")
-  .select("id,world_id,name,ruler,player_telegram_id,player_telegram_username,balance,is_locked,created_at")
-  .order("created_at", { ascending:false });
-
- if (error) {
-  tableMessage("countriesTable", "خطا: " + error.message, 6);
-  tableMessage("playersTable", "خطا: " + error.message, 5);
-  tableMessage("economyTable", "خطا: " + error.message, 4);
-  tableMessage("dashboardCountries", "خطا: " + error.message, 5);
-  return;
- }
-
- countriesData = data || [];
-
- renderCountries(countriesData);
- renderPlayers(countriesData);
- renderEconomy(countriesData);
- renderDashboardCountries(countriesData);
- updateStats();
+function exportData(){
+ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="world-at-arms-backup.json";
+ a.click();
+ URL.revokeObjectURL(url);
+ notify("فایل پشتیبان آماده شد.");
 }
 
-function countryStatus(c) {
- return c.is_locked
-  ? '<span class="badge red">قفل‌شده</span>'
-  : '<span class="badge green">فعال</span>';
+function importData(file){
+ const reader=new FileReader();
+
+ reader.onload=()=>{
+  try{
+   const obj=JSON.parse(reader.result);
+
+   for(const k of Object.keys(initial)){
+    if(k==="settings")obj.settings={...initial.settings,...(obj.settings||{})};
+    else if(!Array.isArray(obj[k]))throw new Error("invalid");
+   }
+
+   db=obj;
+   save();
+   render();
+   notify("پشتیبان بازیابی شد.");
+  }catch(e){
+   notify("فایل پشتیبان معتبر نیست.");
+  }
+ };
+
+ reader.readAsText(file);
 }
 
-function renderCountries(items) {
- const target = $("countriesTable");
- if (!target) return;
+async function testApi(){
+ const base=$("api-url").value.trim().replace(/\/+$/,"");
+ const path=$("health-path").value.trim();
 
- if (!items.length) {
-  tableMessage("countriesTable", "کشوری پیدا نشد.", 6);
-  return;
- }
+ if(!base){notify("آدرس API را وارد کن.");return}
 
- target.innerHTML = items.map(c => `
-  <tr>
-   <td><strong>${safe(c.name)}</strong></td>
-   <td>${safe(c.ruler)}</td>
-   <td>${safe(c.player_telegram_username)}</td>
-   <td>${safe(c.player_telegram_id)}</td>
-   <td>${fmt(c.balance)}</td>
-   <td>${countryStatus(c)}</td>
-  </tr>
- `).join("");
-}
+ $("api-result").textContent="در حال بررسی اتصال...";
+ $("api-status").textContent="در حال بررسی";
+ $("api-status").className="waa-neutral";
 
-function filterCountries() {
- const q = ($("countrySearch")?.value || "").trim().toLowerCase();
- const status = $("countryStatusFilter")?.value || "all";
-
- const filtered = countriesData.filter(c => {
-  const text = [
-   c.name,c.ruler,c.player_telegram_username,c.player_telegram_id
-  ].join(" ").toLowerCase();
-
-  const matchesText = text.includes(q);
-  const matchesStatus = status === "all" ||
-   (status === "locked" ? c.is_locked : !c.is_locked);
-
-  return matchesText && matchesStatus;
- });
-
- renderCountries(filtered);
-}
-
-function renderPlayers(items) {
- const target = $("playersTable");
- if (!target) return;
-
- const players = items.filter(c =>
-  c.player_telegram_id || c.player_telegram_username
- );
-
- if (!players.length) {
-  tableMessage("playersTable", "بازیکنی ثبت نشده است.", 5);
-  return;
- }
-
- target.innerHTML = players.map(c => `
-  <tr>
-   <td>${safe(c.player_telegram_username)}</td>
-   <td>${safe(c.ruler)}</td>
-   <td>${safe(c.name)}</td>
-   <td>${safe(c.player_telegram_id)}</td>
-   <td>${fmt(c.balance)}</td>
-  </tr>
- `).join("");
-}
-
-function filterPlayers() {
- const q = ($("playerSearch")?.value || "").trim().toLowerCase();
-
- renderPlayers(countriesData.filter(c =>
-  [
-   c.player_telegram_username,c.ruler,c.name,c.player_telegram_id
-  ].join(" ").toLowerCase().includes(q)
- ));
-}
-
-function renderEconomy(items) {
- const target = $("economyTable");
- if (!target) return;
-
- if (!items.length) {
-  tableMessage("economyTable", "اطلاعاتی وجود ندارد.", 4);
-  return;
- }
-
- target.innerHTML = items.map(c => `
-  <tr>
-   <td><strong>${safe(c.name)}</strong></td>
-   <td>${safe(c.ruler)}</td>
-   <td>${fmt(c.balance)}</td>
-   <td>${countryStatus(c)}</td>
-  </tr>
- `).join("");
-}
-
-function filterEconomy() {
- const q = ($("economySearch")?.value || "").trim().toLowerCase();
- renderEconomy(countriesData.filter(c =>
-  String(c.name || "").toLowerCase().includes(q) ||
-  String(c.ruler || "").toLowerCase().includes(q)
- ));
-}
-
-function renderDashboardCountries(items) {
- const target = $("dashboardCountries");
- if (!target) return;
-
- if (!items.length) {
-  tableMessage("dashboardCountries", "کشوری ثبت نشده است.", 5);
-  return;
- }
-
- target.innerHTML = items.slice(0,6).map(c => `
-  <tr>
-   <td><strong>${safe(c.name)}</strong></td>
-   <td>${safe(c.ruler)}</td>
-   <td>${safe(c.player_telegram_id)}</td>
-   <td>${fmt(c.balance)}</td>
-   <td>${countryStatus(c)}</td>
-  </tr>
- `).join("");
-}
-
-/* ACTIVITY LOGS */
-
-async function loadLogs() {
- const targets = ["logsList","eventsList","dashboardActivity"];
- targets.forEach(id => {
-  if ($(id)) $(id).innerHTML = '<div class="empty-state">در حال دریافت گزارش‌ها...</div>';
- });
-
- const { data, error } = await db
-  .from("activity_logs")
-  .select("id,event_type,description,world_name,country_name,player_telegram_username,created_at")
-  .order("created_at", { ascending:false })
-  .limit(50);
-
- if (error) {
-  targets.forEach(id => {
-   if ($(id)) $(id).innerHTML =
-    `<div class="empty-state">خطا در دریافت گزارش‌ها: ${safe(error.message)}</div>`;
+ try{
+  const response=await fetch(base+(path.startsWith("/")?path:"/"+path),{
+   method:"GET",
+   headers:{"Accept":"application/json"}
   });
-  return;
- }
 
- logsData = data || [];
- renderLogs(logsData);
+  if(!response.ok)throw new Error("HTTP "+response.status);
+
+  $("api-status").textContent="متصل";
+  $("api-status").className="waa-good";
+  $("api-result").textContent="اتصال برقرار شد. پاسخ سرور: HTTP "+response.status;
+  log("بررسی API","اتصال موفق — HTTP "+response.status);
+
+ }catch(e){
+  $("api-status").textContent="ناموفق";
+  $("api-status").className="waa-neutral";
+  $("api-result").textContent="اتصال برقرار نشد: "+e.message+" — ممکن است آدرس، مسیر یا CORS نیاز به تنظیم داشته باشد.";
+ }
 }
 
-function renderLogs(items) {
- const html = items.length ? items.map(log => `
-  <div class="activity">
-   <div class="activity-icon">✧</div>
-   <div class="activity-content">
-    <strong>${safe(log.event_type || "رویداد")}</strong>
-    <p>${safe(log.description)}</p>
-    <small>${safe(log.world_name)} · ${safe(log.country_name)} · ${safe(log.player_telegram_username)} · ${safe(dateFmt(log.created_at))}</small>
-   </div>
-  </div>
- `).join("") : '<div class="empty-state">گزارشی ثبت نشده است.</div>';
+function initSettings(){
+ $("api-url").value=db.settings.api||"";
+ $("health-path").value=db.settings.health||"/health";
+}
 
- ["logsList","eventsList","dashboardActivity"].forEach(id => {
-  if ($(id)) $(id).innerHTML = html;
+function clock(){
+ $("clock").textContent=new Date().toLocaleTimeString("fa-IR",{
+  hour:"2-digit",
+  minute:"2-digit"
  });
 }
 
-function filterLogs() {
- const q = ($("logSearch")?.value || "").trim().toLowerCase();
+root.addEventListener("click",e=>{
+ const nav=e.target.closest("[data-page]");
+ if(nav){page(nav.dataset.page);return}
 
- renderLogs(logsData.filter(log =>
-  [
-   log.event_type,log.description,log.world_name,
-   log.country_name,log.player_telegram_username
-  ].join(" ").toLowerCase().includes(q)
- ));
-}
+ const go=e.target.closest("[data-goto]");
+ if(go){page(go.dataset.goto);return}
 
-/* DASHBOARD STATS */
+ const action=e.target.closest("[data-action]");
+ if(action){showPageAction(action.dataset.action);return}
 
-function updateStats() {
- const total = countriesData.reduce(
-  (sum,c) => sum + Number(c.balance || 0),0
- );
- const players = countriesData.filter(c =>
-  c.player_telegram_id || c.player_telegram_username
- ).length;
- const funded = countriesData.filter(c =>
-  Number(c.balance || 0) > 0
- ).length;
+ const edit=e.target.closest("[data-edit]");
+ if(edit){openForm(edit.dataset.edit,edit.dataset.id);return}
 
- setText("totalWorlds",fmt(worldsData.length));
- setText("totalCountries",fmt(countriesData.length));
- setText("totalPlayers",fmt(players));
- setText("totalBalance",fmt(total));
- setText("economyBalance",fmt(total));
- setText("fundedCountries",fmt(funded));
-}
+ const del=e.target.closest("[data-delete]");
+ if(del){deleteItem(del.dataset.delete,del.dataset.id);return}
 
-/* REFRESH */
+ const moneyBtn=e.target.closest("[data-money]");
+ if(moneyBtn){openForm("money",moneyBtn.dataset.money);return}
 
-async function refreshAll() {
- setText("dataBadge","در حال دریافت");
- setText("dataMessage","در حال خواندن اطلاعات از پایگاه داده...");
+ const reset=e.target.closest("[data-reset-country]");
+ if(reset){openForm("reset",reset.dataset.resetCountry);return}
 
- const ok = await testConnection();
-
- if (!ok) {
-  setText("dataBadge","ناموفق");
-  setText("dataMessage","اتصال یا مجوز خواندن اطلاعات نیازمند بررسی است.");
-  toast("اتصال یا دسترسی دیتابیس با مشکل مواجه شد.");
-  return;
- }
-
- const results = await Promise.allSettled([
-  loadWorlds(),
-  loadCountries(),
-  loadLogs()
- ]);
-
- const failed = results.filter(r => r.status === "rejected").length;
-
- setText("dataBadge",failed ? "برخی خطاها" : "بروزرسانی شد");
- setText("dataMessage",failed ? "بعضی بخش‌ها بارگذاری نشدند." : "اطلاعات با موفقیت دریافت شد.");
- setText("lastUpdated",dateFmt(new Date()));
-
- toast(failed ? "بروزرسانی با بعضی خطاها انجام شد." : "اطلاعات پنل بروزرسانی شد.");
-}
-
-/* START */
-
-document.addEventListener("DOMContentLoaded", async () => {
- if (!window.supabase) {
-  setConnection(false,"کتابخانه Supabase بارگذاری نشده است.");
-  return;
- }
-
- await refreshAll();
+ const resetW=e.target.closest("[data-reset-world]");
+ if(resetW){openForm("resetWorld",resetW.dataset.resetWorld);return}
 });
 
+$("modal-form").addEventListener("submit",submitForm);
+$("modal-close").addEventListener("click",closeModal);
+$("modal-cancel").addEventListener("click",closeModal);
+
+$("modal-backdrop").addEventListener("click",e=>{
+ if(e.target===$("modal-backdrop"))closeModal();
+});
+
+$("refresh").addEventListener("click",()=>{
+ render();
+ notify("پنل بروزرسانی شد.");
+});
+
+$("world-search-btn").addEventListener("click",renderWorlds);
+$("country-search-btn").addEventListener("click",renderCountries);
+$("player-search-btn").addEventListener("click",renderPlayers);
+
+$("world-search").addEventListener("input",renderWorlds);
+$("country-search").addEventListener("input",renderCountries);
+$("country-filter").addEventListener("change",renderCountries);
+$("player-search").addEventListener("input",renderPlayers);
+
+$("clear-logs").addEventListener("click",()=>{
+ if(!confirm("تمام گزارش‌های محلی پاک شوند؟"))return;
+ db.logs=[];
+ save();
+ render();
+ notify("گزارش‌ها پاک شدند.");
+});
+
+$("save-settings").addEventListener("click",()=>{
+ db.settings.api=$("api-url").value.trim();
+ db.settings.health=$("health-path").value.trim()||"/health";
+ save();
+ log("تنظیمات سرور","آدرس API ذخیره شد.");
+ notify("تنظیمات ذخیره شد.");
+});
+
+$("test-api").addEventListener("click",testApi);
+$("export").addEventListener("click",exportData);
+$("import-trigger").addEventListener("click",()=>$("import-file").click());
+
+$("import-file").addEventListener("change",e=>{
+ if(e.target.files[0])importData(e.target.files[0]);
+ e.target.value="";
+});
+
+$("reset-demo").addEventListener("click",()=>{
+ if(!confirm("تمام جهان‌ها، کشورها، بازیکنان و داده‌های محلی این پنل پاک شوند؟"))return;
+
+ db=JSON.parse(JSON.stringify(initial));
+ save();
+ initSettings();
+ render();
+ notify("داده‌های محلی پاک شدند.");
+});
+
+initSettings();
+render();
+clock();
+setInterval(clock,30000);
+
+})();
 </script>
-</body>
-</html>
+
+          
