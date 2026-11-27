@@ -764,6 +764,153 @@ function wirePage(page){
 }
 
 init().catch(fail);
+ 
+<style>
+.admin-action{
+ display:inline-flex;align-items:center;gap:5px;
+ padding:7px 10px;margin:3px;border-radius:10px;
+ font:600 12px Vazirmatn,sans-serif;cursor:pointer;border:0
+}
+.admin-reset{background:#fff5df;color:#a47720}
+.admin-delete{background:#fff0f1;color:#c94c5b}
+.admin-action:hover{filter:brightness(.96)}
+.admin-danger-box{
+ background:#fff5f5;border:1px solid #f5d6d9;
+ border-radius:14px;padding:13px;margin:12px 0;
+ color:#a74652;font-size:12px
+}
+</style>
+
+<script>
+(function(){
+ const root=document.querySelector('#pageContent');
+ if(!root)return;
+
+ function addAction(row,label,kind,id){
+  const cell=row.lastElementChild;
+  if(!cell || cell.querySelector('[data-admin-action="'+kind+'"]'))return;
+  const b=document.createElement('button');
+  b.className='admin-action '+(kind.includes('delete')?'admin-delete':'admin-reset');
+  b.textContent=label;
+  b.dataset.adminAction=kind;
+  b.dataset.id=id;
+  cell.appendChild(b);
+ }
+
+ function enhance(){
+  if(currentPage==='worlds'){
+   const rows=root.querySelectorAll('table tbody tr');
+   rows.forEach((row,i)=>{
+    const w=worlds[i];
+    if(!w)return;
+    addAction(row,'ریست تمام کشورها','world-reset',w.id);
+    addAction(row,'حذف جهان','world-delete',w.id);
+   });
+  }
+
+  if(currentPage==='countries'){
+   const rows=root.querySelectorAll('table tbody tr');
+   rows.forEach((row,i)=>{
+    const c=countries[i];
+    if(!c)return;
+    addAction(row,'آزادسازی','country-reset',c.id);
+    addAction(row,'حذف','country-delete',c.id);
+   });
+  }
+ }
+
+ const observer=new MutationObserver(enhance);
+ observer.observe(root,{childList:true,subtree:true});
+ enhance();
+
+ root.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-admin-action]');
+  if(!b)return;
+
+  const kind=b.dataset.adminAction;
+  const id=b.dataset.id;
+  b.disabled=true;
+
+  try{
+   if(kind==='country-reset'){
+    const c=countries.find(x=>x.id===id);
+    if(!c)throw new Error('کشور پیدا نشد.');
+
+    if(prompt('برای آزادسازی کشور این نام را دقیق وارد کن:\n'+c.name)!==c.name)
+     return;
+
+    const {error}=await db.rpc('admin_reset_country',{
+     p_country_id:id,
+     p_reset_balance:false
+    });
+    if(error)throw error;
+    toast('کشور آزاد شد؛ موجودی حفظ شد.');
+    await renderPage('countries');
+   }
+
+   if(kind==='country-delete'){
+    const c=countries.find(x=>x.id===id);
+    if(!c)throw new Error('کشور پیدا نشد.');
+
+    if(prompt('برای حذف دائمی کشور، نام آن را وارد کن:\n'+c.name)!==c.name)
+     return;
+
+    if(!confirm('حذف کشور دائمی است. ادامه می‌دهی؟'))return;
+
+    const {error}=await db.rpc('admin_delete_country',{
+     p_country_id:id
+    });
+    if(error)throw error;
+    toast('کشور حذف شد.');
+    await renderPage('countries');
+   }
+
+   if(kind==='world-reset'){
+    const w=worlds.find(x=>x.id===id);
+    if(!w)throw new Error('جهان پیدا نشد.');
+
+    if(prompt('برای ریست جهان، نام آن را دقیق وارد کن:\n'+w.name)!==w.name)
+     return;
+
+    const resetBalances=confirm(
+     'آیا موجودی تمام کشورها هم صفر شود؟\nOK = صفر شود\nCancel = موجودی حفظ شود'
+    );
+
+    const {data,error}=await db.rpc('admin_reset_world',{
+     p_world_id:id,
+     p_reset_balances:resetBalances
+    });
+    if(error)throw error;
+    toast('جهان ریست شد؛ '+data+' کشور آزاد شدند.');
+    await renderPage('worlds');
+   }
+
+   if(kind==='world-delete'){
+    const w=worlds.find(x=>x.id===id);
+    if(!w)throw new Error('جهان پیدا نشد.');
+
+    if(prompt('هشدار: حذف دائمی جهان!\nبرای تأیید، نام جهان را دقیق وارد کن:\n'+w.name)!==w.name)
+     return;
+
+    if(!confirm('این عملیات قابل بازگشت نیست. تمام کشورهای جهان حذف می‌شوند. ادامه؟'))
+     return;
+
+    const {error}=await db.rpc('admin_delete_world',{
+     p_world_id:id
+    });
+    if(error)throw error;
+    toast('جهان حذف شد.');
+    await renderPage('worlds');
+   }
+
+  }catch(error){
+   console.error(error);
+   toast(error.message||'عملیات انجام نشد.');
+  }finally{
+   b.disabled=false;
+  }
+ });
+})();
 </script>
 </body>
 </html>
