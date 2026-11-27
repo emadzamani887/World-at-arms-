@@ -7,8 +7,10 @@
 <meta name="theme-color" content="#091116">
 <title>WORLD AT ARMS 1936</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap');
+
 :root{
  --bg:#091116;--panel:#142129;--panel2:#1b3038;
  --line:#2c414a;--text:#edf5f4;--muted:#91a4aa;
@@ -23,6 +25,7 @@ body{
 button,input,textarea{font:inherit}
 button{cursor:pointer}
 button:disabled{opacity:.5;cursor:not-allowed}
+
 .topbar{
  position:sticky;top:0;z-index:5;padding:14px;
  background:#091116ee;backdrop-filter:blur(15px);
@@ -39,6 +42,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .brand h1{margin:0;font-size:15px;font-weight:900}
 .brand small{display:block;color:var(--green);font-size:9px;letter-spacing:1.5px}
 .online{font-size:10px;color:var(--green);border:1px solid #42dda044;padding:6px 10px;border-radius:30px}
+
 main{padding:16px}
 .hero{
  padding:23px 20px;margin:5px 0 17px;border-radius:22px;
@@ -48,18 +52,22 @@ main{padding:16px}
 .eyebrow{color:var(--green);font-size:10px;letter-spacing:2px}
 .hero h2{margin:8px 0 5px;font-size:23px;font-weight:900}
 .hero p{margin:0;color:#b2c4c0;font-size:12px;line-height:2}
+
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:15px 0 23px}
 .stat{text-align:center;padding:12px 7px;background:var(--panel);border:1px solid var(--line);border-radius:15px}
 .stat strong{display:block;color:var(--green);font-size:21px}
 .stat span{color:var(--muted);font-size:10px}
+
 .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:20px 2px 12px}
 .section-head h3{margin:0;font-size:15px}
 .section-head small{color:var(--muted);font-size:9px}
+
 .search{
  width:100%;padding:12px;color:var(--text);background:var(--panel);
  border:1px solid var(--line);border-radius:12px;outline:none;font-size:12px
 }
 .search:focus,.receipt:focus{border-color:var(--green)}
+
 .world-list{display:grid;gap:10px}
 .world-card,.country-card{
  background:linear-gradient(145deg,#17262d,#101a20);
@@ -74,6 +82,7 @@ main{padding:16px}
 .world-info h4{margin:0 0 4px;font-size:14px}
 .world-info p{margin:0;color:var(--muted);font-size:10px}
 .world-count{margin-top:5px;color:var(--green);font-size:10px}
+
 .countries{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .country-card{min-width:0;padding:13px}
 .country-title{display:flex;align-items:center;gap:9px}
@@ -83,6 +92,7 @@ main{padding:16px}
 .country-status.taken{color:var(--red)}
 .country-status.premium{color:var(--gold)}
 .country-owner{margin-top:4px;color:var(--muted);font-size:9px}
+
 .btn{
  border:0;border-radius:11px;padding:10px 13px;
  font-size:11px;font-weight:800
@@ -92,6 +102,7 @@ main{padding:16px}
 .btn-quiet{color:var(--text);background:var(--panel2);border:1px solid var(--line)}
 .world-card .btn{flex:0 0 auto}
 .country-card .btn{width:100%;margin-top:11px}
+
 .notice,.state-box{
  padding:13px;border-radius:13px;margin:12px 0;
  font-size:11px;line-height:2
@@ -101,6 +112,7 @@ main{padding:16px}
 .state-box.error{color:#ff9aa5;border-color:#9c435055}
 .hidden{display:none!important}
 .toolbar{display:flex;gap:8px;margin:12px 0}
+
 .modal{
  position:fixed;inset:0;z-index:20;display:flex;align-items:center;
  justify-content:center;padding:14px;background:#000c
@@ -118,10 +130,52 @@ main{padding:16px}
 }
 .modal-actions{display:flex;gap:8px;margin-top:12px}
 .modal-actions button{flex:1}
+
+/* صفحه مدیریت کشور */
+.management-card{
+ margin:20px 0;padding:24px 18px;
+ border:1px solid #31564b;border-radius:22px;
+ background:linear-gradient(145deg,#18372e,#111e25 65%,#142832);
+ text-align:center;
+}
+.management-emblem{
+ width:76px;height:76px;margin:0 auto 15px;
+ display:grid;place-items:center;border-radius:22px;
+ background:#203b32;border:1px solid #42dda077;font-size:38px;
+}
+.management-card h2{font-size:23px;margin:8px 0}
+.management-country{
+ color:var(--gold);font-size:21px;font-weight:900;margin:12px 0;
+}
+.management-meta{
+ display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px;
+}
+.meta-item{
+ padding:13px 8px;background:#09111688;
+ border:1px solid var(--line);border-radius:13px;
+}
+.meta-item strong{display:block;color:var(--green);font-size:12px;overflow-wrap:anywhere}
+.meta-item span{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}
+.management-message{
+ margin-top:20px;padding:15px;border-radius:13px;
+ background:#09111688;color:var(--muted);font-size:11px;line-height:2;
+}
+.management-status{
+ display:inline-block;padding:6px 12px;border-radius:30px;
+ color:var(--green);background:#42dda018;border:1px solid #42dda044;
+ font-size:10px;margin-top:8px;
+}
+
 footer{text-align:center;padding:28px 10px;color:#61727a;font-size:9px}
-@media(max-width:430px){main{padding:12px}.countries{grid-template-columns:1fr}}
+
+@media(max-width:430px){
+ main{padding:12px}
+ .countries{grid-template-columns:1fr}
+ .management-meta{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
+
 <body>
 
 <header class="topbar">
@@ -138,6 +192,7 @@ footer{text-align:center;padding:28px 10px;color:#61727a;font-size:9px}
 </header>
 
 <main>
+
  <section class="hero">
   <div class="eyebrow">COMMAND CENTER • 1936</div>
   <h2>فرماندهی جهان در دستان توست</h2>
@@ -150,6 +205,7 @@ footer{text-align:center;padding:28px 10px;color:#61727a;font-size:9px}
   <div class="stat"><strong id="freeCount">۰</strong><span>کشور آزاد</span></div>
  </section>
 
+ <!-- انتخاب جهان -->
  <section id="homeView">
   <div class="section-head">
    <h3>🌐 انتخاب جهان</h3>
@@ -158,6 +214,7 @@ footer{text-align:center;padding:28px 10px;color:#61727a;font-size:9px}
   <div id="worldList" class="state-box">در حال دریافت جهان‌ها...</div>
  </section>
 
+ <!-- انتخاب کشور -->
  <section id="countryView" class="hidden">
   <div class="section-head">
    <h3 id="worldTitle">کشورهای جهان</h3>
@@ -171,6 +228,46 @@ footer{text-align:center;padding:28px 10px;color:#61727a;font-size:9px}
   <div id="countryList" class="state-box">در حال دریافت کشورها...</div>
   <div class="notice">هر بازیکن در هر جهان فقط می‌تواند یک کشور داشته باشد. انتخاب نهایی در سرور بررسی می‌شود.</div>
  </section>
+
+ <!-- صفحه مدیریت کشور -->
+ <section id="managementView" class="hidden">
+  <div class="section-head">
+   <h3>🏛️ مرکز فرماندهی کشور</h3>
+   <small>COUNTRY COMMAND</small>
+  </div>
+
+  <div class="management-card">
+   <div class="management-emblem">🏛️</div>
+   <div class="eyebrow">YOUR NATION</div>
+   <h2>به مرکز فرماندهی خوش آمدی</h2>
+   <div id="managementCountryName" class="management-country">کشور شما</div>
+   <div class="management-status">● مالکیت کشور تأیید شده</div>
+
+   <div class="management-meta">
+    <div class="meta-item">
+     <span>فرمانده</span>
+     <strong id="managementPlayer">بازیکن</strong>
+    </div>
+    <div class="meta-item">
+     <span>جهان</span>
+     <strong id="managementWorld">جهان شما</strong>
+    </div>
+   </div>
+
+   <div class="management-message">
+    کشور شما با موفقیت ثبت شده است.
+    <br>
+    سامانه مدیریت اصلی کشور در حال توسعه است.
+    <br>
+    به‌زودی می‌توانید اقتصاد، ارتش، دیپلماسی و سایر بخش‌های کشور را از این قسمت مدیریت کنید.
+   </div>
+  </div>
+ </section>
+
+ <section id="loadingView" class="hidden">
+  <div class="state-box">در حال بررسی اطلاعات فرمانده...</div>
+ </section>
+
 </main>
 
 <div id="purchaseModal" class="modal hidden" role="dialog" aria-modal="true">
@@ -202,18 +299,23 @@ footer{text-align:center;padding:28px 10px;color:#61727a;font-size:9px}
 const SUPABASE_URL = "https://hgaliwladnrtfdkwbtzz.supabase.co";
 const SUPABASE_KEY = "sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
 
-/* نام واقعی توابع مستقرشده */
 const CLAIM_URL = `${SUPABASE_URL}/functions/v1/dynamic-action`;
 const PURCHASE_URL = `${SUPABASE_URL}/functions/v1/dynamic-task`;
 
 const tg = window.Telegram?.WebApp ?? null;
-if(tg){tg.ready();tg.expand();}
+
+if(tg){
+ tg.ready();
+ tg.expand();
+}
 
 const state = {
  worlds:[],
  countries:[],
  activeWorld:null,
  purchaseCountryId:null,
+ player:null,
+ myCountry:null,
  claiming:false,
  purchasing:false,
  refreshing:false
@@ -227,7 +329,11 @@ function fa(value){
 
 function escapeHTML(value){
  return String(value ?? "").replace(/[&<>"']/g,char=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  "&":"&amp;",
+  "<":"&lt;",
+  ">":"&gt;",
+  '"':"&quot;",
+  "'":"&#39;"
  })[char]);
 }
 
@@ -238,19 +344,29 @@ function setBox(id,message,error=false){
 }
 
 function errorMessage(error){
- if(error instanceof TypeError)
+ if(error instanceof TypeError){
   return "ارتباط با سرور برقرار نشد. اینترنت یا دسترسی تابع را بررسی کن.";
+ }
  return error?.message || "خطای نامشخص رخ داد.";
 }
 
 async function readResponse(response){
  const raw=await response.text();
  let data=null;
- try{data=raw?JSON.parse(raw):null;}catch{}
+
+ try{
+  data=raw?JSON.parse(raw):null;
+ }catch{}
 
  if(!response.ok){
-  throw new Error(data?.error || data?.message || raw || `HTTP ${response.status}`);
+  throw new Error(
+   data?.error ||
+   data?.message ||
+   raw ||
+   `HTTP ${response.status}`
+  );
  }
+
  return data;
 }
 
@@ -264,6 +380,7 @@ async function dbGet(path){
   },
   cache:"no-store"
  });
+
  return readResponse(response);
 }
 
@@ -276,6 +393,7 @@ async function postFunction(url,payload){
   },
   body:JSON.stringify(payload)
  });
+
  return readResponse(response);
 }
 
@@ -287,30 +405,136 @@ function isTaken(country){
  return Boolean(country.player_telegram_id);
 }
 
+/* نمایش و مخفی‌سازی صفحات */
+function showOnly(viewId){
+ const views=[
+  "homeView",
+  "countryView",
+  "managementView",
+  "loadingView"
+ ];
+
+ views.forEach(id=>{
+  $(id).classList.toggle("hidden",id!==viewId);
+ });
+}
+
+/* بررسی کشور قبلی بازیکن */
+async function findMyCountry(){
+ if(!state.player?.id){
+  throw new Error("شناسه کاربر تلگرام پیدا نشد.");
+ }
+
+ const telegramId=encodeURIComponent(String(state.player.id));
+
+ const countries=await dbGet(
+  `countries?select=id,name,world_id,player_telegram_id,player_telegram_username&player_telegram_id=eq.${telegramId}&limit=1`
+ );
+
+ return countries.length ? countries[0] : null;
+}
+
+/* ورود به مدیریت کشور */
+async function openManagement(country){
+ state.myCountry=country;
+
+ showOnly("managementView");
+
+ $("managementCountryName").textContent=country.name || "کشور شما";
+
+ const username=state.player?.username
+  ? "@"+state.player.username
+  : (state.player?.first_name || "بازیکن");
+
+ $("managementPlayer").textContent=username;
+ $("managementWorld").textContent="در حال دریافت...";
+
+ try{
+  const worldId=encodeURIComponent(country.world_id);
+
+  const worlds=await dbGet(
+   `worlds?select=id,name&id=eq.${worldId}&limit=1`
+  );
+
+  $("managementWorld").textContent=
+   worlds[0]?.name || "جهان شما";
+
+ }catch(error){
+  console.error("World name:",error);
+  $("managementWorld").textContent="جهان شما";
+ }
+}
+
+/* شروع برنامه و تشخیص مالکیت */
+async function init(){
+ showOnly("loadingView");
+
+ try{
+  if(!tg?.initData || !tg?.initDataUnsafe?.user){
+   throw new Error("بازی را فقط از داخل مینی‌اپ تلگرام باز کنید.");
+  }
+
+  state.player=tg.initDataUnsafe.user;
+
+  // اول بررسی می‌کنیم بازیکن قبلاً کشور گرفته یا نه
+  const country=await findMyCountry();
+
+  if(country){
+   await openManagement(country);
+   return;
+  }
+
+  // فقط بازیکن بدون کشور اجازه دیدن فهرست جهان‌ها را دارد
+  showOnly("homeView");
+  await loadWorlds();
+
+ }catch(error){
+  console.error("INIT ERROR:",error);
+  showOnly("homeView");
+  setBox(
+   "worldList",
+   "ورود ناموفق بود: "+errorMessage(error),
+   true
+  );
+ }
+}
+
 function updateStats(){
  $("worldCount").textContent=fa(state.worlds.length);
  $("countryCount").textContent=fa(state.countries.length);
- $("freeCount").textContent=fa(state.countries.filter(c=>!isTaken(c)).length);
+ $("freeCount").textContent=fa(
+  state.countries.filter(c=>!isTaken(c)).length
+ );
 }
 
 /* دریافت جهان‌ها */
 async function loadWorlds(){
  setBox("worldList","در حال دریافت جهان‌ها...");
+
  try{
   state.worlds=await dbGet(
    "worlds?select=id,name,description,status,created_at&status=eq.active&order=created_at.desc"
   );
 
-  const rows=await dbGet("countries?select=id,world_id,player_telegram_id");
+  const rows=await dbGet(
+   "countries?select=id,world_id,player_telegram_id"
+  );
 
   $("worldCount").textContent=fa(state.worlds.length);
   $("countryCount").textContent=fa(rows.length);
-  $("freeCount").textContent=fa(rows.filter(c=>!c.player_telegram_id).length);
+  $("freeCount").textContent=fa(
+   rows.filter(c=>!c.player_telegram_id).length
+  );
 
   renderWorlds(rows);
+
  }catch(error){
   console.error("loadWorlds:",error);
-  setBox("worldList","دریافت جهان‌ها ناموفق بود: "+errorMessage(error),true);
+  setBox(
+   "worldList",
+   "دریافت جهان‌ها ناموفق بود: "+errorMessage(error),
+   true
+  );
  }
 }
 
@@ -323,6 +547,7 @@ function renderWorlds(rows=[]){
  }
 
  box.className="world-list";
+
  box.innerHTML=state.worlds.map(world=>{
   const list=rows.filter(c=>c.world_id===world.id);
   const free=list.filter(c=>!c.player_telegram_id).length;
@@ -333,14 +558,21 @@ function renderWorlds(rows=[]){
     <div class="world-info">
      <h4>${escapeHTML(world.name)}</h4>
      <p>${escapeHTML(world.description||"سناریوی استراتژیک")}</p>
-     <div class="world-count">${fa(list.length)} کشور • ${fa(free)} کشور آزاد</div>
+     <div class="world-count">
+      ${fa(list.length)} کشور • ${fa(free)} کشور آزاد
+     </div>
     </div>
-    <button class="btn btn-primary" data-world-id="${escapeHTML(world.id)}">ورود ←</button>
-   </article>`;
+    <button class="btn btn-primary" data-world-id="${escapeHTML(world.id)}">
+     ورود ←
+    </button>
+   </article>
+  `;
  }).join("");
 
  box.querySelectorAll("[data-world-id]").forEach(button=>{
-  button.addEventListener("click",()=>openWorld(button.dataset.worldId));
+  button.addEventListener("click",()=>{
+   openWorld(button.dataset.worldId);
+  });
  });
 }
 
@@ -350,12 +582,22 @@ async function openWorld(worldId){
  if(!world)return;
 
  state.activeWorld=world;
+
  $("homeView").classList.add("hidden");
  $("countryView").classList.remove("hidden");
+
  $("worldTitle").textContent="🌍 "+world.name;
- $("worldDescription").textContent=world.description||"کشور مورد نظر خود را انتخاب کن.";
- $("worldDescription").classList.toggle("hidden",!world.description);
+
+ $("worldDescription").textContent=
+  world.description||"کشور مورد نظر خود را انتخاب کن.";
+
+ $("worldDescription").classList.toggle(
+  "hidden",
+  !world.description
+ );
+
  $("countrySearch").value="";
+
  await loadCountries();
 }
 
@@ -368,14 +610,23 @@ async function loadCountries(){
 
  try{
   const worldId=encodeURIComponent(state.activeWorld.id);
+
   state.countries=await dbGet(
    `countries?select=id,world_id,name,player_telegram_id,player_telegram_username,is_premium,price,is_locked&world_id=eq.${worldId}&order=name.asc`
   );
+
   renderCountries();
   updateStats();
+
  }catch(error){
   console.error("loadCountries:",error);
-  setBox("countryList","دریافت کشورها ناموفق بود: "+errorMessage(error),true);
+
+  setBox(
+   "countryList",
+   "دریافت کشورها ناموفق بود: "+errorMessage(error),
+   true
+  );
+
  }finally{
   state.refreshing=false;
  }
@@ -383,10 +634,15 @@ async function loadCountries(){
 
 function renderCountries(){
  const box=$("countryList");
- const query=$("countrySearch").value.trim().toLocaleLowerCase("fa");
+
+ const query=$("countrySearch").value
+  .trim()
+  .toLocaleLowerCase("fa");
 
  const filtered=state.countries.filter(country=>
-  String(country.name||"").toLocaleLowerCase("fa").includes(query)
+  String(country.name||"")
+   .toLocaleLowerCase("fa")
+   .includes(query)
  );
 
  if(!filtered.length){
@@ -395,24 +651,43 @@ function renderCountries(){
  }
 
  box.className="countries";
+
  box.innerHTML=filtered.map(country=>{
   const taken=isTaken(country);
   const premium=isPremium(country);
+
   const owner=country.player_telegram_username
    ? "@"+country.player_telegram_username
    : "بازیکن ثبت‌شده";
 
-  let status="● آزاد",statusClass="";
-  let action=`<button class="btn btn-primary" data-claim="${escapeHTML(country.id)}">⚑ انتخاب کشور</button>`;
+  let status="● آزاد";
+  let statusClass="";
+
+  let action=`
+   <button class="btn btn-primary" data-claim="${escapeHTML(country.id)}">
+    ⚑ انتخاب کشور
+   </button>
+  `;
 
   if(taken){
    status="● تصاحب‌شده";
    statusClass="taken";
-   action=`<button class="btn btn-quiet" disabled>در اختیار بازیکن</button>`;
+
+   action=`
+    <button class="btn btn-quiet" disabled>
+     در اختیار بازیکن
+    </button>
+   `;
+
   }else if(premium){
    status="● ویژه";
    statusClass="premium";
-   action=`<button class="btn btn-gold" data-purchase="${escapeHTML(country.id)}">ثبت درخواست کشور ویژه</button>`;
+
+   action=`
+    <button class="btn btn-gold" data-purchase="${escapeHTML(country.id)}">
+     ثبت درخواست کشور ویژه
+    </button>
+   `;
   }
 
   return `
@@ -421,22 +696,40 @@ function renderCountries(){
      <span class="flag">🏳️</span>
      <span class="country-name">${escapeHTML(country.name)}</span>
     </div>
-    <div class="country-status ${statusClass}">${status}</div>
-    ${taken?`<div class="country-owner">${escapeHTML(owner)}</div>`:""}
-    ${premium&&!taken?`<div class="country-owner">قیمت: ${fa(country.price||0)} تومان</div>`:""}
+
+    <div class="country-status ${statusClass}">
+     ${status}
+    </div>
+
+    ${taken
+     ? `<div class="country-owner">${escapeHTML(owner)}</div>`
+     : ""
+    }
+
+    ${premium&&!taken
+     ? `<div class="country-owner">قیمت: ${fa(country.price||0)} تومان</div>`
+     : ""
+    }
+
     ${action}
-   </article>`;
+   </article>
+  `;
  }).join("");
 
  box.querySelectorAll("[data-claim]").forEach(button=>{
-  button.addEventListener("click",()=>claimCountry(button.dataset.claim));
+  button.addEventListener("click",()=>{
+   claimCountry(button.dataset.claim);
+  });
  });
+
  box.querySelectorAll("[data-purchase]").forEach(button=>{
-  button.addEventListener("click",()=>openPurchase(button.dataset.purchase));
+  button.addEventListener("click",()=>{
+   openPurchase(button.dataset.purchase);
+  });
  });
 }
 
-/* انتخاب کشور عادی */
+/* انتخاب کشور */
 async function claimCountry(countryId){
  if(state.claiming)return;
 
@@ -446,6 +739,7 @@ async function claimCountry(countryId){
  }
 
  const country=state.countries.find(item=>item.id===countryId);
+
  if(!country||isTaken(country)){
   alert("این کشور دیگر آزاد نیست.");
   await loadCountries();
@@ -469,16 +763,31 @@ async function claimCountry(countryId){
   });
 
   if(result?.success!==true){
-   throw new Error(result?.error||"سرور انتخاب کشور را تأیید نکرد.");
+   throw new Error(
+    result?.error||"سرور انتخاب کشور را تأیید نکرد."
+   );
+  }
+
+  // پس از انتخاب، مالکیت را دوباره از دیتابیس می‌خوانیم
+  const myCountry=await findMyCountry();
+
+  if(!myCountry){
+   throw new Error(
+    "انتخاب ثبت شد، اما اطلاعات مالکیت هنوز در دسترس نیست. بازی را دوباره باز کن."
+   );
   }
 
   alert("کشور با موفقیت انتخاب شد! ⚔️");
-  await loadCountries();
-  await loadWorlds();
+
+  await openManagement(myCountry);
 
  }catch(error){
   console.error("claimCountry:",error);
-  alert("انتخاب کشور انجام نشد:\n"+errorMessage(error));
+
+  alert(
+   "انتخاب کشور انجام نشد:\n"+errorMessage(error)
+  );
+
  }finally{
   state.claiming=false;
  }
@@ -487,17 +796,21 @@ async function claimCountry(countryId){
 /* درخواست کشور ویژه */
 function openPurchase(countryId){
  const country=state.countries.find(item=>item.id===countryId);
+
  if(!country||isTaken(country)||!isPremium(country))return;
 
  state.purchaseCountryId=countryId;
+
  $("purchaseCountryName").textContent=
   `کشور انتخابی: ${country.name} | مبلغ: ${fa(country.price||0)} تومان`;
+
  $("receiptText").value="";
  $("purchaseModal").classList.remove("hidden");
 }
 
 function closePurchase(){
  if(state.purchasing)return;
+
  $("purchaseModal").classList.add("hidden");
  state.purchaseCountryId=null;
 }
@@ -515,7 +828,9 @@ async function sendPurchase(){
   return;
  }
 
- const country=state.countries.find(item=>item.id===state.purchaseCountryId);
+ const country=state.countries.find(
+  item=>item.id===state.purchaseCountryId
+ );
 
  if(!country||isTaken(country)||!isPremium(country)){
   alert("این کشور دیگر برای درخواست در دسترس نیست.");
@@ -547,18 +862,26 @@ async function sendPurchase(){
   });
 
   if(result?.success!==true && result?.ok!==true){
-   throw new Error(result?.error||result?.message||"ثبت درخواست ناموفق بود.");
+   throw new Error(
+    result?.error||result?.message||"ثبت درخواست ناموفق بود."
+   );
   }
 
   alert("درخواست با موفقیت ثبت شد.");
+
   $("purchaseModal").classList.add("hidden");
   $("receiptText").value="";
   state.purchaseCountryId=null;
+
   await loadCountries();
 
  }catch(error){
   console.error("sendPurchase:",error);
-  alert("ثبت درخواست انجام نشد:\n"+errorMessage(error));
+
+  alert(
+   "ثبت درخواست انجام نشد:\n"+errorMessage(error)
+  );
+
  }finally{
   state.purchasing=false;
   $("sendPurchase").disabled=false;
@@ -570,32 +893,43 @@ async function sendPurchase(){
 function goHome(){
  state.activeWorld=null;
  state.countries=[];
+
  $("countryView").classList.add("hidden");
  $("homeView").classList.remove("hidden");
+
  loadWorlds();
 }
 
 $("backButton").addEventListener("click",goHome);
+
 $("countrySearch").addEventListener("input",renderCountries);
+
 $("refreshButton").addEventListener("click",loadCountries);
+
 $("closePurchase").addEventListener("click",closePurchase);
 $("cancelPurchase").addEventListener("click",closePurchase);
 $("sendPurchase").addEventListener("click",sendPurchase);
 
 $("purchaseModal").addEventListener("click",event=>{
- if(event.target===$("purchaseModal"))closePurchase();
+ if(event.target===$("purchaseModal")){
+  closePurchase();
+ }
 });
 
-/* شروع و به‌روزرسانی */
-loadWorlds();
+/* شروع برنامه */
+init();
 
+/* به‌روزرسانی خودکار فقط در صفحه انتخاب */
 setInterval(()=>{
+ if(state.myCountry)return;
+
  if(state.activeWorld&&!state.claiming&&!state.purchasing){
   loadCountries();
  }else if(!state.activeWorld){
   loadWorlds();
  }
 },30000);
+
 </script>
 </body>
 </html>
