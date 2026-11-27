@@ -902,5 +902,53 @@ el("password").addEventListener("keydown",e=>{
  if(e.key==="Enter")login();
 });
   
+/* =========================
+   PLAYER ECONOMY
+========================= */
+
+async function adjustBalance(operation){
+ const playerId=el("moneyPlayer").value.trim();
+ const amount=Number(el("moneyAmount").value);
+ const reason=el("moneyReason").value.trim();
+
+ if(!playerId||!Number.isSafeInteger(amount)||amount<=0){
+  alert("آیدی کشور و مبلغ معتبر وارد کن.");
+  return;
+ }
+
+ if(!reason){
+  alert("دلیل عملیات را وارد کن.");
+  return;
+ }
+
+ const country=countries.find(c=>
+  c.player_telegram_id===playerId
+ );
+
+ if(!country){
+  alert("کشوری با این آیدی بازیکن پیدا نشد.");
+  return;
+ }
+
+ const {data,error}=await db.rpc(
+  "admin_adjust_balance",
+  {
+   p_country_id:country.id,
+   p_amount:amount,
+   p_reason:reason,
+   p_operation:operation
+  }
+ );
+
+ if(error){
+  alert("خطا: "+error.message);
+  return;
+ }
+
+ alert("عملیات با موفقیت انجام شد.");
+ el("moneyAmount").value="";
+ el("moneyReason").value="";
+}
+ 
                               </script>
                               
