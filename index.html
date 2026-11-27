@@ -1435,20 +1435,16 @@ const end=new Date(o.completes_at).getTime();
 
 const remaining=Number.isFinite(end)
 ?Math.max(0,Math.ceil((end-Date.now())/1000))
-:Math.max(0,Number(o.remaining_seconds||o.time_remaining||0));
+:Math.max(0,Number(o.remaining_seconds??o.time_remaining??o.remaining??0));
 
 const normalizedStatus=String(o.status||"").toLowerCase();
+const isTerminal=["completed","cancelled","canceled","failed"].includes(normalizedStatus);
+const orderId=o.id??o.order_id??o.construction_order_id??null;
 
-const isActive=[
-"queued",
-"building",
-"constructing",
-"in_progress",
-"processing"
-].includes(normalizedStatus);
-
-const status=normalizedStatus==="queued"
+const status=normalizedStatus==="queued"||normalizedStatus==="pending"
 ?"در صف ساخت"
+:isTerminal
+?"پایان‌یافته"
 :remaining===0
 ?"آماده تکمیل"
 :"در حال ساخت";
@@ -1457,7 +1453,8 @@ const diamondCost=remaining>0
 ?Math.max(1,Math.ceil(remaining/900))
 :0;
 
-const canInstant=isActive&&remaining>0&&Boolean(o.id);
+/* هر سفارش دارای شناسه و زمان باقی‌مانده، تا وقتی پایان نیافته، قابل تکمیل فوری است. */
+const canInstant=!isTerminal&&remaining>0&&Boolean(orderId);
 
 return `
 <article class="queue-card">
@@ -1478,7 +1475,7 @@ ${canInstant?`
 
 <button
 class="btn btn-gold btn-small"
-data-instant-construction="${escapeHTML(o.id)}"
+data-instant-construction="${escapeHTML(orderId)}"
 data-cost="${diamondCost}">
 ⚡ تکمیل فوری
 </button>
@@ -1567,10 +1564,7 @@ button.disabled=true;
 button.textContent="در حال تکمیل...";
 
 try{
-/*
-عملیات باید در سرور پشتیبانی شود.
-شناسه سفارش به سرور ارسال می‌شود.
-*/
+/* سرور باید مالکیت سفارش، هزینه و موجودی الماس را دوباره بررسی کند. */
 
 const result=await infrastructureCommand(
 "instant_complete",
