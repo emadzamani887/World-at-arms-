@@ -161,6 +161,7 @@ footer{text-align:center;color:#7890a2;font-size:10px;padding:20px 5px 8px}
 <div class="stats">
 <div class="stat"><div class="stat-label">موجودی خزانه</div><div class="stat-value money" id="balance">$0</div></div>
 <div class="stat"><div class="stat-label">درآمد روزانه</div><div class="stat-value money" id="dailyIncome">$0</div></div>
+<div class="stat"><div class="stat-label">💎 موجودی الماس</div><div class="stat-value" id="diamonds">۰</div></div>
 </div>
 <div class="three-stats">
 <div class="mini-stat"><strong id="manpower">0</strong><span>نیروی انسانی</span></div>
@@ -247,10 +248,10 @@ footer{text-align:center;color:#7890a2;font-size:10px;padding:20px 5px 8px}
 
 const SUPABASE_URL="https://hgaliwladnrtfdkwbtzz.supabase.co";
 const SUPABASE_KEY="sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
-const CLAIM_URL=`${SUPABASE_URL}/functions/v1/dynamic-action`;
-const PURCHASE_URL=`${SUPABASE_URL}/functions/v1/dynamic-task`;
-const COMMAND_URL=`${SUPABASE_URL}/functions/v1/country-command`;
-const INFRA_URL=`${SUPABASE_URL}/functions/v1/infrastructure-command`;
+const CLAIM_URL=\`\${SUPABASE_URL}/functions/v1/dynamic-action\`;
+const PURCHASE_URL=\`\${SUPABASE_URL}/functions/v1/dynamic-task\`;
+const COMMAND_URL=\`\${SUPABASE_URL}/functions/v1/country-command\`;
+const INFRA_URL=\`\${SUPABASE_URL}/functions/v1/infrastructure-command\`;
 
 const tg=window.Telegram?.WebApp??null;
 if(tg){tg.ready();tg.expand();}
@@ -271,17 +272,17 @@ function escapeHTML(v){
 return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 function errorMessage(e){if(e instanceof TypeError)return "ارتباط با سرور برقرار نشد. اینترنت یا دسترسی تابع را بررسی کن.";return e?.message||"خطای نامشخص رخ داد."}
-function setBox(id,msg,error=false){const el=$(id);el.className=`state-box${error?" error":""}`;el.textContent=msg}
+function setBox(id,msg,error=false){const el=$(id);el.className=\`state-box\${error?" error":""}\`;el.textContent=msg}
 function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));state.currentView=id;window.scrollTo({top:0,behavior:"smooth"})}
 
 async function readResponse(r){
 const raw=await r.text();let data=null;
 try{data=raw?JSON.parse(raw):null}catch{}
-if(!r.ok)throw new Error(data?.error||data?.message||raw||`HTTP ${r.status}`);
+if(!r.ok)throw new Error(data?.error||data?.message||raw||\`HTTP \${r.status}\`);
 return data;
 }
 async function dbGet(path){
-const r=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,Accept:"application/json"},cache:"no-store"});
+const r=await fetch(\`\${SUPABASE_URL}/rest/v1/\${path}\`,{headers:{apikey:SUPABASE_KEY,Authorization:\`Bearer \${SUPABASE_KEY}\`,Accept:"application/json"},cache:"no-store"});
 return readResponse(r);
 }
 async function postFunction(url,payload){
@@ -307,7 +308,7 @@ return result;
 async function findMyCountry(){
 if(!state.player?.id)throw new Error("شناسه کاربر تلگرام پیدا نشد.");
 const id=encodeURIComponent(String(state.player.id));
-const rows=await dbGet(`countries?select=id,name,world_id,player_telegram_id,player_telegram_username,flag_emoji,political_system,ruler&player_telegram_id=eq.${id}&limit=1`);
+const rows=await dbGet(\`countries?select=id,name,world_id,player_telegram_id,player_telegram_username,flag_emoji,political_system,ruler&player_telegram_id=eq.\${id}&limit=1\`);
 return rows.length?rows[0]:null;
 }
 
@@ -334,12 +335,14 @@ function renderManagement(){
 const d=state.snapshot?.country;if(!d)return;
 $("countryName").textContent=d.name||"کشور شما";$("countryFlag").textContent=d.flag_emoji||"🏳️";
 $("countryWorld").textContent=d.world_name||"جهان شما";$("politicalSystem").textContent=d.political_system||"نامشخص";
-$("balance").textContent=money(d.balance);$("dailyIncome").textContent=money(d.daily_income);
+$("balance").textContent=money(d.balance);
+$("dailyIncome").textContent=money(d.daily_income);
+$("diamonds").textContent=fa(d.diamonds);
 $("manpower").textContent=fa(d.manpower);$("armyPower").textContent=fa(d.army_power);
 $("season").textContent=d.season||"نامشخص";$("ruler").textContent=d.ruler||state.player?.first_name||"—";
-$("hqSubtitle").textContent=`فرماندهی نیروهای مسلح • ${d.name}`;
-$("arsenalSubtitle").textContent=`ذخایر و سفارش‌های تولید • ${d.name}`;
-$("infraSubtitle").textContent=`توسعه زیرساخت‌های ${d.name}`;
+$("hqSubtitle").textContent=\`فرماندهی نیروهای مسلح • \${d.name}\`;
+$("arsenalSubtitle").textContent=\`ذخایر و سفارش‌های تولید • \${d.name}\`;
+$("infraSubtitle").textContent=\`توسعه زیرساخت‌های \${d.name}\`;
 }
 
 async function loadWorlds(){
@@ -352,7 +355,7 @@ if(!state.worlds.length){setBox("worldList","در حال حاضر هیچ جها�
 const box=$("worldList");box.className="world-list";
 box.innerHTML=state.worlds.map(w=>{
 const list=rows.filter(c=>String(c.world_id)===String(w.id));const free=list.filter(c=>!c.player_telegram_id).length;
-return `<article class="world-card"><div class="world-symbol">🌍</div><div class="world-info"><h4>${escapeHTML(w.name)}</h4><p>${escapeHTML(w.description||"سناریوی استراتژیک")}</p><div class="world-count">${fa(list.length)} کشور • ${fa(free)} کشور آزاد</div></div><button class="btn btn-primary" data-world="${escapeHTML(w.id)}">ورود ←</button></article>`;
+return \`<article class="world-card"><div class="world-symbol">🌍</div><div class="world-info"><h4>\${escapeHTML(w.name)}</h4><p>\${escapeHTML(w.description||"سناریوی استراتژیک")}</p><div class="world-count">\${fa(list.length)} کشور • \${fa(free)} کشور آزاد</div></div><button class="btn btn-primary" data-world="\${escapeHTML(w.id)}">ورود ←</button></article>\`;
 }).join("");
 box.querySelectorAll("[data-world]").forEach(b=>b.addEventListener("click",()=>openWorld(b.dataset.world)));
 }
@@ -369,7 +372,7 @@ const isPremium=c=>c.is_premium===true||c.is_locked===true;
 async function loadCountries(){
 if(!state.activeWorld||state.refreshing)return;
 state.refreshing=true;setBox("countryList","در حال دریافت فهرست کشورها...");
-try{const id=encodeURIComponent(state.activeWorld.id);state.countries=await dbGet(`countries?select=id,world_id,name,player_telegram_id,player_telegram_username,is_premium,price,is_locked,flag_emoji&world_id=eq.${id}&order=name.asc`);renderCountries()}
+try{const id=encodeURIComponent(state.activeWorld.id);state.countries=await dbGet(\`countries?select=id,world_id,name,player_telegram_id,player_telegram_username,is_premium,price,is_locked,flag_emoji&world_id=eq.\${id}&order=name.asc\`);renderCountries()}
 catch(e){console.error(e);setBox("countryList","دریافت کشورها ناموفق بود: "+errorMessage(e),true)}
 finally{state.refreshing=false}
 }
@@ -380,10 +383,10 @@ if(!list.length){setBox("countryList","کشوری با این مشخصات پی�
 box.className="countries";
 box.innerHTML=list.map(c=>{
 const taken=isTaken(c),premium=isPremium(c);let status="● آزاد",cls="";
-let action=`<button class="btn btn-primary" data-claim="${escapeHTML(c.id)}">⚑ انتخاب کشور</button>`;
-if(taken){status="● تصاحب‌شده";cls="taken";action=`<button class="btn btn-quiet" disabled>در اختیار بازیکن</button>`}
-else if(premium){status="● ویژه";cls="premium";action=`<button class="btn btn-gold" data-purchase="${escapeHTML(c.id)}">درخواست کشور ویژه</button>`}
-return `<article class="country-card"><div class="country-title"><span class="flag">${escapeHTML(c.flag_emoji||"🏳️")}</span><span class="country-name">${escapeHTML(c.name)}</span></div><div class="country-status ${cls}">${status}</div>${taken&&c.player_telegram_username?`<div class="country-owner">@${escapeHTML(c.player_telegram_username)}</div>`:""}${premium&&!taken?`<div class="country-owner">قیمت: ${fa(c.price||0)} تومان</div>`:""}${action}</article>`;
+let action=\`<button class="btn btn-primary" data-claim="\${escapeHTML(c.id)}">⚑ انتخاب کشور</button>\`;
+if(taken){status="● تصاحب‌شده";cls="taken";action=\`<button class="btn btn-quiet" disabled>در اختیار بازیکن</button>\`}
+else if(premium){status="● ویژه";cls="premium";action=\`<button class="btn btn-gold" data-purchase="\${escapeHTML(c.id)}">درخواست کشور ویژه</button>\`}
+return \`<article class="country-card"><div class="country-title"><span class="flag">\${escapeHTML(c.flag_emoji||"🏳️")}</span><span class="country-name">\${escapeHTML(c.name)}</span></div><div class="country-status \${cls}">\${status}</div>\${taken&&c.player_telegram_username?\`<div class="country-owner">@\${escapeHTML(c.player_telegram_username)}</div>\`:""}\${premium&&!taken?\`<div class="country-owner">قیمت: \${fa(c.price||0)} تومان</div>\`:""}\${action}</article>\`;
 }).join("");
 box.querySelectorAll("[data-claim]").forEach(b=>b.addEventListener("click",()=>claimCountry(b.dataset.claim)));
 box.querySelectorAll("[data-purchase]").forEach(b=>b.addEventListener("click",()=>openPurchase(b.dataset.purchase)));
@@ -392,7 +395,7 @@ async function claimCountry(id){
 if(state.claiming)return;const c=state.countries.find(x=>String(x.id)===String(id));
 if(!c||isTaken(c)){alert("این کشور دیگر آزاد نیست.");await loadCountries();return}
 if(isPremium(c)){openPurchase(id);return}
-if(!confirm(`کشور «${c.name}» انتخاب شود؟`))return;
+if(!confirm(\`کشور «\${c.name}» انتخاب شود؟\`))return;
 state.claiming=true;
 try{
 const result=await postFunction(CLAIM_URL,{initData:tg?.initData,world_id:state.activeWorld.id,country_id:id});
@@ -405,7 +408,7 @@ finally{state.claiming=false}
 
 function openPurchase(id){
 const c=state.countries.find(x=>String(x.id)===String(id));if(!c||isTaken(c)||!isPremium(c))return;
-state.purchaseCountryId=id;$("purchaseCountryName").textContent=`کشور انتخابی: ${c.name} | مبلغ: ${fa(c.price||0)} تومان`;
+state.purchaseCountryId=id;$("purchaseCountryName").textContent=\`کشور انتخابی: \${c.name} | مبلغ: \${fa(c.price||0)} تومان\`;
 $("receiptText").value="";$("purchaseModal").classList.add("show");
 }
 function closePurchase(){if(state.purchasing)return;$("purchaseModal").classList.remove("show");state.purchaseCountryId=null}
@@ -471,7 +474,7 @@ box.innerHTML=active.map(o=>{
 const end=new Date(o.completes_at).getTime();
 const remaining=Number.isFinite(end)?Math.max(0,Math.ceil((end-Date.now())/1000)):0;
 const status=o.status==="queued"?"در صف ساخت":"در حال ساخت";
-return `<article class="queue-card"><strong>${escapeHTML(o.building_name||o.item_name||"پروژه زیرساختی")}</strong><br>وضعیت: <strong>${status}</strong><br>هزینه: ${money(o.price)}<br>زمان باقی‌مانده: <strong>${formatDuration(remaining)}</strong></article>`;
+return \`<article class="queue-card"><strong>\${escapeHTML(o.building_name||o.item_name||"پروژه زیرساختی")}</strong><br>وضعیت: <strong>\${status}</strong><br>هزینه: \${money(o.price)}<br>زمان باقی‌مانده: <strong>\${formatDuration(remaining)}</strong></article>\`;
 }).join("");
 }
 
@@ -491,36 +494,29 @@ document.querySelectorAll("[data-infra-category]").forEach(t=>t.classList.toggle
 const list=buildingCatalog[category]||[];const box=$("buildingList");
 box.innerHTML=list.map(b=>{
 const count=getBuildingCount(b.key);
-let details=`هزینه: <b>${money(b.price)}</b><br>برق موردنیاز: <b>${fa(b.power||0)}</b><br>زمان ساخت: <b>${formatDuration(b.time)}</b>`;
+let details=\`هزینه: <b>\${money(b.price)}</b><br>برق موردنیاز: <b>\${fa(b.power||0)}</b><br>زمان ساخت: <b>\${formatDuration(b.time)}</b>\`;
 if(b.effect){
 const label=b.key==="agriculture"||b.key==="greenhouse"?"تولید روزانه غذا":b.key==="enrichment_center"?"تولید روزانه اورانیوم":"افزایش ظرفیت برق";
-details+=`<br>${label}: <b>${fa(b.effect)}</b>`;
+details+=\`<br>\${label}: <b>\${fa(b.effect)}</b>\`;
 }
-if(b.uranium)details+=`<br>مصرف روزانه اورانیوم: <b>${fa(b.uranium)}</b>`;
-return `<article class="building-card"><div class="building-name">${escapeHTML(b.name)}</div><span class="building-tag">ساخته‌شده: ${fa(count)}</span><div class="building-info">${escapeHTML(b.desc)}<br>${details}</div><button class="btn btn-primary" data-build="${b.key}">ساخت ساختمان</button></article>`;
+if(b.uranium)details+=\`<br>مصرف روزانه اورانیوم: <b>\${fa(b.uranium)}</b>\`;
+return \`<article class="building-card"><div class="building-name">\${escapeHTML(b.name)}</div><span class="building-tag">ساخته‌شده: \${fa(count)}</span><div class="building-info">\${escapeHTML(b.desc)}<br>\${details}</div><button class="btn btn-primary" data-build="\${b.key}">ساخت ساختمان</button></article>\`;
 }).join("");
 box.querySelectorAll("[data-build]").forEach(btn=>btn.addEventListener("click",()=>buildInfrastructure(btn.dataset.build)));
 }
 
-/* اصلاح اصلی صف ساخت */
+/* ثبت سفارش ساخت زیرساخت */
 async function buildInfrastructure(key){
 const item=Object.values(buildingCatalog).flat().find(b=>b.key===key);
 if(!item||state.infraBusy)return;
-if(!confirm(`ساخت «${item.name}» با هزینه ${money(item.price)} ثبت شود؟`))return;
+if(!confirm(\`ساخت «\${item.name}» با هزینه \${money(item.price)} ثبت شود؟\`))return;
 
 state.infraBusy=true;
 const buttons=document.querySelectorAll("[data-build]");
 buttons.forEach(b=>b.disabled=true);
 
 try{
-/* مرحله اول: ثبت سفارش در سرور */
 await infrastructureCommand("build",key);
-
-/*
-مرحله دوم: دریافت مجدد وضعیت از دیتابیس.
-این درخواست جداگانه باعث می‌شود صف قدیمیِ پاسخ build
-به‌جای صف واقعی و به‌روز نمایش داده نشود.
-*/
 const latest=await infrastructureCommand("state");
 state.infraData=latest;
 
@@ -534,15 +530,11 @@ country:{
 };
 }
 
-/* نمایش اطلاعات تازه */
 refreshInfrastructureResources();
 renderConstructionQueue();
 renderBuildings(state.currentInfraCategory);
 renderManagement();
-
-/* صفحه مدیریت را با صف تازه نشان بده */
 showPage("managementPage");
-
 alert("سفارش ساخت ثبت شد و صف از سرور به‌روزرسانی شد.");
 
 }catch(e){
@@ -581,7 +573,7 @@ support:[
 const unitCategoryNames={air:"نیروی هوایی",armor:"نیروی زرهی",navy:"نیروی دریایی",support:"پشتیبانی دوربرد"};
 function formatDuration(sec){
 sec=Math.max(0,Math.floor(Number(sec)||0));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;
-if(h)return `${fa(h)} ساعت و ${fa(m)} دقیقه`;if(m)return `${fa(m)} دقیقه و ${fa(s)} ثانیه`;return `${fa(s)} ثانیه`;
+if(h)return \`\${fa(h)} ساعت و \${fa(m)} دقیقه\`;if(m)return \`\${fa(m)} دقیقه و \${fa(s)} ثانیه\`;return \`\${fa(s)} ثانیه\`;
 }
 function unitUnlocked(category){
 if(category==="air")return hasBuilding("airfield")&&hasBuilding("aircraft_industry");
@@ -596,16 +588,16 @@ document.querySelectorAll("[data-unit-category]").forEach(t=>t.classList.toggle(
 const box=$("unitList");
 if(!unitUnlocked(category)){
 const requirements={air:"پایگاه هوایی و صنایع هواپیمایی",armor:"پادگان و کارخانه زرهی",navy:"بندر و کارخانه کشتی‌سازی",support:"انبار موشکی و کارخانه موشکی"};
-box.innerHTML=`<div class="locked"><strong>این بخش هنوز فعال نیست</strong>برای بازشدن ${unitCategoryNames[category]} باید ${requirements[category]} را بسازی.</div>`;
+box.innerHTML=\`<div class="locked"><strong>این بخش هنوز فعال نیست</strong>برای بازشدن \${unitCategoryNames[category]} باید \${requirements[category]} را بسازی.</div>\`;
 $("categoryInfo").textContent="پیش‌نیازهای زیرساختی تکمیل نشده‌اند.";return;
 }
 const owned=state.snapshot?.units||[];
 box.innerHTML=units[category].map(u=>{
 const current=owned.find(x=>x.unit_key===u.key)?.quantity||0;
-return `<article class="unit-card"><div class="unit-name">${escapeHTML(u.name)}</div><div class="unit-info">موجودی فعلی: <b>${fa(current)}</b><br>آهن موردنیاز: <b>${fa(u.iron)}</b><br>نفت موردنیاز: <b>${fa(u.oil)}</b><br>نیروی انسانی: <b>${fa(u.people)}</b><br>هزینه: <b>${money(u.price)}</b><br>زمان تولید: <b>${formatDuration(u.time)}</b><br>حمله: <b>${fa(u.attack)}</b><br>دفاع: <b>${fa(u.defense)}</b></div><button class="order-button" data-unit-order="${u.key}">سفارش ساخت</button></article>`;
+return \`<article class="unit-card"><div class="unit-name">\${escapeHTML(u.name)}</div><div class="unit-info">موجودی فعلی: <b>\${fa(current)}</b><br>آهن موردنیاز: <b>\${fa(u.iron)}</b><br>نفت موردنیاز: <b>\${fa(u.oil)}</b><br>نیروی انسانی: <b>\${fa(u.people)}</b><br>هزینه: <b>\${money(u.price)}</b><br>زمان تولید: <b>\${formatDuration(u.time)}</b><br>حمله: <b>\${fa(u.attack)}</b><br>دفاع: <b>\${fa(u.defense)}</b></div><button class="order-button" data-unit-order="\${u.key}">سفارش ساخت</button></article>\`;
 }).join("");
 box.querySelectorAll("[data-unit-order]").forEach(b=>b.addEventListener("click",()=>{const u=units[category].find(x=>x.key===b.dataset.unitOrder);if(u)openOrder({...u,kind:"unit"})}));
-$("categoryInfo").textContent=`بخش ${unitCategoryNames[category]} فعال است.`;
+$("categoryInfo").textContent=\`بخش \${unitCategoryNames[category]} فعال است.\`;
 }
 
 /* مهمات بازی */
@@ -627,13 +619,13 @@ document.querySelectorAll("[data-ammo-category]").forEach(t=>t.classList.toggle(
 const box=$("arsenalList");
 if(category==="nuclear"){
 const unlocked=Boolean(state.infraData?.country?.nuclear_permission_unlocked||state.snapshot?.country?.nuclear_permission_unlocked);
-box.innerHTML=unlocked?`<div class="locked"><strong>دسترسی پژوهشی هسته‌ای فعال است</strong>این بخش در نسخه فعلی صرفاً وضعیت مجوز پژوهشی بازی را نمایش می‌دهد.</div>`:`<div class="locked"><strong>دسترسی پژوهشی فعال نیست</strong>برای بازشدن این بخش، مرکز پژوهش هسته‌ای را از قسمت زیرساخت بساز.</div>`;
+box.innerHTML=unlocked?\`<div class="locked"><strong>دسترسی پژوهشی هسته‌ای فعال است</strong>این بخش در نسخه فعلی صرفاً وضعیت مجوز پژوهشی بازی را نمایش می‌دهد.</div>\`:\`<div class="locked"><strong>دسترسی پژوهشی فعال نیست</strong>برای بازشدن این بخش، مرکز پژوهش هسته‌ای را از قسمت زیرساخت بساز.</div>\`;
 return;
 }
 const stock=state.snapshot?.ammunition||[];
 box.innerHTML=ammunition[category].map(a=>{
 const current=stock.find(x=>x.ammo_key===a.key)?.quantity||0;
-return `<article class="ammo-card"><div class="ammo-name">${escapeHTML(a.name)}</div><div class="ammo-info">موجودی فعلی: <b>${fa(current)}</b><br>تعداد هر بسته: <b>${fa(a.batch)}</b><br>آهن موردنیاز: <b>${fa(a.iron)}</b><br>نفت موردنیاز: <b>${fa(a.oil)}</b><br>هزینه هر بسته: <b>${money(a.price)}</b><br>زمان تولید: <b>${formatDuration(a.time)}</b></div><button class="ammo-order" data-ammo-order="${a.key}">ثبت سفارش تولید</button></article>`;
+return \`<article class="ammo-card"><div class="ammo-name">\${escapeHTML(a.name)}</div><div class="ammo-info">موجودی فعلی: <b>\${fa(current)}</b><br>تعداد هر بسته: <b>\${fa(a.batch)}</b><br>آهن موردنیاز: <b>\${fa(a.iron)}</b><br>نفت موردنیاز: <b>\${fa(a.oil)}</b><br>هزینه هر بسته: <b>\${money(a.price)}</b><br>زمان تولید: <b>\${formatDuration(a.time)}</b></div><button class="ammo-order" data-ammo-order="\${a.key}">ثبت سفارش تولید</button></article>\`;
 }).join("");
 box.querySelectorAll("[data-ammo-order]").forEach(b=>b.addEventListener("click",()=>{const a=ammunition[category].find(x=>x.key===b.dataset.ammoOrder);if(a)openOrder({...a,kind:"ammo"})}));
 renderQueue();
@@ -642,19 +634,19 @@ renderQueue();
 /* سفارش تولید */
 function openOrder(item){
 state.currentItem=item;$("packageCount").value=1;$("modalTitle").textContent="سفارش تولید "+item.name;
-$("modalInfo").innerHTML=`تعداد هر بسته: ${fa(item.batch||1)}<br>هزینه هر بسته: ${money(item.price)}<br>زمان تولید هر بسته: ${formatDuration(item.time)}`;
+$("modalInfo").innerHTML=\`تعداد هر بسته: \${fa(item.batch||1)}<br>هزینه هر بسته: \${money(item.price)}<br>زمان تولید هر بسته: \${formatDuration(item.time)}\`;
 updateCalculation();$("orderModal").classList.add("show");
 }
 function updateCalculation(){
 const i=state.currentItem;if(!i)return;
 let n=parseInt($("packageCount").value,10);if(!Number.isFinite(n)||n<1)n=1;if(n>1000)n=1000;
-$("calculation").innerHTML=`تعداد بسته‌ها: <strong>${fa(n)}</strong><br>مجموع تولید: <strong>${fa((i.batch||1)*n)}</strong><br>آهن موردنیاز: <strong>${fa((i.iron||0)*n)}</strong><br>نفت موردنیاز: <strong>${fa((i.oil||0)*n)}</strong><br>نیروی انسانی: <strong>${fa((i.people||0)*n)}</strong><br>هزینه نهایی: <strong>${money(i.price*n)}</strong><br>زمان کل تولید: <strong>${formatDuration(i.time*n)}</strong>`;
+$("calculation").innerHTML=\`تعداد بسته‌ها: <strong>\${fa(n)}</strong><br>مجموع تولید: <strong>\${fa((i.batch||1)*n)}</strong><br>آهن موردنیاز: <strong>\${fa((i.iron||0)*n)}</strong><br>نفت موردنیاز: <strong>\${fa((i.oil||0)*n)}</strong><br>نیروی انسانی: <strong>\${fa((i.people||0)*n)}</strong><br>هزینه نهایی: <strong>\${money(i.price*n)}</strong><br>زمان کل تولید: <strong>\${formatDuration(i.time*n)}</strong>\`;
 }
 async function confirmProduction(){
 const item=state.currentItem;if(!item||state.commanding)return;
 const count=parseInt($("packageCount").value,10);
 if(!Number.isInteger(count)||count<1||count>1000){alert("تعداد بسته‌ها باید بین ۱ تا ۱۰۰۰ باشد.");return}
-if(!confirm(`سفارش تولید ${item.name} با تعداد ${count} بسته ثبت شود؟`))return;
+if(!confirm(\`سفارش تولید \${item.name} با تعداد \${count} بسته ثبت شود؟\`))return;
 $("confirmOrder").disabled=true;$("confirmOrder").textContent="در حال ثبت...";
 try{
 await countryCommand("queue",{item_key:item.key,quantity:count});
@@ -663,21 +655,111 @@ await refreshCountryState();alert("سفارش با موفقیت در صف تول
 }catch(e){console.error(e);alert("ثبت سفارش ناموفق بود:\n"+errorMessage(e))}
 finally{$("confirmOrder").disabled=false;$("confirmOrder").textContent="تأیید سفارش"}
 }
+
+/* صف سفارش‌های تولید + تکمیل فوری */
 function renderQueue(){
-const orders=state.snapshot?.orders||[];const box=$("orderQueue");
-if(!orders.length){box.innerHTML='<div class="empty-queue">هنوز هیچ سفارشی ثبت نشده است.</div>';return}
-box.innerHTML=orders.map(o=>{
-const end=new Date(o.completes_at).getTime();const remaining=Number.isFinite(end)?Math.max(0,Math.ceil((end-Date.now())/1000)):0;
-const status=o.status==="completed"?"تولید تکمیل شد":o.status==="cancelled"?"لغو شده":o.status==="queued"?"در صف تولید":"در حال تولید";
-const canCancel=o.status==="queued"&&new Date(o.starts_at).getTime()>Date.now();
-return `<article class="queue-card"><strong>${escapeHTML(o.item_name)}</strong><br>تعداد بسته‌ها: ${fa(o.quantity)}<br>مجموع تولید: ${fa(o.total_output)}<br>هزینه: ${money(o.money_cost)}<br>وضعیت: <strong>${status}</strong><br>زمان باقی‌مانده: <strong>${o.status==="completed"?"تکمیل‌شده":formatDuration(remaining)}</strong>${canCancel?`<div class="queue-actions"><button class="btn btn-danger btn-small" data-cancel-order="${escapeHTML(o.id)}">لغو سفارش</button></div>`:""}</article>`;
-}).join("");
-box.querySelectorAll("[data-cancel-order]").forEach(b=>b.addEventListener("click",()=>cancelOrder(b.dataset.cancelOrder)));
+const orders=state.snapshot?.orders||[];
+const box=$("orderQueue");
+
+if(!orders.length){
+box.innerHTML='<div class="empty-queue">هنوز هیچ سفارشی ثبت نشده است.</div>';
+return;
 }
+
+box.innerHTML=orders.map(o=>{
+const end=new Date(o.completes_at).getTime();
+const remaining=Number.isFinite(end)?Math.max(0,Math.ceil((end-Date.now())/1000)):0;
+
+const status=o.status==="completed"?"تولید تکمیل شد":
+o.status==="cancelled"?"لغو شده":
+o.status==="queued"?"در صف تولید":"در حال تولید";
+
+const canCancel=o.status==="queued"&&new Date(o.starts_at).getTime()>Date.now();
+const canInstant=["queued","producing"].includes(o.status)&&remaining>0;
+const diamondCost=remaining>0?Math.ceil(remaining/900):0;
+
+return \`
+<article class="queue-card">
+<strong>\${escapeHTML(o.item_name)}</strong><br>
+تعداد بسته‌ها: \${fa(o.quantity)}<br>
+مجموع تولید: \${fa(o.total_output)}<br>
+هزینه: \${money(o.money_cost)}<br>
+وضعیت: <strong>\${status}</strong><br>
+زمان باقی‌مانده:
+<strong>\${o.status==="completed"?"تکمیل‌شده":formatDuration(remaining)}</strong>
+
+\${canInstant?`
+<div class="queue-actions" style="justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+<span style="color:var(--gold2)">💎 هزینه: \${fa(diamondCost)} الماس</span>
+<button class="btn btn-gold btn-small" data-instant-complete="\${escapeHTML(o.id)}" data-cost="\${diamondCost}">
+⚡ تکمیل فوری
+</button>
+</div>
+`:""}
+
+\${canCancel?`
+<div class="queue-actions">
+<button class="btn btn-danger btn-small" data-cancel-order="\${escapeHTML(o.id)}">لغو سفارش</button>
+</div>
+`:""}
+</article>
+\`;
+}).join("");
+
+box.querySelectorAll("[data-cancel-order]").forEach(b=>{
+b.addEventListener("click",()=>cancelOrder(b.dataset.cancelOrder));
+});
+
+box.querySelectorAll("[data-instant-complete]").forEach(b=>{
+b.addEventListener("click",()=>instantCompleteOrder(
+b.dataset.instantComplete,
+Number(b.dataset.cost),
+b
+));
+});
+}
+
 async function cancelOrder(id){
 if(!confirm("این سفارش لغو شود؟"))return;
 try{await countryCommand("cancel",{order_id:id});await refreshCountryState();alert("سفارش لغو شد.")}
 catch(e){console.error(e);alert("لغو سفارش انجام نشد:\n"+errorMessage(e))}
+}
+
+/* تکمیل فوری با الماس */
+async function instantCompleteOrder(orderId,cost,button){
+if(state.commanding||!orderId)return;
+
+const diamonds=Number(state.snapshot?.country?.diamonds||0);
+
+if(diamonds<cost){
+alert(
+\`الماس کافی نیست!\n\nهزینه تکمیل فوری: \${fa(cost)} الماس\nموجودی شما: \${fa(diamonds)} الماس\`
+);
+return;
+}
+
+if(!confirm(
+\`این سفارش فوراً تکمیل شود؟\n\nهزینه: \${fa(cost)} الماس\nموجودی فعلی: \${fa(diamonds)} الماس\nموجودی پس از پرداخت: \${fa(diamonds-cost)} الماس\`
+))return;
+
+button.disabled=true;
+button.textContent="در حال تکمیل...";
+
+try{
+const result=await countryCommand("instant_complete",{order_id:orderId});
+await refreshCountryState();
+
+alert(
+\`سفارش با موفقیت تکمیل شد.\nالماس مصرف‌شده: \${fa(result.diamonds_spent)}\`
+);
+
+}catch(e){
+console.error("INSTANT COMPLETE ERROR",e);
+alert("تکمیل فوری انجام نشد:\n"+errorMessage(e));
+}finally{
+button.disabled=false;
+button.textContent="⚡ تکمیل فوری";
+}
 }
 
 /* رویدادها */
