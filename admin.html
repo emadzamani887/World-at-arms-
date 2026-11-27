@@ -1,635 +1,411 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WORLD AT ARMS | Admin</title>
+<title>WORLD AT ARMS | COMMAND CENTER</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#edf5ff;color:#263b59;font-family:Tahoma,Arial,sans-serif}
-header{background:#b9dcff;padding:22px;text-align:center;color:#23466d}
-header h1{margin:0 0 7px;font-size:23px}
-header p{margin:0;font-size:13px}
-.container{max-width:1000px;margin:18px auto;padding:12px}
-.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-button{border:0;border-radius:10px;padding:12px;background:#d7eaff;color:#244b76;font-weight:bold;cursor:pointer}
-button:hover{background:#b9dcff}
-button.primary{background:#579de2;color:white}
-button.danger{background:#ffe0e0;color:#a52d2d}
-button.small{padding:7px 10px;font-size:12px}
-.panel{background:white;border-radius:15px;padding:17px;margin-bottom:14px;box-shadow:0 3px 12px #aac7e333}
-h2{font-size:19px;margin:0 0 15px}
-h3{font-size:15px;margin:12px 0}
-input,select,textarea{width:100%;padding:12px;border:1px solid #d5e4f4;border-radius:9px;margin:6px 0 12px;background:#f8fbff;font-family:inherit}
-textarea{min-height:75px}
-label{font-size:13px;color:#526b88}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.stat{background:#eaf4ff;padding:15px;border-radius:12px;text-align:center}
-.stat b{display:block;font-size:25px;color:#347fc4;margin-top:8px}
-.item{border:1px solid #e1ebf5;border-radius:11px;padding:12px;margin:9px 0;background:#fbfdff}
-.item p{font-size:13px;color:#647994}
-.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+body{
+ margin:0;background:#070d19;color:#e8f4ff;
+ font-family:Tahoma,Arial;min-height:100vh;
+ background-image:
+ radial-gradient(circle at 20% 20%,#123b5a55,transparent 35%),
+ radial-gradient(circle at 80% 70%,#27326a44,transparent 35%);
+}
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;
+ background-image:radial-gradient(white 1px,transparent 1px);
+ background-size:75px 75px;opacity:.13;
+ animation:stars 35s linear infinite;
+}
+@keyframes stars{to{background-position:300px 300px}}
+button,input,select{font:inherit}
+button{
+ background:#12334d;color:white;border:1px solid #285575;
+ padding:11px 15px;border-radius:9px;cursor:pointer
+}
+button:hover{background:#176080}
+input,select{
+ background:#0b1929;color:white;border:1px solid #29435c;
+ padding:12px;border-radius:9px;width:100%
+}
+.login{
+ max-width:400px;margin:12vh auto;padding:25px;
+ background:#102238;border:1px solid #31516b;border-radius:18px;
+ position:relative;z-index:2
+}
 .hidden{display:none!important}
-.muted{color:#8294a8;font-size:12px}
-footer{text-align:center;color:#8294a8;font-size:12px;padding:20px}
-#loginBox{max-width:430px;margin:35px auto;padding:18px}
-#loginBox .panel{padding:22px}
-#message{font-size:13px;margin:10px 0;color:#347fc4}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-@media(min-width:650px){.nav{grid-template-columns:repeat(5,1fr)}}
+.container{max-width:1450px;margin:auto;padding:20px;position:relative;z-index:1}
+header{
+ display:flex;justify-content:space-between;align-items:center;
+ gap:12px;flex-wrap:wrap;margin-bottom:20px
+}
+.logo{font-size:21px;font-weight:bold;color:#63dcff}
+.subtitle{font-size:11px;color:#8daac4;margin-top:5px}
+.layout{display:grid;grid-template-columns:220px 1fr;gap:15px}
+.sidebar,.panel,.stat{
+ background:#101e31eF;border:1px solid #263f5a;
+ border-radius:15px;padding:15px;
+}
+.sidebar{height:max-content}
+.nav{width:100%;margin-bottom:8px;text-align:right;background:#142b42}
+.nav.active{background:#087d9d}
+.content{min-width:0}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:15px}
+.stat small{color:#8ba8c4}
+.stat strong{display:block;font-size:26px;color:#58dafa;margin-top:10px}
+h2{font-size:19px}
+h3{font-size:15px}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{text-align:right;padding:12px;border-bottom:1px solid #293d54;font-size:13px}
+th{color:#8da9c5}
+.tablewrap{overflow:auto}
+.free{color:#55e3ae}
+.taken{color:#ff758b}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.row>*{flex:1}
+.badge{background:#263b53;border-radius:20px;padding:5px 9px;font-size:11px}
+.modal{
+ position:fixed;inset:0;background:#000b;z-index:5;
+ display:grid;place-items:center;padding:15px
+}
+.modalbox{
+ background:#12243a;border:1px solid #42627d;
+ border-radius:15px;padding:22px;width:min(450px,100%)
+}
+.modalbox input,.modalbox select{margin:7px 0}
+.message{font-size:12px;margin-top:10px;color:#ff8798}
+.success{color:#60e5b3}
+@media(max-width:850px){
+ .layout{grid-template-columns:1fr}
+ .sidebar{display:flex;overflow:auto;gap:5px}
+ .nav{width:auto;white-space:nowrap}
+ .grid{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
 
-<header>
-<h1>🌍 WORLD AT ARMS</h1>
-<p>پنل مدیریت بازی</p>
-</header>
-
-<div id="loginBox">
-<div class="panel">
-<h2>🔐 ورود مدیر</h2>
-<label>ایمیل حساب مدیر</label>
-<input id="loginEmail" type="email" placeholder="ایمیل حساب Supabase">
-<label>رمز عبور</label>
-<input id="loginPassword" type="password" placeholder="رمز عبور">
-<button class="primary" style="width:100%" onclick="login()">ورود به پنل</button>
-<p id="message"></p>
-</div>
-</div>
+<section id="login" class="login">
+ <div class="logo">🌌 WORLD AT ARMS</div>
+ <div class="subtitle">CENTRAL COMMAND SYSTEM</div>
+ <h2>ورود مدیر</h2>
+ <input id="email" type="email" placeholder="ایمیل مدیر">
+ <br><br>
+ <input id="password" type="password" placeholder="رمز عبور">
+ <br><br>
+ <button onclick="login()" style="width:100%">ورود به مرکز فرماندهی</button>
+ <div id="loginMessage" class="message"></div>
+</section>
 
 <div id="app" class="container hidden">
+ <header>
+  <div>
+   <div class="logo">🌌 WORLD AT ARMS</div>
+   <div class="subtitle">GLOBAL STRATEGIC COMMAND CENTER</div>
+  </div>
+  <div class="row">
+   <button onclick="loadData()">بروزرسانی</button>
+   <button onclick="logout()">خروج</button>
+  </div>
+ </header>
 
-<div class="topbar">
-<b>پنل مدیریت آنلاین</b>
-<button class="danger small" onclick="logout()">خروج از حساب</button>
-</div>
+ <div class="layout">
+  <aside class="sidebar">
+   <button class="nav active" onclick="page('dashboard',this)">◈ داشبورد</button>
+   <button class="nav" onclick="page('worlds',this)">🌍 مدیریت ورلدها</button>
+   <button class="nav" onclick="page('countries',this)">⚑ کشورها و بازیکنان</button>
+   <button class="nav" onclick="page('logs',this)">▤ تاریخچه و لاگ‌ها</button>
+  </aside>
 
-<div class="panel">
-<p class="muted" id="connectionStatus">در حال اتصال...</p>
-</div>
+  <main class="content">
+   <section id="dashboard">
+    <h2>مرکز فرماندهی</h2>
+    <div class="grid">
+     <div class="stat"><small>تعداد ورلدها</small><strong id="worldCount">0</strong></div>
+     <div class="stat"><small>تعداد کشورها</small><strong id="countryCount">0</strong></div>
+     <div class="stat"><small>کشورهای تصرف‌شده</small><strong id="takenCount">0</strong></div>
+     <div class="stat"><small>کشورهای آزاد</small><strong id="freeCount">0</strong></div>
+    </div>
+    <div class="panel">
+     <h3>وضعیت ورلدها</h3>
+     <div id="worldSummary" class="tablewrap"></div>
+    </div>
+   </section>
 
-<div class="nav">
-<button onclick="showPage('dashboard')">📊 داشبورد</button>
-<button onclick="showPage('worlds')">🌐 جهان‌ها</button>
-<button onclick="showPage('countries')">🏳️ کشورها</button>
-<button onclick="showPage('players')">👤 بازیکنان</button>
-<button onclick="showPage('admins')">🛡 ادمین‌ها</button>
-<button onclick="showPage('treasury')">💰 خزانه</button>
-<button onclick="showPage('wars')">⚔️ جنگ‌ها</button>
-<button onclick="showPage('settings')">⚙️ تنظیمات</button>
-</div>
+   <section id="worlds" class="hidden">
+    <h2>مدیریت ورلدها</h2>
+    <div class="panel">
+     <div class="row">
+      <input id="worldName" placeholder="نام ورلد جدید">
+      <button onclick="createWorld()">ساخت ورلد</button>
+     </div>
+     <div id="worldList" class="tablewrap"></div>
+    </div>
+   </section>
 
-<section id="dashboard" class="page">
-<div class="panel">
-<h2>📊 داشبورد مدیریت</h2>
-<div class="grid">
-<div class="stat">جهان‌ها<b id="statWorlds">0</b></div>
-<div class="stat">کشورها<b id="statCountries">0</b></div>
-<div class="stat">بازیکنان<b id="statPlayers">0</b></div>
-<div class="stat">جنگ‌ها<b id="statWars">0</b></div>
-</div>
-</div>
-<div class="panel">
-<h3>وضعیت بازی</h3>
-<p id="statusText">سیستم آماده است.</p>
-<p class="muted">جهان‌ها و کشورها در دیتابیس آنلاین ذخیره می‌شوند.</p>
-</div>
-</section>
+   <section id="countries" class="hidden">
+    <h2>کشورها و بازیکنان</h2>
+    <div class="panel">
+     <div class="row">
+      <select id="worldFilter" onchange="renderCountries()">
+       <option value="">همه ورلدها</option>
+      </select>
+      <input id="search" placeholder="جست‌وجوی کشور یا آیدی" oninput="renderCountries()">
+     </div>
+     <div id="countryList" class="tablewrap"></div>
+    </div>
+   </section>
 
-<section id="worlds" class="page hidden">
-<div class="panel">
-<h2>🌐 مدیریت جهان‌ها</h2>
-<label>نام جهان</label>
-<input id="worldName" placeholder="مثلاً جنگ جهانی دوم">
-<label>توضیحات</label>
-<textarea id="worldDesc" placeholder="توضیحات جهان..."></textarea>
-<label>وضعیت</label>
-<select id="worldStatus">
-<option value="active">فعال</option>
-<option value="inactive">غیرفعال</option>
-</select>
-<button class="primary" onclick="createWorld()">➕ ساخت جهان</button>
-</div>
-<div class="panel">
-<h3>فهرست جهان‌ها</h3>
-<div id="worldList"></div>
-</div>
-</section>
-
-<section id="countries" class="page hidden">
-<div class="panel">
-<h2>🏳️ مدیریت کشورها</h2>
-<label>جهان</label>
-<select id="countryWorld"></select>
-<label>نام کشور</label>
-<input id="countryName" placeholder="مثلاً ایران">
-<label>نام فرمانده</label>
-<input id="countryRuler" placeholder="نام فرمانده">
-<label>آیدی تلگرام بازیکن (اختیاری)</label>
-<input id="countryPlayer" placeholder="Telegram ID">
-<button class="primary" onclick="createCountry()">➕ افزودن کشور</button>
-</div>
-<div class="panel">
-<h3>فهرست کشورها</h3>
-<div id="countryList"></div>
-</div>
-</section>
-
-<section id="players" class="page hidden">
-<div class="panel">
-<h2>👤 مدیریت بازیکنان</h2>
-<label>آیدی تلگرام</label>
-<input id="playerId" placeholder="Telegram ID">
-<label>نام بازیکن</label>
-<input id="playerName" placeholder="نام بازیکن">
-<button class="primary" onclick="addPlayer()">➕ ثبت بازیکن</button>
-</div>
-<div class="panel"><h3>بازیکنان ثبت‌شده</h3><div id="playerList"></div></div>
-</section>
-
-<section id="admins" class="page hidden">
-<div class="panel">
-<h2>🛡 مدیریت ادمین‌ها</h2>
-<label>آیدی تلگرام ادمین</label>
-<input id="adminId" placeholder="Telegram ID">
-<button class="primary" onclick="addAdmin()">➕ افزودن ادمین</button>
-<p class="muted">این فهرست محلی است و دسترسی واقعی پنل را کنترل نمی‌کند.</p>
-</div>
-<div class="panel"><h3>فهرست ادمین‌ها</h3><div id="adminList"></div></div>
-</section>
-
-<section id="treasury" class="page hidden">
-<div class="panel">
-<h2>💰 خزانه کشورها</h2>
-<label>کشور</label>
-<select id="treasuryCountry"></select>
-<label>مقدار تغییر موجودی</label>
-<input id="treasuryAmount" type="number" placeholder="مثلاً 1000 یا -500">
-<button class="primary" onclick="changeTreasury()">ثبت تغییر موجودی</button>
-</div>
-<div class="panel"><h3>موجودی کشورها</h3><div id="treasuryList"></div></div>
-</section>
-
-<section id="wars" class="page hidden">
-<div class="panel">
-<h2>⚔️ مدیریت جنگ‌ها</h2>
-<label>نام جنگ</label>
-<input id="warName" placeholder="نام جنگ">
-<label>کشور اول</label>
-<select id="warA"></select>
-<label>کشور دوم</label>
-<select id="warB"></select>
-<button class="primary" onclick="createWar()">➕ ثبت جنگ</button>
-</div>
-<div class="panel"><h3>فهرست جنگ‌ها</h3><div id="warList"></div></div>
-</section>
-
-<section id="settings" class="page hidden">
-<div class="panel">
-<h2>⚙️ تنظیمات</h2>
-<label>نام بازی</label>
-<input id="gameName" placeholder="WORLD AT ARMS">
-<button class="primary" onclick="saveSettings()">ذخیره تنظیمات</button>
-<hr>
-<h3>پشتیبان‌گیری</h3>
-<button onclick="backup()">⬇️ دریافت نسخه پشتیبان</button>
-<label>بازیابی اطلاعات از فایل JSON</label>
-<input type="file" id="restoreFile" accept=".json">
-<button onclick="restore()">بازیابی فایل</button>
-</div>
-<div class="panel">
-<h3>⚠️ پاک‌سازی اطلاعات</h3>
-<button class="danger" onclick="resetData()">حذف تمام اطلاعات محلی</button>
-<p class="muted">این گزینه جهان‌ها و کشورهای آنلاین را حذف نمی‌کند.</p>
-</div>
-</section>
+   <section id="logs" class="hidden">
+    <h2>تاریخچه فعالیت‌ها</h2>
+    <div class="panel">
+     <p style="color:#e8c879;font-size:12px">
+      رویدادهایی که از زمان فعال‌سازی سیستم لاگ ثبت شوند اینجا نمایش داده می‌شوند.
+     </p>
+     <div id="logList">در حال بارگذاری...</div>
+    </div>
+   </section>
+  </main>
+ </div>
 </div>
 
-<footer>WORLD AT ARMS • ADMIN PANEL</footer>
+<div id="modal"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://hgaliwladnrtfdkwbtzz.supabase.co";
-const SUPABASE_KEY = "sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
+const SUPABASE_URL="https://hgaliwladnrtfdkwbtzz.supabase.co";
+const SUPABASE_KEY="sb_publishable_UNoDUa2CHIf4SUbjygOR6g__l3Q0Ezb";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+let worlds=[];
+let countries=[];
 
-const KEY = "WAA_FINAL_PANEL_2026";
-let currentUser = null;
-let db = emptyDB();
-
-function emptyDB(){
- return {
-  worlds:[],countries:[],players:[],admins:[],
-  wars:[],transactions:[],
-  settings:{name:"WORLD AT ARMS"}
- };
+function page(id,btn){
+ document.querySelectorAll(".content section").forEach(x=>x.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ document.querySelectorAll(".nav").forEach(x=>x.classList.remove("active"));
+ btn.classList.add("active");
+ if(id==="logs")loadLogs();
 }
 
-function localDB(){
- try{
-  const saved=JSON.parse(localStorage.getItem(KEY));
-  if(!saved)return emptyDB();
-  const base=emptyDB();
-  return {
-   ...base,...saved,
-   worlds:[],
-   countries:[],
-   players:saved.players||[],
-   admins:saved.admins||[],
-   wars:saved.wars||[],
-   transactions:saved.transactions||[],
-   settings:{...base.settings,...(saved.settings||{})}
-  };
- }catch(e){return emptyDB();}
+async function login(){
+ const {data,error}=await db.auth.signInWithPassword({
+  email:document.getElementById("email").value.trim(),
+  password:document.getElementById("password").value
+ });
+ if(error){
+  document.getElementById("loginMessage").textContent=error.message;
+  return;
+ }
+ await verifyAdmin();
 }
 
-function saveLocal(){
- const copy={...db,worlds:[],countries:[]};
- localStorage.setItem(KEY,JSON.stringify(copy));
- renderAll();
+async function verifyAdmin(){
+ const {data:{user}}=await db.auth.getUser();
+ if(!user)return;
+
+ const {data,error}=await db.from("admin_users")
+  .select("id").eq("id",user.id).maybeSingle();
+
+ if(error||!data){
+  await db.auth.signOut();
+  document.getElementById("loginMessage").textContent="این حساب مدیر نیست یا دسترسی ندارد.";
+  return;
+ }
+
+ document.getElementById("login").classList.add("hidden");
+ document.getElementById("app").classList.remove("hidden");
+ await loadData();
 }
 
-function id(){
- return Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+async function logout(){
+ await db.auth.signOut();
+ location.reload();
 }
 
-function safe(s){
- return String(s??"").replace(/[&<>"']/g,c=>({
+async function loadData(){
+ const [w,c]=await Promise.all([
+  db.from("worlds").select("*").order("created_at",{ascending:false}),
+  db.from("countries").select("*").order("name")
+ ]);
+
+ if(w.error||c.error){
+  alert(w.error?.message||c.error?.message);
+  return;
+ }
+
+ worlds=w.data||[];
+ countries=c.data||[];
+
+ const taken=countries.filter(c=>c.player_telegram_id).length;
+
+ document.getElementById("worldCount").textContent=worlds.length;
+ document.getElementById("countryCount").textContent=countries.length;
+ document.getElementById("takenCount").textContent=taken;
+ document.getElementById("freeCount").textContent=countries.length-taken;
+
+ document.getElementById("worldFilter").innerHTML=
+  '<option value="">همه ورلدها</option>'+
+  worlds.map(w=>`<option value="${w.id}">${escapeHTML(w.name)}</option>`).join("");
+
+ renderWorlds();
+ renderCountries();
+ renderSummary();
+}
+
+function escapeHTML(v){
+ return String(v??"").replace(/[&<>"']/g,c=>({
  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
  }[c]));
 }
 
-function message(text){
- document.getElementById("message").textContent=text;
+function renderWorlds(){
+ document.getElementById("worldList").innerHTML=worlds.length?
+ `<table><tr><th>نام ورلد</th><th>کشورها</th><th>وضعیت</th><th>عملیات</th></tr>
+ ${worlds.map(w=>`<tr>
+ <td>${escapeHTML(w.name)}</td>
+ <td>${countries.filter(c=>c.world_id===w.id).length}</td>
+ <td>${escapeHTML(w.status)}</td>
+ <td><button onclick="toggleWorld('${w.id}')">تغییر وضعیت</button></td>
+ </tr>`).join("")}</table>`:
+ "هنوز ورلدی ساخته نشده است.";
 }
 
-async function login(){
- const email=document.getElementById("loginEmail").value.trim();
- const password=document.getElementById("loginPassword").value;
- if(!email||!password)return message("ایمیل و رمز عبور را وارد کن.");
-
- message("در حال بررسی حساب...");
- const {data,error}=await supabaseClient.auth.signInWithPassword({
-  email,password
- });
-
- if(error){
-  message("ورود ناموفق بود: "+error.message);
-  return;
- }
-
- const ok=await verifyAdmin(data.user);
- if(!ok){
-  await supabaseClient.auth.signOut();
-  message("این حساب در فهرست مدیران مجاز نیست.");
- }
-}
-
-async function verifyAdmin(user){
- if(!user)return false;
-
- const {data,error}=await supabaseClient
-  .from("admin_users")
-  .select("id")
-  .eq("id",user.id)
-  .maybeSingle();
-
- if(error){
-  message("خطا در بررسی دسترسی: "+error.message);
-  return false;
- }
-
- if(!data)return false;
-
- currentUser=user;
- document.getElementById("loginBox").classList.add("hidden");
- document.getElementById("app").classList.remove("hidden");
- document.getElementById("connectionStatus").textContent=
-  "متصل به Supabase • مدیر تأیید شد";
-
- db=localDB();
- await loadOnlineData();
- renderAll();
- return true;
-}
-
-async function logout(){
- await supabaseClient.auth.signOut();
- currentUser=null;
- db=emptyDB();
- document.getElementById("app").classList.add("hidden");
- document.getElementById("loginBox").classList.remove("hidden");
- message("از حساب خارج شدی.");
-}
-
-async function loadOnlineData(){
- const [worldResult,countryResult]=await Promise.all([
-  supabaseClient.from("worlds").select("*").order("created_at"),
-  supabaseClient.from("countries").select("*").order("created_at")
- ]);
-
- if(worldResult.error)throw new Error("خطای دریافت جهان‌ها: "+worldResult.error.message);
- if(countryResult.error)throw new Error("خطای دریافت کشورها: "+countryResult.error.message);
-
- db.worlds=worldResult.data.map(w=>({
-  id:w.id,
-  name:w.name,
-  description:w.description||"",
-  status:w.status,
-  createdAt:w.created_at
- }));
-
- db.countries=countryResult.data.map(c=>({
-  id:c.id,
-  worldId:c.world_id,
-  name:c.name,
-  ruler:c.ruler||"",
-  playerId:c.player_telegram_id||"",
-  balance:Number(c.balance||0)
- }));
-
- renderAll();
-}
-
-async function refreshOnline(){
- try{
-  await loadOnlineData();
-  document.getElementById("connectionStatus").textContent="اتصال آنلاین برقرار است.";
- }catch(e){
-  alert(e.message);
- }
-}
-
-function showPage(name){
- document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
- document.getElementById(name).classList.remove("hidden");
- renderAll();
+function renderSummary(){
+ document.getElementById("worldSummary").innerHTML=worlds.length?
+ `<table><tr><th>ورلد</th><th>کشورها</th><th>تصرف‌شده</th></tr>
+ ${worlds.map(w=>{
+  const list=countries.filter(c=>c.world_id===w.id);
+  return `<tr><td>${escapeHTML(w.name)}</td><td>${list.length}</td>
+  <td>${list.filter(c=>c.player_telegram_id).length}</td></tr>`;
+ }).join("")}</table>`:"ورلدی وجود ندارد.";
 }
 
 async function createWorld(){
  const name=document.getElementById("worldName").value.trim();
- const description=document.getElementById("worldDesc").value.trim();
- const status=document.getElementById("worldStatus").value;
+ if(!name)return alert("نام ورلد را وارد کن.");
 
- if(!name)return alert("نام جهان را وارد کن.");
-
- const {error}=await supabaseClient.from("worlds").insert({
-  name,description,status
+ const {error}=await db.from("worlds").insert({
+  name,description:"",status:"active"
  });
 
- if(error)return alert("خطا در ساخت جهان: "+error.message);
-
+ if(error)return alert(error.message);
  document.getElementById("worldName").value="";
- document.getElementById("worldDesc").value="";
- await refreshOnline();
- alert("جهان در دیتابیس آنلاین ساخته شد.");
+ await loadData();
+ alert("ورلد ساخته شد.");
 }
 
-async function deleteWorld(worldId){
- if(!confirm("جهان و کشورهای آن حذف شوند؟"))return;
-
- const {error}=await supabaseClient.from("worlds").delete().eq("id",worldId);
- if(error)return alert("خطا در حذف: "+error.message);
-
- await refreshOnline();
+async function toggleWorld(id){
+ const w=worlds.find(x=>x.id===id);
+ const status=w.status==="active"?"inactive":"active";
+ const {error}=await db.from("worlds").update({status}).eq("id",id);
+ if(error)return alert(error.message);
+ await loadData();
 }
 
-async function toggleWorld(worldId){
- const w=db.worlds.find(x=>x.id===worldId);
- if(!w)return;
+function renderCountries(){
+ const wid=document.getElementById("worldFilter").value;
+ const q=document.getElementById("search").value.trim().toLowerCase();
 
- const next=w.status==="active"?"inactive":"active";
- const {error}=await supabaseClient.from("worlds")
-  .update({status:next}).eq("id",worldId);
+ const list=countries.filter(c=>
+  (!wid||c.world_id===wid)&&
+  (!q||(c.name||"").toLowerCase().includes(q)||
+  (c.player_telegram_id||"").includes(q)||
+  (c.player_telegram_username||"").toLowerCase().includes(q))
+ );
 
- if(error)return alert("خطا در تغییر وضعیت: "+error.message);
- await refreshOnline();
+ document.getElementById("countryList").innerHTML=list.length?
+ `<table><tr>
+ <th>کشور</th><th>ورلد</th><th>وضعیت</th>
+ <th>آیدی عددی</th><th>Username</th><th>عملیات مدیر</th>
+ </tr>
+ ${list.map(c=>`<tr>
+ <td>${escapeHTML(c.name)}</td>
+ <td>${escapeHTML(worlds.find(w=>w.id===c.world_id)?.name||"—")}</td>
+ <td class="${c.player_telegram_id?"taken":"free"}">${c.player_telegram_id?"تصرف‌شده":"آزاد"}</td>
+ <td>${escapeHTML(c.player_telegram_id||"—")}</td>
+ <td>${c.player_telegram_username?"@"+escapeHTML(c.player_telegram_username):"—"}</td>
+ <td><button onclick="manageCountry('${c.id}')">مدیریت</button></td>
+ </tr>`).join("")}</table>`:"کشوری پیدا نشد.";
 }
 
-async function createCountry(){
- const worldId=document.getElementById("countryWorld").value;
- const name=document.getElementById("countryName").value.trim();
- const ruler=document.getElementById("countryRuler").value.trim();
- const playerId=document.getElementById("countryPlayer").value.trim();
-
- if(!worldId)return alert("اول یک جهان بساز.");
- if(!name)return alert("نام کشور را وارد کن.");
-
- const {error}=await supabaseClient.from("countries").insert({
-  world_id:worldId,
-  name,
-  ruler,
-  player_telegram_id:playerId||null
- });
-
- if(error)return alert("خطا در افزودن کشور: "+error.message);
-
- document.getElementById("countryName").value="";
- document.getElementById("countryRuler").value="";
- document.getElementById("countryPlayer").value="";
- await refreshOnline();
- alert("کشور در دیتابیس آنلاین ثبت شد.");
+function manageCountry(id){
+ const c=countries.find(x=>x.id===id);
+ document.getElementById("modal").innerHTML=`
+ <div class="modal"><div class="modalbox">
+ <h3>مدیریت ${escapeHTML(c.name)}</h3>
+ <p>آیدی فعلی: ${escapeHTML(c.player_telegram_id||"کشور آزاد")}</p>
+ <input id="playerId" placeholder="آیدی عددی بازیکن" value="${escapeHTML(c.player_telegram_id||"")}">
+ <input id="playerUsername" placeholder="Username تلگرام بدون @" value="${escapeHTML(c.player_telegram_username||"")}">
+ <div class="row">
+ <button onclick="saveCountry('${c.id}')">ثبت</button>
+ <button onclick="closeModal()">بستن</button>
+ </div>
+ <div id="modalMessage" class="message"></div>
+ </div></div>`;
 }
 
-async function deleteCountry(countryId){
- if(!confirm("این کشور حذف شود؟"))return;
+function closeModal(){document.getElementById("modal").innerHTML=""}
 
- const {error}=await supabaseClient.from("countries").delete().eq("id",countryId);
- if(error)return alert("خطا در حذف کشور: "+error.message);
+async function saveCountry(id){
+ const c=countries.find(x=>x.id===id);
+ const playerId=document.getElementById("playerId").value.trim()||null;
+ const username=document.getElementById("playerUsername").value.trim().replace(/^@/,"")||null;
 
- await refreshOnline();
-}
-
-/* بخش‌های باقی‌مانده فعلاً محلی هستند */
-
-function addPlayer(){
- const telegramId=document.getElementById("playerId").value.trim();
- const name=document.getElementById("playerName").value.trim();
- if(!telegramId)return alert("آیدی تلگرام را وارد کن.");
- if(db.players.some(p=>p.telegramId===telegramId))return alert("این بازیکن قبلاً ثبت شده.");
- db.players.push({id:id(),telegramId,name,banned:false});
- document.getElementById("playerId").value="";
- document.getElementById("playerName").value="";
- saveLocal();
-}
-
-function toggleBan(playerId){
- const p=db.players.find(x=>x.id===playerId);
- if(p){p.banned=!p.banned;saveLocal();}
-}
-
-function deletePlayer(playerId){
- if(!confirm("بازیکن حذف شود؟"))return;
- db.players=db.players.filter(p=>p.id!==playerId);
- saveLocal();
-}
-
-function addAdmin(){
- const telegramId=document.getElementById("adminId").value.trim();
- if(!telegramId)return alert("آیدی تلگرام را وارد کن.");
- if(db.admins.some(a=>a.telegramId===telegramId))return alert("این ادمین وجود دارد.");
- db.admins.push({id:id(),telegramId});
- document.getElementById("adminId").value="";
- saveLocal();
-}
-
-function deleteAdmin(adminId){
- if(!confirm("ادمین حذف شود؟"))return;
- db.admins=db.admins.filter(a=>a.id!==adminId);
- saveLocal();
-}
-
-function changeTreasury(){
- const countryId=document.getElementById("treasuryCountry").value;
- const amount=Number(document.getElementById("treasuryAmount").value);
- const c=db.countries.find(x=>x.id===countryId);
- if(!c)return alert("کشور را انتخاب کن.");
- if(!Number.isFinite(amount)||amount===0)return alert("مقدار معتبر وارد کن.");
- if((c.balance||0)+amount<0)return alert("موجودی نمی‌تواند منفی شود.");
-
- alert("تغییر خزانه فعلاً فقط در نسخه محلی قابل انجام است. اتصال آنلاین خزانه در مرحله بعد انجام می‌شود.");
-}
-
-function createWar(){
- const name=document.getElementById("warName").value.trim();
- const a=document.getElementById("warA").value;
- const b=document.getElementById("warB").value;
- if(!name||!a||!b)return alert("نام جنگ و دو کشور را انتخاب کن.");
- if(a===b)return alert("دو کشور باید متفاوت باشند.");
- db.wars.push({id:id(),name,a,b,status:"فعال"});
- document.getElementById("warName").value="";
- saveLocal();
-}
-
-function endWar(warId){
- const w=db.wars.find(x=>x.id===warId);
- if(w){w.status="پایان‌یافته";saveLocal();}
-}
-
-function saveSettings(){
- db.settings.name=document.getElementById("gameName").value.trim()||"WORLD AT ARMS";
- saveLocal();
- alert("تنظیمات ذخیره شد.");
-}
-
-function backup(){
- const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;a.download="world-at-arms-backup.json";a.click();
- URL.revokeObjectURL(url);
-}
-
-function restore(){
- const file=document.getElementById("restoreFile").files[0];
- if(!file)return alert("فایل را انتخاب کن.");
- const reader=new FileReader();
- reader.onload=()=>{
-  try{
-   const data=JSON.parse(reader.result);
-   if(!Array.isArray(data.players)||!Array.isArray(data.worlds))throw Error();
-   db.players=data.players||[];
-   db.admins=data.admins||[];
-   db.wars=data.wars||[];
-   db.transactions=data.transactions||[];
-   db.settings=data.settings||{name:"WORLD AT ARMS"};
-   saveLocal();
-   alert("اطلاعات محلی بازیابی شد. جهان‌ها و کشورها از دیتابیس آنلاین خوانده می‌شوند.");
-  }catch(e){alert("فایل پشتیبان معتبر نیست.");}
- };
- reader.readAsText(file);
-}
-
-function resetData(){
- if(!confirm("اطلاعات محلی این پنل پاک شود؟ جهان‌ها و کشورهای آنلاین حذف نمی‌شوند."))return;
- db.players=[];
- db.admins=[];
- db.wars=[];
- db.transactions=[];
- db.settings={name:"WORLD AT ARMS"};
- saveLocal();
-}
-
-function fillSelect(idName,items,placeholder){
- const el=document.getElementById(idName);
- const old=el.value;
- el.innerHTML='<option value="">'+safe(placeholder)+'</option>'+
- items.map(x=>'<option value="'+safe(x.id)+'">'+safe(x.name)+'</option>').join("");
- if(items.some(x=>x.id===old))el.value=old;
-}
-
-function renderAll(){
- document.getElementById("statWorlds").textContent=db.worlds.length;
- document.getElementById("statCountries").textContent=db.countries.length;
- document.getElementById("statPlayers").textContent=db.players.length;
- document.getElementById("statWars").textContent=db.wars.length;
- document.getElementById("statusText").textContent="بازی: "+db.settings.name;
-
- document.getElementById("worldList").innerHTML=db.worlds.map(w=>`
- <div class="item"><b>${safe(w.name)}</b>
- <p>${safe(w.description||"بدون توضیحات")} • ${w.status==="active"?"فعال":"غیرفعال"}</p>
- <div class="actions">
- <button class="small" onclick="toggleWorld('${w.id}')">تغییر وضعیت</button>
- <button class="small danger" onclick="deleteWorld('${w.id}')">حذف</button>
- </div></div>`).join("")||"هنوز جهانی ساخته نشده.";
-
- document.getElementById("countryList").innerHTML=db.countries.map(c=>{
- const w=db.worlds.find(x=>x.id===c.worldId);
- return `<div class="item"><b>${safe(c.name)}</b>
- <p>جهان: ${safe(w?.name||"نامشخص")} | فرمانده: ${safe(c.ruler||"ندارد")} | آیدی: ${safe(c.playerId||"ندارد")}</p>
- <p>موجودی: ${c.balance||0}</p>
- <button class="small danger" onclick="deleteCountry('${c.id}')">حذف کشور</button></div>`;
- }).join("")||"هنوز کشوری ثبت نشده.";
-
- document.getElementById("playerList").innerHTML=db.players.map(p=>`
- <div class="item"><b>${safe(p.name||"بدون نام")}</b>
- <p>آیدی: ${safe(p.telegramId)} | ${p.banned?"مسدود":"فعال"}</p>
- <div class="actions">
- <button class="small" onclick="toggleBan('${p.id}')">${p.banned?"رفع مسدودیت":"مسدود کردن"}</button>
- <button class="small danger" onclick="deletePlayer('${p.id}')">حذف</button>
- </div></div>`).join("")||"بازیکنی ثبت نشده.";
-
- document.getElementById("adminList").innerHTML=db.admins.map(a=>`
- <div class="item">آیدی ادمین: <b>${safe(a.telegramId)}</b>
- <button class="small danger" onclick="deleteAdmin('${a.id}')">حذف ادمین</button></div>`
- ).join("")||"ادمینی ثبت نشده.";
-
- fillSelect("countryWorld",db.worlds.filter(w=>w.status==="active"),"انتخاب جهان");
- fillSelect("treasuryCountry",db.countries,"انتخاب کشور");
- fillSelect("warA",db.countries,"کشور اول");
- fillSelect("warB",db.countries,"کشور دوم");
-
- document.getElementById("treasuryList").innerHTML=db.countries.map(c=>
- `<div class="item"><b>${safe(c.name)}</b> — موجودی: ${c.balance||0}</div>`
- ).join("")||"کشوری وجود ندارد.";
-
- document.getElementById("warList").innerHTML=db.wars.map(w=>`
- <div class="item"><b>${safe(w.name)}</b>
- <p>${safe(db.countries.find(c=>c.id===w.a)?.name||"؟")} در برابر ${safe(db.countries.find(c=>c.id===w.b)?.name||"؟")}</p>
-<p>وضعیت: ${w.status==="active"?"فعال":"پایان‌یافته"}</p>
-<div class="actions">
-${w.status==="active"?`<button class="small danger" onclick="endWar('${w.id}')">پایان جنگ</button>`:""}
-</div>
-</div>
-`).join("")||"جنگی ثبت نشده.";
-
-document.getElementById("gameName").textContent=db.settings.name;
-}
-
-async function start(){
- const {data:{session}}=await supabase.auth.getSession();
- if(session){
-  await verifyAdmin();
+ if(playerId&&!/^\d+$/.test(playerId)){
+  document.getElementById("modalMessage").textContent="آیدی باید عددی باشد.";
+  return;
  }
+
+ if(playerId){
+  const duplicate=countries.find(x=>x.world_id===c.world_id&&x.player_telegram_id===playerId&&x.id!==id);
+  if(duplicate){
+   document.getElementById("modalMessage").textContent="این بازیکن در همین ورلد کشور دیگری دارد.";
+   return;
+  }
+ }
+
+ const {error}=await db.from("countries").update({
+  player_telegram_id:playerId,
+  player_telegram_username:username,
+  selected_at:playerId?new Date().toISOString():null
+ }).eq("id",id);
+
+ if(error){
+  document.getElementById("modalMessage").textContent=error.message;
+  return;
+ }
+
+ closeModal();
+ await loadData();
 }
 
-start();
+async function loadLogs(){
+ const {data,error}=await db.from("activity_logs")
+  .select("*").order("created_at",{ascending:false}).limit(100);
+
+ if(error){
+  document.getElementById("logList").textContent=
+   "جدول تاریخچه هنوز نصب نشده است. ابتدا مرحله SQL را انجام بده.";
+  return;
+ }
+
+ document.getElementById("logList").innerHTML=data.length?
+ data.map(l=>`<div class="panel">
+ <b>${escapeHTML(l.description||l.event_type)}</b>
+ <p>ورلد: ${escapeHTML(l.world_name||"—")}</p>
+ <p>کشور: ${escapeHTML(l.country_name||"—")}</p>
+ <p>آیدی: ${escapeHTML(l.player_telegram_id||"—")}</p>
+ <small>${new Date(l.created_at).toLocaleString("fa-IR")}</small>
+ </div>`).join(""):"هنوز فعالیتی ثبت نشده است.";
+}
+
+(async()=>{
+ const {data:{session}}=await db.auth.getSession();
+ if(session)await verifyAdmin();
+})();
 </script>
 </body>
 </html>
