@@ -455,7 +455,6 @@ button:disabled{opacity:.5;cursor:not-allowed}
 
 .locked strong{display:block;color:var(--gold2);font-size:16px}
 
-/* چهار کارت اصلی منابع */
 .resource-grid{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
@@ -489,7 +488,6 @@ button:disabled{opacity:.5;cursor:not-allowed}
 }
 .resource-card small{font-size:10px;color:#adc2d0}
 
-/* برق و خزانه */
 .resource-secondary{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
@@ -727,7 +725,7 @@ footer{text-align:center;color:#7890a2;font-size:10px;padding:20px 5px 8px}
       <h3>صف ساخت زیرساخت</h3>
       <small>CONSTRUCTION</small>
     </div>
-    <div id="constructionQueue" class="empty-queue">هنوز پروژه‌ای در حال ساخت نیست.</div>
+    <div id="constructionQueue" class="empty-queue">در حال دریافت سفارش‌های ساخت...</div>
   </div>
 
   <div class="hq-card" id="openInfrastructure">
@@ -1061,18 +1059,23 @@ async function findMyCountry(){
 async function openManagement(country){
   state.myCountry=country;
   state.snapshot=null;
+  state.infraData=null;
 
   showPage("managementPage");
 
   $("countryName").textContent=country.name||"کشور شما";
   $("countryFlag").textContent=country.flag_emoji||"🏳️";
   $("countryWorld").textContent="در حال دریافت اطلاعات جهان...";
+  $("constructionQueue").className="empty-queue";
+  $("constructionQueue").textContent="در حال دریافت سفارش‌های ساخت...";
 
   try{
     await refreshCountryState();
   }catch(e){
     console.error(e);
     $("countryWorld").textContent="دریافت اطلاعات ناموفق بود: "+errorMessage(e);
+    $("constructionQueue").className="empty-queue";
+    $("constructionQueue").textContent="دریافت صف ساخت ناموفق بود. دوباره به‌روزرسانی کن.";
   }
 }
 
@@ -1095,9 +1098,11 @@ async function refreshCountryState(){
     renderArsenal(state.currentAmmoCategory);
     renderQueue();
 
-    if(state.currentView==="infrastructurePage"){
-      await refreshInfrastructureState();
-    }
+    // تغییر اصلی:
+    // صف ساخت در هر بار دریافت اطلاعات کشور از دیتابیس خوانده می‌شود.
+    // بنابراین در صفحه مدیریت هم صف ساخت همیشه بازیابی خواهد شد.
+    await refreshInfrastructureState();
+
   }finally{
     state.commanding=false;
   }
@@ -1386,7 +1391,7 @@ async function sendPurchase(){
   }
 }
 
-/* فهرست ساختمان‌ها - شناسه‌ها هماهنگ با دیتابیس */
+/* فهرست ساختمان‌ها */
 
 const buildingCatalog={
   military:[
@@ -1520,9 +1525,9 @@ const buildingCatalog={
     },
     {
       key:"enrichment_center",
-      name:"مرکز غنی‌سازی اورانیوم",
+      name:"مرکز پژوهش هسته‌ای",
       price:5000000,
-      power:0,
+      power:20,
       effect:500,
       uranium:40000,
       time:3600,
@@ -1563,8 +1568,14 @@ function refreshInfrastructureResources(){
   $("infraBalance").textContent=money(c.balance);
 }
 
+/* صف ساخت زیرساخت - دریافت مستقیم از پاسخ دیتابیس */
 function renderConstructionQueue(){
-  const orders=state.infraData?.orders||state.infraData?.construction_orders||[];
+  const orders = Array.isArray(state.infraData?.construction_orders)
+    ? state.infraData.construction_orders
+    : Array.isArray(state.infraData?.orders)
+      ? state.infraData.orders
+      : [];
+
   const box=$("constructionQueue");
 
   const active=orders.filter(o=>
@@ -1581,10 +1592,14 @@ function renderConstructionQueue(){
 
   box.innerHTML=active.map(o=>{
     const end=new Date(o.completes_at).getTime();
-    const remaining=Number.isFinite(end)?
-      Math.max(0,Math.ceil((end-Date.now())/1000)):0;
 
-    const status=o.status==="queued"?"در صف ساخت":"در حال ساخت";
+    const remaining=Number.isFinite(end)
+      ? Math.max(0,Math.ceil((end-Date.now())/1000))
+      : 0;
+
+    const status=o.status==="queued"
+      ? "در صف ساخت"
+      : "در حال ساخت";
 
     return `
       <article class="queue-card">
@@ -1597,6 +1612,7 @@ function renderConstructionQueue(){
   }).join("");
 }
 
+/* دریافت اطلاعات زیرساخت و سفارش‌های ذخیره‌شده */
 async function refreshInfrastructureState(){
   if(state.infraBusy)return;
 
@@ -1748,7 +1764,6 @@ function formatDuration(sec){
   return `${fa(s)} ثانیه`;
 }
 
-/* پیش‌نیازها با شناسه‌های واقعی بک‌اند */
 function unitUnlocked(category){
   if(category==="air"){
     return hasBuilding("airfield")&&hasBuilding("aircraft_industry");
@@ -1867,7 +1882,7 @@ function renderArsenal(category){
 
     box.innerHTML=unlocked
       ? `<div class="locked"><strong>دسترسی پژوهشی هسته‌ای فعال است</strong>این بخش در نسخه فعلی صرفاً وضعیت مجوز پژوهشی بازی را نمایش می‌دهد.</div>`
-      : `<div class="locked"><strong>دسترسی پژوهشی فعال نیست</strong>برای بازشدن این بخش، مرکز غنی‌سازی اورانیوم را از قسمت زیرساخت بساز.</div>`;
+      : `<div class="locked"><strong>دسترسی پژوهشی فعال نیست</strong>برای بازشدن این بخش، مرکز پژوهش هسته‌ای را از قسمت زیرساخت بساز.</div>`;
 
     return;
   }
@@ -2066,6 +2081,7 @@ $("openInfrastructure").addEventListener("click",async()=>{
 
 $("backInfrastructure").addEventListener("click",()=>{
   showPage("managementPage");
+  renderConstructionQueue();
 });
 
 $("openHQ").addEventListener("click",()=>{
@@ -2080,10 +2096,12 @@ $("openArsenal").addEventListener("click",()=>{
 
 $("backHQ").addEventListener("click",()=>{
   showPage("managementPage");
+  renderConstructionQueue();
 });
 
 $("backArsenal").addEventListener("click",()=>{
   showPage("managementPage");
+  renderConstructionQueue();
 });
 
 document.querySelectorAll("[data-infra-category]").forEach(t=>{
@@ -2198,6 +2216,7 @@ setInterval(async()=>{
   if(state.myCountry){
     if(
       !state.commanding&&
+      !state.infraBusy&&
       !state.claiming&&
       !state.purchasing&&
       ["managementPage","hqPage","arsenalPage","infrastructurePage"].includes(state.currentView)
